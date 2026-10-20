@@ -323,7 +323,7 @@ async function gerarPlutoBR(): Promise<string> {
     linhas.push('#EXTINF:-1 tvg-id="' + c.id + '" tvg-logo="' + logo + '" group-title="' + grupo.replace(/"/g, "'") + '",' + c.name, url);
   }
   const pais = (String(boot.stitcherParams || "").match(/country=([A-Z]+)/) || [])[1] || "?";
-  console.log(JSON.stringify({ evt: "pluto_gerado", canais: linhas.length - 1, pais }));
+  console.log(JSON.stringify({ evt: "pluto_gerado", canais: (linhas.length - 1) / 2, pais }));
   return linhas.join("\n");
 }
 // Junta o gerador próprio com a lista do OwnerPlugins. Se um falhar, o outro segura.
