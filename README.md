@@ -112,6 +112,10 @@ Ideias tiradas da análise do app YouCine (v1.17.6) e reescritas do zero aqui. D
 - **Bloqueio parental**: senha de 4 números em Ajustes. Com senha, canais de conteúdo adulto ficam trancados e qualquer outro canal pode ser trancado pelo menu de opções. A senha fica guardada só nesta TV.
 - **Guia Agora / A seguir**: o servidor busca a grade do Pluto TV a cada 30 minutos (`guia_atualizado` nos logs). Aparece no cartão do canal, na barra do player e na lista.
 
+## Canais funcionando e canais parados
+
+Depois de "Testar canais", a grade se divide em duas partes: **Canais funcionando** em cima e **Canais parados** embaixo, com a contagem de cada uma e a hora do teste. O resultado fica guardado por canal na TV, então continua valendo depois que a lista se atualiza. Um canal parado volta sozinho para "funcionando" quando abre normalmente, e o "Só os que funcionam" esconde a parte dos parados. O Pluto TV fica fora do teste (o servidor está fora do Brasil) e aparece entre os que funcionam, a menos que falhe na hora de assistir.
+
 ## Streams sem travar (Ajustes)
 
 - **Modos**: Estável (folga de até 2 min, começa numa qualidade menor e sobe sozinho), Equilibrado (o padrão) e Rápido (troca de canal mais depressa, com pouca folga). Valem a partir do próximo canal aberto.
