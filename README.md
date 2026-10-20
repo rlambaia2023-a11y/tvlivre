@@ -21,6 +21,17 @@ A TV própria que roda no navegador da Smart TV, com os canais abertos do Brasil
 3. Refaz tudo a cada 6 horas, mesmo sem ninguém assistindo.
 4. A rotina do GitHub copia a lista testada para a pasta `listas/` a cada 6 horas. Se a TV estiver fora do ar, a rotina falha e o GitHub avisa você por e-mail.
 
+## Armazenamento (Railway Bucket)
+
+A última lista testada fica guardada no bucket **tela-livre-dados** do Railway (`canais.json` e `lista.m3u`). Quando o servidor reinicia, ele carrega a lista do bucket na hora, e a TV nunca abre vazia. As variáveis `S3_*` do serviço apontam para o bucket.
+
+## Quando um canal falha
+
+1. A TV tenta o link direto, depois pelo servidor, depois os links reserva do mesmo canal.
+2. O servidor tenta de novo se identificando como VLC ou Kodi, que muitas emissoras exigem.
+3. Se nada abrir, a TV mostra o motivo e pula para o próximo canal em 5 segundos.
+4. O servidor reconfere aquele canal na hora e, se estiver fora do ar mesmo, tira da lista para todo mundo.
+
 ## Endereços do servidor
 
 | Endereço | O que devolve |
@@ -29,6 +40,7 @@ A TV própria que roda no navegador da Smart TV, com os canais abertos do Brasil
 | `/lista.m3u` | Lista para o Kodi (PVR IPTV Simple Client), VLC e outros players |
 | `/canais` | Lista em JSON, usada pela própria TV |
 | `/check?u=<link>` | Testa um link de transmissão |
+| `/falhou?id=<canal>` | A TV avisa que o canal não abriu; o servidor reconfere |
 | `/health` | Responde `ok` quando o servidor está de pé |
 
 ## Rodar no seu computador

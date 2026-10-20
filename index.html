@@ -100,6 +100,9 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 .osd .hint{margin-left:auto;color:#aab4c2;font-size:.85em;text-align:right;line-height:1.6}
 .perr{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
 .perr div{max-width:44ch;background:rgba(20,26,34,.92);border-radius:14px;padding:24px;line-height:1.5}
+.perr strong{display:block;font-size:1.3em;margin-bottom:.4em}
+.perr p{margin:.4em 0 0;color:#c9d1dc}
+.perr #perr-next{color:var(--signal);font-weight:700;font-variant-numeric:tabular-nums}
 .digits{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));right:calc(32px + env(safe-area-inset-right,0px));z-index:30;font-family:var(--font-display);font-weight:800;font-size:clamp(48px,5vw,96px);color:var(--signal);background:rgba(0,0,0,.7);padding:.05em .35em;border-radius:12px;font-variant-numeric:tabular-nums}
 .closebtn{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:calc(16px + env(safe-area-inset-right,0px));background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:999px;padding:.5em 1em;font-weight:700;cursor:pointer}
 
@@ -205,7 +208,7 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 <div class="player" id="player" hidden>
   <video id="video" playsinline autoplay></video>
   <button class="closebtn" id="pclose">Voltar</button>
-  <div class="perr" id="perr" hidden><div>Não deu para abrir este canal. O link pode ter saído do ar ou a emissora bloqueia a reprodução fora do site dela. Use CH+/CH− para tentar outro.</div></div>
+  <div class="perr" id="perr" hidden><div><strong id="perr-title">Este canal não abriu agora</strong><p id="perr-why">Tentei o link direto, pelo servidor e os links reserva.</p><p id="perr-next"></p></div></div>
   <div class="osd" id="osd">
     <div class="bignum" id="o-num"></div>
     <div>
@@ -356,13 +359,13 @@ function relayUrl(item,path){var q=(path||"/p")+"?u="+encodeURIComponent(item.ur
 function testAll(){
   if(testing||!S.channels.length)return;
   if(!HAS_SERVER){status("test-status","O teste precisa do servidor (abra pelo endereço do Railway).");return}
-  testing=true;var list=S.channels.slice(),i=0,done=0,ok=0;
+  testing=true;var list=S.channels.filter(function(c){return !ehPluto(c)}),i=0,done=0,ok=0;
   status("test-status","Testando 0 de "+list.length+"…");
   function next(){
     if(i>=list.length)return;var c=list[i++];
     fetch(relayUrl(c,"/check")).then(function(r){return r.json()}).then(function(j){c.dead=!j.ok;if(j.ok)ok++}).catch(function(){c.dead=true})
     .then(function(){done++;status("test-status","Testando "+done+" de "+list.length+"… "+ok+" no ar");
-      if(done===list.length){testing=false;save();renderLive();status("test-status",ok+" de "+list.length+" canais no ar")}else next()});
+      if(done===list.length){testing=false;save();renderLive();status("test-status",ok+" de "+list.length+" canais no ar (Pluto TV fica de fora: o teste é feito fora do Brasil)")}else next()});
   }
   for(var k=0;k<8;k++)next();
 }
@@ -394,15 +397,50 @@ function listFor(kind){return kind==="live"?S.channels:allVideos()}
 function openById(id,kind){var l=listFor(kind);for(var i=0;i<l.length;i++)if(l[i].id===id){play(l[i],kind);return}}
 function stop(){if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
 function needsRelay(item){return !!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
+var skipTimer=null,lastStep=1;
+function ehPluto(item){return /pluto\.tv/i.test(item.url||"")}
+function motivoAmigavel(m,item){
+  if(ehPluto(item)&&/401|403/.test(m))return "A chave de acesso do Pluto TV venceu ou não vale nesta rede. Uma lista nova chega em até 6 horas.";
+  if(/403|401/.test(m))return "A emissora recusou a conexão. Costuma ser bloqueio para fora do Brasil ou exigência de assistir pelo site dela.";
+  if(/404|variante/.test(m))return "O endereço do canal saiu do ar.";
+  if(/sem resposta/.test(m))return "A emissora não respondeu a tempo.";
+  if(/conexão/.test(m))return "Não foi possível conectar ao servidor da emissora.";
+  if(/página/.test(m))return "Esse canal só passa no site ou no YouTube da emissora.";
+  if(/^HTTP 5/.test(m))return "O servidor da emissora está com problema agora.";
+  return "O vídeo não carregou neste aparelho.";
+}
 function fail(){
   var c=current;if(!c)return;
-  // 1) tenta pelo servidor; 2) passa para o próximo link reserva do mesmo canal
+  // 1) tenta pelo servidor; 2) passa para o próximo link reserva do mesmo canal; 3) desiste e explica
   if(!c.relay&&HAS_SERVER&&c.item.src!=="local"){play(c.item,c.kind,true,c.alt);return}
   if(c.alt<(c.item.alts||[]).length){play(c.item,c.kind,false,c.alt+1);return}
+  giveUp(c);
+}
+function giveUp(c){
+  stop();
+  $("perr-title").textContent=c.item.name+" não abriu agora";
+  $("perr-why").textContent="Tentei o link direto, pelo servidor e "+((c.item.alts||[]).length?(c.item.alts.length+" link(s) reserva."):"não há link reserva.");
   $("perr").hidden=false;
+  c.item.dead=true;save();
+  if(HAS_SERVER&&c.item.src!=="local"){
+    fetch(relayUrl(c.item,"/check")).then(function(r){return r.json()}).then(function(j){if(current===c&&!j.ok)$("perr-why").textContent=motivoAmigavel(j.motivo||"",c.item)}).catch(function(){});
+    if(c.item.src==="auto")fetch("/falhou?id="+encodeURIComponent(c.item.id.replace(/^a-/,""))).then(function(r){return r.json()}).then(function(j){if(j.removido)loadAuto(false)}).catch(function(){});
+  }
+  if(c.kind!=="live")return;
+  var n=5;
+  (function tickSkip(){
+    if(current!==c)return;
+    $("perr-next").textContent="Indo para o próximo canal em "+n+"… (Voltar cancela)";
+    if(n--<=0){skipNext(c);return}
+    skipTimer=setTimeout(tickSkip,1000);
+  })();
+}
+function skipNext(c){
+  var l=listFor("live"),i=l.indexOf(c.item);
+  for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!x.dead){play(x,"live");return}}
 }
 function play(item,kind,forceRelay,alt){
-  stop();
+  stop();clearTimeout(skipTimer);$("perr-next").textContent="";
   alt=alt||0;var src=alt?item.alts[alt-1]:item;
   var relay=HAS_SERVER&&item.src!=="local"&&(forceRelay||needsRelay(src));
   current={item:item,kind:kind,relay:relay,alt:alt};$("perr").hidden=true;$("player").hidden=false;
@@ -410,7 +448,13 @@ function play(item,kind,forceRelay,alt){
   var u=relay?relayUrl(src):src.url;
   if(isHls&&!video.canPlayType("application/vnd.apple.mpegurl")&&window.Hls&&Hls.isSupported()){
     hls=new Hls({enableWorker:true,lowLatencyMode:true,manifestLoadingMaxRetry:1,levelLoadingMaxRetry:2,fragLoadingMaxRetry:2});
-    hls.on(Hls.Events.ERROR,function(_,d){if(d.fatal)fail()});
+    var recovered=false;
+    hls.on(Hls.Events.ERROR,function(_,d){
+      if(!d.fatal)return;
+      // erro de imagem: o hls.js se recupera sem trocar de link
+      if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&!recovered){recovered=true;hls.recoverMediaError();return}
+      fail();
+    });
     hls.loadSource(u);hls.attachMedia(video);
   }else{video.src=u}
   var p=video.play();if(p&&p.catch)p.catch(function(){});
@@ -422,11 +466,11 @@ function play(item,kind,forceRelay,alt){
   showOsd();
 }
 video.addEventListener("error",function(){if(!hls&&current&&video.getAttribute("src"))fail()});
-video.addEventListener("playing",function(){$("perr").hidden=true});
+video.addEventListener("playing",function(){$("perr").hidden=true;if(current&&current.item.dead){current.item.dead=false;save()}});
 function showOsd(){var o=$("osd");o.classList.remove("hide");clearTimeout(osdTimer);osdTimer=setTimeout(function(){o.classList.add("hide")},4000)}
-function zap(step){if(!current)return;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
+function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
 function closePlayer(){
-  stop();$("player").hidden=true;
+  stop();clearTimeout(skipTimer);$("player").hidden=true;
   var back=current&&document.querySelector('.card[data-id="'+current.item.id+'"]');current=null;
   if(back)back.focus();
 }

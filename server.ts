@@ -15,6 +15,38 @@ function alvo(s: string | null): URL | null {
   } catch { return null; }
 }
 
+// Perfis usados quando a emissora responde 403/401: muitas só aceitam players conhecidos (VLC, Kodi)
+// ou o próprio site como origem. O servidor lembra qual perfil funcionou para cada emissora.
+const PERFIS: { ua: string; refDoProprio: boolean }[] = [
+  { ua: "", refDoProprio: false },
+  { ua: "VLC/3.0.21 LibVLC/3.0.21", refDoProprio: false },
+  { ua: "Kodi/21.3 (Windows NT 10.0; Win64; x64) App_Bitness/64 Version/21.3", refDoProprio: false },
+  { ua: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36", refDoProprio: true },
+];
+const perfilPorHost = new Map<string, number>();
+
+async function buscar(u: URL, ref: string | null, ua: string | null, range: string | null, ms: number): Promise<Response> {
+  // Pluto TV usa chave própria no link; trocar o perfil não muda nada, então vai direto.
+  const tentativas = /pluto\.tv$/i.test(u.hostname) ? 1 : PERFIS.length;
+  const inicio = perfilPorHost.get(u.host) ?? 0;
+  let ultima: Response | null = null;
+  for (let k = 0; k < tentativas; k++) {
+    const i = (inicio + k) % PERFIS.length;
+    const p = PERFIS[i];
+    const r = await fetch(u.href, {
+      headers: cabecalhos(ref || (p.refDoProprio ? u.origin + "/" : null), (i === 0 ? ua : null) || p.ua || null, range),
+      redirect: "follow", signal: AbortSignal.timeout(ms),
+    });
+    if (r.status !== 403 && r.status !== 401) {
+      if (i !== 0 || perfilPorHost.has(u.host)) perfilPorHost.set(u.host, i);
+      return r;
+    }
+    r.body?.cancel();
+    ultima = r;
+  }
+  return ultima!;
+}
+
 function cabecalhos(ref: string | null, ua: string | null, range?: string | null): Record<string, string> {
   const h: Record<string, string> = { "user-agent": ua || UA_PADRAO, accept: "*/*" };
   if (ref) {
@@ -56,7 +88,7 @@ async function relay(req: Request, q: URLSearchParams): Promise<Response> {
   const ref = q.get("r"), ua = q.get("a");
   let res: Response;
   try {
-    res = await fetch(u.href, { headers: cabecalhos(ref, ua, req.headers.get("range")), redirect: "follow", signal: AbortSignal.timeout(20000) });
+    res = await buscar(u, ref, ua, req.headers.get("range"), 20000);
   } catch (e) {
     console.log(JSON.stringify({ evt: "relay_erro", host: u.hostname, erro: String(e) }));
     return new Response("Não foi possível alcançar a transmissão", { status: 502, headers: CORS });
@@ -132,7 +164,7 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
   const u = alvo(url);
   if (!u) return json(false, "endereço inválido");
   try {
-    const res = await fetch(u.href, { headers: cabecalhos(ref, ua, "bytes=0-65535"), redirect: "follow", signal: AbortSignal.timeout(8000) });
+    const res = await buscar(u, ref, ua, "bytes=0-65535", 8000);
     if (!res.ok && res.status !== 206) return json(false, "HTTP " + res.status);
     const tipo = res.headers.get("content-type") || "";
     if (!ehPlaylist(res.url || u.href, tipo)) {
@@ -149,7 +181,7 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
       const i = linhas.findIndex((l) => l.startsWith("#EXT-X-STREAM-INF"));
       const prox = linhas.slice(i + 1).find((l) => l.trim() && !l.startsWith("#"));
       if (prox) {
-        const v = await fetch(new URL(prox.trim(), res.url || u.href).href, { headers: cabecalhos(ref, ua), signal: AbortSignal.timeout(8000) });
+        const v = await buscar(new URL(prox.trim(), res.url || u.href), ref, ua, null, 8000);
         v.body?.cancel();
         if (!v.ok) return json(false, "variante HTTP " + v.status);
       }
@@ -158,6 +190,43 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
   } catch (e) {
     return json(false, String(e).includes("timeout") ? "sem resposta" : "erro de conexão");
   }
+}
+
+// ---------- Armazenamento no Railway Bucket ----------
+// Guarda a última lista testada. Quando o servidor reinicia, a TV já recebe os canais na hora,
+// sem esperar a rodada de testes. Sem bucket configurado, o servidor funciona como antes.
+const S3 = Bun.env.S3_BUCKET && Bun.env.S3_ACCESS_KEY_ID && Bun.env.S3_SECRET_ACCESS_KEY
+  ? new Bun.S3Client({
+      bucket: Bun.env.S3_BUCKET,
+      accessKeyId: Bun.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: Bun.env.S3_SECRET_ACCESS_KEY,
+      endpoint: Bun.env.S3_ENDPOINT,
+      region: Bun.env.S3_REGION || "auto",
+      virtualHostedStyle: true,
+    })
+  : null;
+const PASTA_LOCAL = Bun.env.TL_STORE_DIR || ""; // só para testes no computador
+
+async function guardar(nome: string, conteudo: string, tipo: string): Promise<void> {
+  try {
+    if (S3) await S3.write(nome, conteudo, { type: tipo });
+    else if (PASTA_LOCAL) await Bun.write(PASTA_LOCAL + "/" + nome, conteudo);
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "bucket_erro", acao: "guardar", nome, erro: String(e) }));
+  }
+}
+async function ler(nome: string): Promise<string | null> {
+  try {
+    if (S3) { const f = S3.file(nome); if (await f.exists()) return await f.text(); }
+    else if (PASTA_LOCAL) { const f = Bun.file(PASTA_LOCAL + "/" + nome); if (await f.exists()) return await f.text(); }
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "bucket_erro", acao: "ler", nome, erro: String(e) }));
+  }
+  return null;
+}
+async function salvarLista(): Promise<void> {
+  await guardar("canais.json", JSON.stringify({ atualizado: estado.atualizado, canais: estado.canais }), "application/json");
+  await guardar("lista.m3u", textoM3U(), "audio/x-mpegurl");
 }
 
 // ---------- Lista automática: baixa, testa e guarda só o que funciona ----------
@@ -173,6 +242,12 @@ const GRUPOS: Record<string, string> = {
   auto: "Automóveis", classic: "Clássicos", family: "Família", undefined: "Geral", science: "Ciência", weather: "Clima",
   brazil: "TV aberta", brasil: "TV aberta",
 };
+// Recusas que podem ser só do servidor (fora do Brasil): o canal fica como reserva em vez de sair.
+function talvezFunciona(chave: string, motivo: string): boolean {
+  if (motivo === "HTTP 403") return true;
+  return chave.startsWith("pluto:") && /HTTP 4(00|01|03|10|51)|variante HTTP 4|não é transmissão/.test(motivo);
+}
+
 type Fonte = { nome: string; logo: string; grupo: string; chave: string; url: string; ref: string; ua: string };
 type Canal = { id: string; name: string; logo: string; group: string; url: string; ref: string; ua: string; alts: { url: string; ref: string; ua: string }[] };
 const estado: { canais: Canal[]; atualizado: number; atualizando: boolean; ultimaTentativa: number } = { canais: [], atualizado: 0, atualizando: false, ultimaTentativa: 0 };
@@ -247,11 +322,7 @@ async function atualizar(): Promise<void> {
       const bons = lista.filter((f) => status.get(f.url)?.ok);
       // Pluto TV: o link traz uma chave gerada para quem está no Brasil; o servidor (fora do Brasil)
       // recebe recusa de acesso, mas a TV na sua casa abre. Só descarta se o link sumiu de vez.
-      const ehPluto = chave.startsWith("pluto:");
-      const talvez = lista.filter((f) => {
-        const m = status.get(f.url)?.motivo || "";
-        return m === "HTTP 403" || (ehPluto && /HTTP 4(00|01|03|10|51)|variante HTTP 4|não é transmissão/.test(m));
-      });
+      const talvez = lista.filter((f) => talvezFunciona(chave, status.get(f.url)?.motivo || ""));
       const usar = [...bons, ...talvez];
       if (!usar.length) continue;
       const p = usar[0];
@@ -260,7 +331,7 @@ async function atualizar(): Promise<void> {
         url: p.url, ref: p.ref, ua: p.ua, alts: usar.slice(1).map((f) => ({ url: f.url, ref: f.ref, ua: f.ua })),
       });
     }
-    if (canais.length) { estado.canais = canais; estado.atualizado = Date.now(); }
+    if (canais.length) { estado.canais = canais; estado.atualizado = Date.now(); await salvarLista(); }
     const motivosPluto: Record<string, number> = {};
     for (const f of fontes) if (f.chave.startsWith("pluto:")) { const m = status.get(f.url)?.motivo || "?"; motivosPluto[m] = (motivosPluto[m] || 0) + 1; }
     console.log(JSON.stringify({ evt: "lista_atualizada", motivosPluto, pluto: canais.filter((c) => c.id.startsWith("pluto:")).length, fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
@@ -280,8 +351,27 @@ function canaisRota(q: URLSearchParams): Response {
   });
 }
 
+// A TV avisa quando um canal não abriu; o servidor reconfere os links dele na hora.
+const reconferido = new Map<string, number>();
+async function falhou(q: URLSearchParams): Promise<Response> {
+  const id = q.get("id") || "";
+  const resp = (removido: boolean) => new Response(JSON.stringify({ removido }), { headers: { ...CORS, "content-type": "application/json" } });
+  const c = estado.canais.find((x) => x.id === id);
+  if (!c || Date.now() - (reconferido.get(id) || 0) < 5 * 60 * 1000) return resp(false);
+  reconferido.set(id, Date.now());
+  const links = [{ url: c.url, ref: c.ref, ua: c.ua }, ...c.alts];
+  const testes = await Promise.all(links.map(async (l) => ({ l, r: await verificar(l.url, l.ref || null, l.ua || null) })));
+  const bons = testes.filter((t) => t.r.ok).map((t) => t.l).concat(testes.filter((t) => !t.r.ok && talvezFunciona(id, t.r.motivo)).map((t) => t.l));
+  console.log(JSON.stringify({ evt: "falha_relatada", id, links: links.length, bons: bons.length, motivos: testes.map((t) => t.r.motivo) }));
+  const j = estado.canais.findIndex((x) => x.id === id);
+  if (j < 0) return resp(false);
+  if (!bons.length) { estado.canais.splice(j, 1); await salvarLista(); return resp(true); }
+  estado.canais[j] = { ...c, url: bons[0].url, ref: bons[0].ref, ua: bons[0].ua, alts: bons.slice(1) };
+  return resp(false);
+}
+
 // Lista no formato M3U para o Kodi (PVR IPTV Simple Client) e outros players.
-function listaM3U(): Response {
+function textoM3U(): string {
   const q = (t: string) => t.replace(/"/g, "'");
   const linhas = ["#EXTM3U"];
   estado.canais.forEach((c, i) => {
@@ -290,7 +380,10 @@ function listaM3U(): Response {
     if (c.ua) linhas.push("#EXTVLCOPT:http-user-agent=" + c.ua);
     linhas.push(c.url);
   });
-  return new Response(linhas.join("\n") + "\n", { headers: { ...CORS, "content-type": "audio/x-mpegurl; charset=utf-8", "cache-control": "no-cache" } });
+  return linhas.join("\n") + "\n";
+}
+function listaM3U(): Response {
+  return new Response(textoM3U(), { headers: { ...CORS, "content-type": "audio/x-mpegurl; charset=utf-8", "cache-control": "no-cache" } });
 }
 
 Bun.serve({
@@ -308,12 +401,24 @@ Bun.serve({
     if (url.pathname === "/freetv") return freeTv();
     if (url.pathname === "/lista.m3u") { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); return listaM3U(); }
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
+    if (url.pathname === "/falhou") return falhou(url.searchParams);
     if (url.pathname === "/check") return testar(url.searchParams);
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
   },
 });
+// Ao ligar: carrega a última lista guardada no bucket; só refaz os testes se ela tiver mais de 6 horas.
+{
+  const salvo = await ler("canais.json");
+  if (salvo) {
+    try {
+      const j = JSON.parse(salvo);
+      if (Array.isArray(j.canais) && j.canais.length) { estado.canais = j.canais; estado.atualizado = j.atualizado || 0; }
+    } catch {}
+  }
+  console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
+}
 console.log("Tela Livre no ar");
-atualizar();
+if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
 // Confere a cada 30 minutos se a lista passou de 6 horas e, se passou, refaz os testes sozinho,
 // mesmo que ninguém esteja assistindo.
 setInterval(() => { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); }, 30 * 60 * 1000);
