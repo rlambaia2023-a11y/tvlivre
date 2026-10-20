@@ -400,7 +400,7 @@ function needsRelay(item){return !!(item.ref||item.ua)||(location.protocol==="ht
 var skipTimer=null,lastStep=1;
 function ehPluto(item){return /pluto\.tv/i.test(item.url||"")}
 function motivoAmigavel(m,item){
-  if(ehPluto(item)&&/401|403/.test(m))return "A chave de acesso do Pluto TV venceu ou não vale nesta rede. Uma lista nova chega em até 6 horas.";
+  if(ehPluto(item)&&/401|403/.test(m))return "A chave de acesso do Pluto TV venceu ou não vale nesta rede. O servidor busca links novos do Pluto a cada hora; tente de novo daqui a pouco.";
   if(/403|401/.test(m))return "A emissora recusou a conexão. Costuma ser bloqueio para fora do Brasil ou exigência de assistir pelo site dela.";
   if(/404|variante/.test(m))return "O endereço do canal saiu do ar.";
   if(/sem resposta/.test(m))return "A emissora não respondeu a tempo.";

@@ -48,7 +48,9 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
 }
 
 function cabecalhos(ref: string | null, ua: string | null, range?: string | null): Record<string, string> {
-  const h: Record<string, string> = { "user-agent": ua || UA_PADRAO, accept: "*/*" };
+  // identity: alguns servidores (Pluto, por exemplo) marcam a chave do vídeo como gzip sem ela estar
+  // comprimida, e a descompressão automática quebrava no meio da transmissão.
+  const h: Record<string, string> = { "user-agent": ua || UA_PADRAO, accept: "*/*", "accept-encoding": "identity" };
   if (ref) {
     h.referer = ref;
     try { h.origin = new URL(ref).origin; } catch {}
@@ -379,8 +381,10 @@ function plutoFontes(texto: string): Fonte[] {
   const out: Fonte[] = [];
   for (const f of lerM3U(texto)) {
     const base = { ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " · " + f.grupo.split(";")[0].trim() : "") };
-    out.push(base);
+    // O link do jmp2.uk vem primeiro: ele foi conferido do servidor e responde "no ar".
+    // O link com chave fica de reserva logo atrás.
     if (PLUTO_ID.test(f.chave)) out.push({ ...base, url: "https://jmp2.uk/plu-" + f.chave + ".m3u8", ref: "", ua: "" });
+    out.push(base);
   }
   return out;
 }
@@ -414,7 +418,7 @@ async function atualizarPluto(): Promise<void> {
     estado.plutoTs = Date.now();
     await salvarLista();
     // Amostra: confere 3 links reserva do jmp2.uk para saber se continuam respondendo.
-    const amostra = novos.slice(0, 3).map((c) => c.alts.find((a) => a.url.includes("jmp2.uk"))?.url).filter(Boolean) as string[];
+    const amostra = novos.slice(0, 3).map((c) => [c, ...c.alts].find((a) => a.url.includes("jmp2.uk"))?.url).filter(Boolean) as string[];
     const testes = await Promise.all(amostra.map((u) => verificar(u, null, null)));
     console.log(JSON.stringify({ evt: "pluto_renovado", canais: novos.length, mantidos: antigos.length, reservaJmp2: testes.map((t) => t.motivo) }));
   } catch (e) {
