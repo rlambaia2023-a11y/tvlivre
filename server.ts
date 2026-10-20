@@ -33,7 +33,7 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
     const i = (inicio + k) % PERFIS.length;
     const p = PERFIS[i];
     const r = await fetch(u.href, {
-      headers: cabecalhos(ref || (p.refDoProprio ? u.origin + "/" : null), (i === 0 ? ua : null) || p.ua || null, range),
+      headers: { ...cabecalhos(ref || (p.refDoProprio ? u.origin + "/" : null), (i === 0 ? ua : null) || p.ua || null, range), ...(/pluto\.tv$|plutotv\.net$|jmp2\.uk$/i.test(u.hostname) ? { "x-forwarded-for": IP_BR } : {}) },
       redirect: "follow", signal: AbortSignal.timeout(ms),
     });
     if (r.status !== 403 && r.status !== 401) {
@@ -295,6 +295,46 @@ const FONTE_IPTV = Bun.env.FONTE_IPTV || "https://iptv-org.github.io/iptv/countr
 // Pluto TV Brasil (repositório OwnerPlugins/pluto-tv-m3u, refeito a cada 6 horas com os links do dia).
 const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/OwnerPlugins/pluto-tv-m3u/main/pluto-live-BR.m3u";
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
+
+// ---------- Gerador próprio de links do Pluto TV ----------
+// Mesmo método do projeto NasiLemakk/Pluto-TV-Playlists: o servidor pede uma sessão nova ao próprio
+// Pluto (boot.pluto.tv) se apresentando como um aparelho no Brasil (cabeçalho X-Forwarded-For com um
+// IP brasileiro) e monta os links com a chave fresquinha. Assim não dependemos só de listas de terceiros.
+const IP_BR = Bun.env.PLUTO_IP_BR || "200.160.2.3";
+const CLIENTE_PLUTO = crypto.randomUUID();
+const UA_PLUTO = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15";
+async function gerarPlutoBR(): Promise<string> {
+  const h: Record<string, string> = { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO, accept: "application/json" };
+  const hora = encodeURIComponent(new Date().toISOString());
+  const boot = await (await fetch("https://boot.pluto.tv/v4/start?appName=web&appVersion=7.9.0-a9cca6b89aea4dc0998b92a51989d2adb9a9025d&deviceVersion=16.2.0&deviceModel=web&deviceMake=Chrome&deviceType=web&clientID=" + CLIENTE_PLUTO + "&clientModelNumber=1.0.0&channelID=5a4d3a00ad95e4718ae8d8db&serverSideAds=true&constraints=&drmCapabilities=&blockingMode=&clientTime=" + hora, { headers: h, signal: AbortSignal.timeout(20000) })).json() as any;
+  if (!boot?.sessionToken || !boot?.servers?.stitcher) throw new Error("boot sem sessão");
+  const auth = { ...h, authorization: "Bearer " + boot.sessionToken };
+  const [canais, cats] = await Promise.all([
+    fetch("https://service-channels.clusters.pluto.tv/v2/guide/channels?channelIds=&offset=0&limit=1000&sort=number%3Aasc", { headers: auth, signal: AbortSignal.timeout(20000) }).then((r) => r.json() as any),
+    fetch("https://service-channels.clusters.pluto.tv/v2/guide/categories", { headers: auth, signal: AbortSignal.timeout(20000) }).then((r) => r.json() as any).catch(() => ({ data: [] })),
+  ]);
+  const nomeCat = new Map<string, string>(((cats?.data || []) as any[]).map((c) => [c.id, c.name]));
+  const linhas = ["#EXTM3U"];
+  for (const c of (canais?.data || []) as any[]) {
+    if (!c?.id || !c?.stitched?.path) continue;
+    const url = boot.servers.stitcher + "/v2" + c.stitched.path + "?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&masterJWTPassthrough=true";
+    const grupo = (c.categoryIDs && nomeCat.get(c.categoryIDs[0])) || "";
+    const logo = (c.images && c.images[0] && c.images[0].url) || "";
+    linhas.push('#EXTINF:-1 tvg-id="' + c.id + '" tvg-logo="' + logo + '" group-title="' + grupo.replace(/"/g, "'") + '",' + c.name, url);
+  }
+  const pais = (String(boot.stitcherParams || "").match(/country=([A-Z]+)/) || [])[1] || "?";
+  console.log(JSON.stringify({ evt: "pluto_gerado", canais: linhas.length - 1, pais }));
+  return linhas.join("\n");
+}
+// Junta o gerador próprio com a lista do OwnerPlugins. Se um falhar, o outro segura.
+async function textoPluto(): Promise<string> {
+  const [gerado, owner] = await Promise.allSettled([
+    gerarPlutoBR(),
+    fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
+  ]);
+  if (gerado.status === "rejected") console.log(JSON.stringify({ evt: "pluto_gerador_erro", erro: String(gerado.reason) }));
+  return (gerado.status === "fulfilled" ? gerado.value : "") + "\n" + (owner.status === "fulfilled" ? owner.value : "");
+}
 const GRUPOS: Record<string, string> = {
   news: "Notícias", entertainment: "Entretenimento", kids: "Infantil", animation: "Infantil", sports: "Esportes",
   religious: "Religioso", music: "Música", movies: "Filmes", series: "Séries", education: "Educação", general: "Geral",
@@ -356,7 +396,7 @@ async function atualizar(): Promise<void> {
     const [free, iptv, pluto] = await Promise.allSettled([
       freeTv().then((r) => (r.ok ? r.text() : "")),
       fetch(FONTE_IPTV, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
-      fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
+      textoPluto(),
     ]);
     // Free-TV primeiro: são as emissoras abertas oficiais, entram no topo da numeração.
     const fontes = [
@@ -441,9 +481,7 @@ async function atualizarPluto(): Promise<void> {
   if (estado.atualizando || estado.plutoRodando) return;
   estado.plutoRodando = true;
   try {
-    const r = await fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) });
-    if (!r.ok) throw new Error("fonte HTTP " + r.status);
-    const fontes = plutoFontes(await r.text());
+    const fontes = plutoFontes(await textoPluto());
     if (!fontes.length) throw new Error("fonte sem canais");
     const novos = montarPluto(fontes);
     if (estado.atualizando) return; // a atualização completa já cuida do Pluto

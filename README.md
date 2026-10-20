@@ -81,3 +81,10 @@ Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam d
 - Cada canal Pluto tem um link reserva pelo `jmp2.uk/plu-<id>.m3u8`, que abre a sessão do Pluto na hora e não depende de chave.
 - Quando um canal Pluto não abre na TV, o servidor renova a lista do Pluto na hora em vez de apagar o canal.
 - `.github/workflows/guardiao.yml` confere a TV a cada hora (servidor, lista e canais Pluto). Se algo estiver fora, pede uma atualização e o GitHub manda um e-mail.
+
+## Gerador próprio do Pluto TV
+
+- Mesmo método do projeto NasiLemakk/Pluto-TV-Playlists. O servidor pede uma sessão nova em `boot.pluto.tv` se apresentando como um aparelho no Brasil (cabeçalho `X-Forwarded-For` com o IP de `PLUTO_IP_BR`). Depois monta os links com a chave do dia. O log registra o evento `pluto_gerado`, com o país que o Pluto reconheceu.
+- A lista gerada se junta à do OwnerPlugins. Se uma das duas falhar, a outra segura.
+- Os pedidos do relay ao Pluto e ao jmp2.uk também levam o cabeçalho do Brasil.
+- O repositório github.com/orgs/Pluto-tv tem só bibliotecas antigas, sem listas de canais, e por isso não foi usado.
