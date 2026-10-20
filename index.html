@@ -398,9 +398,25 @@ function openById(id,kind){var l=listFor(kind);for(var i=0;i<l.length;i++)if(l[i
 function stop(){if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
 function needsRelay(item){return !!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
 var skipTimer=null,lastStep=1;
-function ehPluto(item){return /pluto\.tv/i.test(item.url||"")}
+function ehPluto(item){return /^a-pluto:/.test(item.id||"")||/pluto\.tv|jmp2\.uk\/plu-/i.test(item.url||"")}
+/* Pluto TV: antes de mostrar erro, pede links novos ao servidor e tenta de novo (uma vez a cada 2 minutos por canal). */
+var renovadoEm={};
+function renovarPluto(c){
+  var id=c.item.id;renovadoEm[id]=Date.now();
+  stop();$("perr-title").textContent=c.item.name;$("perr-why").textContent="Buscando um link novo do Pluto TV…";$("perr-next").textContent="";$("perr").hidden=false;
+  fetch("/falhou?id="+encodeURIComponent(id.replace(/^a-/,""))).catch(function(){}).then(function(){
+    return new Promise(function(ok){setTimeout(ok,4000)});
+  }).then(function(){return fetch("/canais").then(function(r){return r.json()})}).then(function(j){
+    if(current!==c)return;
+    var achado=null;(j.canais||[]).forEach(function(x){if("a-"+x.id===id)achado=x});
+    if(!achado){giveUp(c);return}
+    var novo={id:id,name:achado.name,logo:achado.logo,group:achado.group,url:achado.url,ref:achado.ref,ua:achado.ua,alts:achado.alts||[],src:"auto"};
+    var i=S.channels.indexOf(c.item);if(i>-1)S.channels[i]=novo;save();
+    play(novo,c.kind);
+  }).catch(function(){if(current===c)giveUp(c)});
+}
 function motivoAmigavel(m,item){
-  if(ehPluto(item)&&/401|403/.test(m))return "A chave de acesso do Pluto TV venceu ou não vale nesta rede. O servidor busca links novos do Pluto a cada hora; tente de novo daqui a pouco.";
+  if(ehPluto(item)&&/401|403/.test(m))return "O Pluto TV não liberou este canal agora, nem com o link novo. Pode ser instabilidade do próprio Pluto; tente de novo em alguns minutos.";
   if(/403|401/.test(m))return "A emissora recusou a conexão. Costuma ser bloqueio para fora do Brasil ou exigência de assistir pelo site dela.";
   if(/404|variante/.test(m))return "O endereço do canal saiu do ar.";
   if(/sem resposta/.test(m))return "A emissora não respondeu a tempo.";
@@ -414,6 +430,7 @@ function fail(){
   // 1) tenta pelo servidor; 2) passa para o próximo link reserva do mesmo canal; 3) desiste e explica
   if(!c.relay&&HAS_SERVER&&c.item.src!=="local"){play(c.item,c.kind,true,c.alt);return}
   if(c.alt<(c.item.alts||[]).length){play(c.item,c.kind,false,c.alt+1);return}
+  if(ehPluto(c.item)&&HAS_SERVER&&Date.now()-(renovadoEm[c.item.id]||0)>2*60*1000){renovarPluto(c);return}
   giveUp(c);
 }
 function giveUp(c){
@@ -470,6 +487,7 @@ video.addEventListener("playing",function(){$("perr").hidden=true;if(current&&cu
 function showOsd(){var o=$("osd");o.classList.remove("hide");clearTimeout(osdTimer);osdTimer=setTimeout(function(){o.classList.add("hide")},4000)}
 function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
 function closePlayer(){
+  if(recarregar){location.reload();return}
   stop();clearTimeout(skipTimer);$("player").hidden=true;
   var back=current&&document.querySelector('.card[data-id="'+current.item.id+'"]');current=null;
   if(back)back.focus();
@@ -531,7 +549,18 @@ try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","0","1","2"
 
 renderAll();
 loadAuto(false);
-setInterval(function(){loadAuto(false)},30*60*1000);
+setInterval(function(){loadAuto(false)},15*60*1000);
+/* Atualização automática: quando o servidor recebe uma versão nova da página, a TV recarrega sozinha
+   (na hora, se estiver na grade; ao sair do canal, se estiver assistindo). */
+var versao=null,recarregar=false;
+function conferirVersao(){
+  if(!HAS_SERVER)return;
+  fetch("/v",{cache:"no-store"}).then(function(r){return r.text()}).then(function(v){
+    if(versao===null){versao=v;return}
+    if(v!==versao){if($("player").hidden)location.reload();else recarregar=true}
+  }).catch(function(){});
+}
+conferirVersao();setInterval(conferirVersao,5*60*1000);
 var first=document.querySelector(".card")||document.querySelector(".tab");if(first)first.focus();
 })();
 </script>
