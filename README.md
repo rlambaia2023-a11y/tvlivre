@@ -73,3 +73,11 @@ Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam d
 2. No Kodi: Configurações > Sistema > Add-ons > ative **Fontes desconhecidas**.
 3. Add-ons > Instalar de arquivo zip > escolha o `repository.slyguy.zip`.
 4. Add-ons > Instalar do repositório > **SlyGuy Repository** > Add-ons de vídeo > instale Pluto TV, Samsung TV Plus ou Plex Live.
+
+## Guardião do Pluto TV
+
+- Os links do Pluto trazem uma chave que vence em poucas horas. O servidor busca links novos a cada hora (`pluto_renovado` nos logs).
+- Canal Pluto nunca sai da lista por falha. Se a fonte do Pluto cair, os canais de antes continuam.
+- Cada canal Pluto tem um link reserva pelo `jmp2.uk/plu-<id>.m3u8`, que abre a sessão do Pluto na hora e não depende de chave.
+- Quando um canal Pluto não abre na TV, o servidor renova a lista do Pluto na hora em vez de apagar o canal.
+- `.github/workflows/guardiao.yml` confere a TV a cada hora (servidor, lista e canais Pluto). Se algo estiver fora, pede uma atualização e o GitHub manda um e-mail.

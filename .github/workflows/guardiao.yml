@@ -1,0 +1,35 @@
+name: Guardião da TV
+
+# Confere a TV a cada hora. Se o servidor não responder, se a lista estiver vazia
+# ou se os canais do Pluto sumirem, pede uma atualização na hora e marca a execução
+# como falha (o GitHub manda um e-mail avisando).
+on:
+  schedule:
+    - cron: "41 * * * *"
+  workflow_dispatch:
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conferir servidor, lista e Pluto TV
+        env:
+          TV: https://tela-livre-production.up.railway.app
+        run: |
+          set -u
+          ok=1
+          for i in 1 2 3; do
+            if curl -fsS -m 20 "$TV/health" >/dev/null; then break; fi
+            echo "Servidor não respondeu (tentativa $i)"; sleep 20
+            [ "$i" = 3 ] && ok=0
+          done
+          curl -fsS -m 60 "$TV/canais" -o canais.json || ok=0
+          total=$(jq '.total // 0' canais.json 2>/dev/null || echo 0)
+          pluto=$(jq '[.canais[] | select(.id | startswith("pluto:"))] | length' canais.json 2>/dev/null || echo 0)
+          echo "Canais: $total | Pluto TV: $pluto"
+          if [ "$total" -lt 10 ] || [ "$pluto" -lt 1 ]; then ok=0; fi
+          if [ "$ok" = 0 ]; then
+            echo "Algo saiu do esperado; pedindo atualização ao servidor."
+            curl -sS -m 60 "$TV/canais?forcar=1" >/dev/null || true
+            exit 1
+          fi

@@ -273,7 +273,7 @@ function talvezFunciona(chave: string, motivo: string): boolean {
 
 type Fonte = { nome: string; logo: string; grupo: string; chave: string; url: string; ref: string; ua: string };
 type Canal = { id: string; name: string; logo: string; group: string; url: string; ref: string; ua: string; alts: { url: string; ref: string; ua: string }[] };
-const estado: { canais: Canal[]; atualizado: number; atualizando: boolean; ultimaTentativa: number } = { canais: [], atualizado: 0, atualizando: false, ultimaTentativa: 0 };
+const estado: { canais: Canal[]; atualizado: number; atualizando: boolean; ultimaTentativa: number; plutoTs: number; plutoRodando: boolean } = { canais: [], atualizado: 0, atualizando: false, ultimaTentativa: 0, plutoTs: 0, plutoRodando: false };
 
 function grupoPt(g: string): string {
   const k = (g || "").split(";")[0].trim();
@@ -324,10 +324,12 @@ async function atualizar(): Promise<void> {
     const fontes = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
-      // Pluto TV por último; o grupo vira "Pluto TV · <categoria>" para ficar fácil de achar na TV.
-      ...lerM3U(pluto.status === "fulfilled" ? pluto.value : "").map((f) => ({ ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " · " + f.grupo.split(";")[0].trim() : "") })),
     ];
-    if (!fontes.length) throw new Error("listas vazias");
+    // Pluto TV não passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
+    // Se a fonte do Pluto falhar, os canais Pluto que já estavam na lista continuam.
+    const fontesPluto = plutoFontes(pluto.status === "fulfilled" ? pluto.value : "");
+    const canaisPluto = fontesPluto.length ? montarPluto(fontesPluto) : estado.canais.filter((c) => c.id.startsWith("pluto:"));
+    if (!fontes.length && !canaisPluto.length) throw new Error("listas vazias");
     const urls = [...new Set(fontes.map((f) => f.url))];
     const porUrl = new Map<string, Fonte>();
     for (const f of fontes) if (!porUrl.has(f.url)) porUrl.set(f.url, f);
@@ -354,14 +356,71 @@ async function atualizar(): Promise<void> {
         url: p.url, ref: p.ref, ua: p.ua, alts: usar.slice(1).map((f) => ({ url: f.url, ref: f.ref, ua: f.ua })),
       });
     }
-    if (canais.length) { estado.canais = canais; estado.atualizado = Date.now(); await salvarLista(); }
-    const motivosPluto: Record<string, number> = {};
-    for (const f of fontes) if (f.chave.startsWith("pluto:")) { const m = status.get(f.url)?.motivo || "?"; motivosPluto[m] = (motivosPluto[m] || 0) + 1; }
-    console.log(JSON.stringify({ evt: "lista_atualizada", motivosPluto, pluto: canais.filter((c) => c.id.startsWith("pluto:")).length, fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
+    // Se o teste das outras fontes deu errado de vez (internet do servidor, por exemplo), mantém os canais antigos.
+    const abertos = canais.length ? canais : estado.canais.filter((c) => !c.id.startsWith("pluto:"));
+    const todos = [...abertos, ...canaisPluto];
+    if (todos.length) { estado.canais = todos; estado.atualizado = Date.now(); estado.plutoTs = Date.now(); await salvarLista(); }
+    console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canaisPluto.length, plutoDaFonte: fontesPluto.length > 0, fontes: fontes.length, links: urls.length, canais: todos.length, ms: Date.now() - inicio }));
   } catch (e) {
     console.log(JSON.stringify({ evt: "lista_erro", erro: String(e), mantidos: estado.canais.length }));
   } finally {
     estado.atualizando = false;
+  }
+}
+
+// ---------- Guardião do Pluto TV ----------
+// Os links do Pluto trazem uma chave que vence em poucas horas. O guardião busca links novos
+// a cada hora e nunca tira um canal Pluto da lista: se a fonte falhar, os canais de antes ficam.
+// Cada canal ganha também um link reserva pelo jmp2.uk, que gera a sessão do Pluto na hora
+// e não depende de chave nenhuma.
+const PLUTO_ID = /^[0-9a-f]{24}$/;
+const UMA_HORA = 60 * 60 * 1000;
+function plutoFontes(texto: string): Fonte[] {
+  const out: Fonte[] = [];
+  for (const f of lerM3U(texto)) {
+    const base = { ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " · " + f.grupo.split(";")[0].trim() : "") };
+    out.push(base);
+    if (PLUTO_ID.test(f.chave)) out.push({ ...base, url: "https://jmp2.uk/plu-" + f.chave + ".m3u8", ref: "", ua: "" });
+  }
+  return out;
+}
+function montarPluto(fontes: Fonte[]): Canal[] {
+  const grupos = new Map<string, Fonte[]>();
+  for (const f of fontes) { const g = grupos.get(f.chave) || []; if (!g.some((x) => x.url === f.url)) g.push(f); grupos.set(f.chave, g); }
+  const out: Canal[] = [];
+  for (const [chave, lista] of grupos) {
+    const p = lista[0];
+    out.push({
+      id: chave, name: limparNome(p.nome), logo: (lista.find((f) => f.logo) || p).logo, group: grupoPt(p.grupo),
+      url: p.url, ref: p.ref, ua: p.ua, alts: lista.slice(1).map((f) => ({ url: f.url, ref: f.ref, ua: f.ua })),
+    });
+  }
+  return out;
+}
+async function atualizarPluto(): Promise<void> {
+  if (estado.atualizando || estado.plutoRodando) return;
+  estado.plutoRodando = true;
+  try {
+    const r = await fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) });
+    if (!r.ok) throw new Error("fonte HTTP " + r.status);
+    const fontes = plutoFontes(await r.text());
+    if (!fontes.length) throw new Error("fonte sem canais");
+    const novos = montarPluto(fontes);
+    if (estado.atualizando) return; // a atualização completa já cuida do Pluto
+    // Canais que saíram da fonte ficam por mais um tempo, com os links antigos, até a próxima rodada completa.
+    const ids = new Set(novos.map((c) => c.id));
+    const antigos = estado.canais.filter((c) => c.id.startsWith("pluto:") && !ids.has(c.id));
+    estado.canais = [...estado.canais.filter((c) => !c.id.startsWith("pluto:")), ...novos, ...antigos];
+    estado.plutoTs = Date.now();
+    await salvarLista();
+    // Amostra: confere 3 links reserva do jmp2.uk para saber se continuam respondendo.
+    const amostra = novos.slice(0, 3).map((c) => c.alts.find((a) => a.url.includes("jmp2.uk"))?.url).filter(Boolean) as string[];
+    const testes = await Promise.all(amostra.map((u) => verificar(u, null, null)));
+    console.log(JSON.stringify({ evt: "pluto_renovado", canais: novos.length, mantidos: antigos.length, reservaJmp2: testes.map((t) => t.motivo) }));
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "pluto_erro", erro: String(e), mantidos: estado.canais.filter((c) => c.id.startsWith("pluto:")).length }));
+  } finally {
+    estado.plutoRodando = false;
   }
 }
 
@@ -382,6 +441,12 @@ async function falhou(q: URLSearchParams): Promise<Response> {
   const c = estado.canais.find((x) => x.id === id);
   if (!c || Date.now() - (reconferido.get(id) || 0) < 5 * 60 * 1000) return resp(false);
   reconferido.set(id, Date.now());
+  // Pluto TV nunca sai da lista por falha: o servidor busca links novos do Pluto na hora.
+  if (id.startsWith("pluto:")) {
+    console.log(JSON.stringify({ evt: "falha_relatada", id, acao: "renovar pluto" }));
+    if (Date.now() - estado.plutoTs > 10 * 60 * 1000) atualizarPluto();
+    return resp(false);
+  }
   const links = [{ url: c.url, ref: c.ref, ua: c.ua }, ...c.alts];
   const testes = await Promise.all(links.map(async (l) => ({ l, r: await verificar(l.url, l.ref || null, l.ua || null) })));
   const bons = testes.filter((t) => t.r.ok).map((t) => t.l).concat(testes.filter((t) => !t.r.ok && talvezFunciona(id, t.r.motivo)).map((t) => t.l));
@@ -446,3 +511,6 @@ if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
 // Confere a cada 30 minutos se a lista passou de 6 horas e, se passou, refaz os testes sozinho,
 // mesmo que ninguém esteja assistindo.
 setInterval(() => { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); }, 30 * 60 * 1000);
+// Guardião do Pluto: renova os links ao ligar (se a lista completa não estiver rodando) e depois a cada hora.
+setTimeout(() => { if (!estado.atualizando) atualizarPluto(); }, 30 * 1000);
+setInterval(() => { if (Date.now() - estado.plutoTs > UMA_HORA - 60 * 1000) atualizarPluto(); }, 15 * 60 * 1000);
