@@ -203,7 +203,7 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
   if (!u) return json(false, "endereço inválido");
   try {
     const res = await buscar(u, ref, ua, "bytes=0-65535", 8000);
-    if (!res.ok && res.status !== 206) return json(false, "HTTP " + res.status);
+    if (!res.ok && res.status !== 206) { res.body?.cancel(); return json(false, "HTTP " + res.status); }
     const tipo = res.headers.get("content-type") || "";
     if (!ehPlaylist(res.url || u.href, tipo)) {
       res.body?.cancel();
