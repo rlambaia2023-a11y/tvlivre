@@ -16,7 +16,7 @@ A TV própria que roda no navegador da Smart TV, com os canais abertos do Brasil
 
 ## Como a lista se mantém viva
 
-1. O servidor baixa as listas públicas do [iptv-org](https://github.com/iptv-org/iptv) (Brasil) e do [Free-TV](https://github.com/Free-TV/IPTV).
+1. O servidor baixa as listas públicas do [iptv-org](https://github.com/iptv-org/iptv) (Brasil), do [Free-TV](https://github.com/Free-TV/IPTV) e do [Pluto TV Brasil](https://github.com/OwnerPlugins/pluto-tv-m3u).
 2. Testa cada link, junta os links repetidos do mesmo canal e guarda os que funcionam como reserva.
 3. Refaz tudo a cada 6 horas, mesmo sem ninguém assistindo.
 4. A rotina do GitHub copia a lista testada para a pasta `listas/` a cada 6 horas. Se a TV estiver fora do ar, a rotina falha e o GitHub avisa você por e-mail.
@@ -52,3 +52,12 @@ https://tela-livre-production.up.railway.app/lista.m3u
 ## Sobre os canais
 
 Só entram canais que as emissoras transmitem de graça pela internet, a partir das listas públicas acima. Canais pagos ficam de fora; para eles, use a sua assinatura IPTV em **Ajustes > Lista IPTV**.
+
+## Pluto TV, Samsung TV Plus e Plex no Kodi (SlyGuy)
+
+Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam dentro do Kodi, então não entram na lista web. Para usar no Kodi:
+
+1. Baixe o `repository.slyguy.zip` (site oficial k.slyguy.xyz).
+2. No Kodi: Configurações > Sistema > Add-ons > ative **Fontes desconhecidas**.
+3. Add-ons > Instalar de arquivo zip > escolha o `repository.slyguy.zip`.
+4. Add-ons > Instalar do repositório > **SlyGuy Repository** > Add-ons de vídeo > instale Pluto TV, Samsung TV Plus ou Plex Live.

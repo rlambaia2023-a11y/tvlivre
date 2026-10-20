@@ -162,6 +162,8 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
 
 // ---------- Lista automática: baixa, testa e guarda só o que funciona ----------
 const FONTE_IPTV = Bun.env.FONTE_IPTV || "https://iptv-org.github.io/iptv/countries/br.m3u";
+// Pluto TV Brasil (repositório OwnerPlugins/pluto-tv-m3u, refeito a cada 6 horas com os links do dia).
+const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/OwnerPlugins/pluto-tv-m3u/main/pluto-live-BR.m3u";
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
 const GRUPOS: Record<string, string> = {
   news: "Notícias", entertainment: "Entretenimento", kids: "Infantil", animation: "Infantil", sports: "Esportes",
@@ -215,14 +217,17 @@ async function atualizar(): Promise<void> {
   estado.ultimaTentativa = Date.now();
   const inicio = Date.now();
   try {
-    const [free, iptv] = await Promise.allSettled([
+    const [free, iptv, pluto] = await Promise.allSettled([
       freeTv().then((r) => (r.ok ? r.text() : "")),
       fetch(FONTE_IPTV, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
+      fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
     ]);
     // Free-TV primeiro: são as emissoras abertas oficiais, entram no topo da numeração.
     const fontes = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
+      // Pluto TV por último; o grupo vira "Pluto TV · <categoria>" para ficar fácil de achar na TV.
+      ...lerM3U(pluto.status === "fulfilled" ? pluto.value : "").map((f) => ({ ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " · " + f.grupo.split(";")[0].trim() : "") })),
     ];
     if (!fontes.length) throw new Error("listas vazias");
     const urls = [...new Set(fontes.map((f) => f.url))];
@@ -250,7 +255,7 @@ async function atualizar(): Promise<void> {
       });
     }
     if (canais.length) { estado.canais = canais; estado.atualizado = Date.now(); }
-    console.log(JSON.stringify({ evt: "lista_atualizada", fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
+    console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canais.filter((c) => c.id.startsWith("pluto:")).length, fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
   } catch (e) {
     console.log(JSON.stringify({ evt: "lista_erro", erro: String(e), mantidos: estado.canais.length }));
   } finally {
