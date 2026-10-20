@@ -1,0 +1,11 @@
+{
+  "name": "tvlivre",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run server.ts"
+  },
+  "engines": {
+    "bun": ">=1.1"
+  }
+}

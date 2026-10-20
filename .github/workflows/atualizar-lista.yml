@@ -1,0 +1,46 @@
+name: Atualizar lista de canais
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # a cada 6 horas
+  workflow_dispatch: {}      # botão "Run workflow" para rodar na hora
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir se a TV está no ar
+        run: |
+          curl -fsS --retry 3 --retry-delay 20 https://tela-livre-production.up.railway.app/health
+
+      - name: Baixar a lista testada pelo servidor
+        run: |
+          curl -fsS --retry 3 --retry-delay 20 https://tela-livre-production.up.railway.app/lista.m3u -o listas/tvlivre.m3u.novo
+          curl -fsS --retry 3 --retry-delay 20 https://tela-livre-production.up.railway.app/canais -o listas/canais.json.novo
+          canais=$(grep -c '^#EXTINF' listas/tvlivre.m3u.novo || true)
+          echo "Canais na lista: $canais"
+          # Lista vazia quer dizer servidor reiniciando: mantém a anterior.
+          if [ "$canais" -lt 10 ]; then
+            echo "Lista com menos de 10 canais; mantendo a versão anterior."
+            rm listas/*.novo
+            exit 0
+          fi
+          mv listas/tvlivre.m3u.novo listas/tvlivre.m3u
+          mv listas/canais.json.novo listas/canais.json
+
+      - name: Salvar no repositório se mudou
+        run: |
+          git config user.name "tvlivre-bot"
+          git config user.email "tvlivre-bot@users.noreply.github.com"
+          git add listas
+          if git diff --cached --quiet; then
+            echo "Nada mudou desde a última atualização."
+          else
+            git commit -m "Lista de canais atualizada em $(date -u +'%Y-%m-%d %H:%M') UTC"
+            git push
+          fi
