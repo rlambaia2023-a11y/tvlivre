@@ -29,7 +29,6 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
   // Pluto TV usa chave própria no link; trocar o perfil não muda nada, então vai direto.
   const tentativas = /pluto\.tv$/i.test(u.hostname) ? 1 : PERFIS.length;
   const inicio = perfilPorHost.get(u.host) ?? 0;
-  let ultima: Response | null = null;
   for (let k = 0; k < tentativas; k++) {
     const i = (inicio + k) % PERFIS.length;
     const p = PERFIS[i];
@@ -41,10 +40,11 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
       if (i !== 0 || perfilPorHost.has(u.host)) perfilPorHost.set(u.host, i);
       return r;
     }
+    // A última resposta volta inteira para quem chamou; só as anteriores são descartadas.
+    if (k === tentativas - 1) return r;
     r.body?.cancel();
-    ultima = r;
   }
-  return ultima!;
+  throw new Error("sem tentativas");
 }
 
 function cabecalhos(ref: string | null, ua: string | null, range?: string | null): Record<string, string> {
