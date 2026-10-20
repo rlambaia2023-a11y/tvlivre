@@ -119,3 +119,7 @@ Ideias tiradas da análise do app YouCine (v1.17.6) e reescritas do zero aqui. D
 - **Passar sempre pelo servidor**: força o relay do Railway. Só vale a pena se os canais derem erro logo ao abrir.
 - **Testar minha internet**: baixa 4 MB do servidor, mostra a velocidade e sugere o modo e a qualidade.
 - No player, o menu → mostra imagem, taxa do canal, internet estimada, folga guardada e se o vídeo vem direto ou pelo servidor. Quando o vídeo para para carregar, aparece um aviso de "carregando".
+
+## Como a página chega ao Railway
+
+O código do Railway é só o `server.ts`. Ao ligar, ele baixa o `index.html` do GitHub preso a um commit (constante `HTML_REF` no topo do `server.ts`, ou a variável `TL_HTML_REF`) e guarda uma cópia no bucket. Se o GitHub não responder, usa a cópia do bucket. Para publicar uma página nova: faça push do `index.html`, troque o `HTML_REF` pelo commit novo e publique o `server.ts`. O log mostra `pagina` com a origem (`github`, `bucket` ou `arquivo`).

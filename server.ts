@@ -1,5 +1,33 @@
-// A página da TV fica em index.html, ao lado deste arquivo.
-const HTML = await Bun.file(new URL("./index.html", import.meta.url)).text();
+// A página da TV fica em index.html no repositório tvlivre. O servidor carrega a página ao ligar:
+// 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
+// 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
+// fica pequeno e a página não precisa vir embutida nele.
+const HTML_REF = Bun.env.TL_HTML_REF || "4b93ec473387579a6687542b17fb035174262724";
+const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
+const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
+let HTML = PAGINA_RESERVA;
+async function carregarPagina(): Promise<void> {
+  try {
+    const local = Bun.file(new URL("./index.html", import.meta.url));
+    if (await local.exists()) { HTML = await local.text(); console.log(JSON.stringify({ evt: "pagina", origem: "arquivo" })); return; }
+  } catch {}
+  try {
+    const r = await fetch(HTML_URL, { signal: AbortSignal.timeout(20000) });
+    const t = r.ok ? await r.text() : "";
+    if (t.includes("<html")) {
+      HTML = t;
+      console.log(JSON.stringify({ evt: "pagina", origem: "github", ref: HTML_REF.slice(0, 7), bytes: t.length }));
+      await guardar("index.html", t, "text/html; charset=utf-8");
+      return;
+    }
+    throw new Error("HTTP " + r.status);
+  } catch (e) {
+    const salvo = await ler("index.html");
+    if (salvo && salvo.includes("<html")) { HTML = salvo; console.log(JSON.stringify({ evt: "pagina", origem: "bucket", erroGithub: String(e) })); return; }
+    console.log(JSON.stringify({ evt: "pagina_erro", erro: String(e) }));
+    setTimeout(carregarPagina, 60 * 1000);
+  }
+}
 
 const UA_PADRAO = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0 Safari/537.36";
 const BLOQUEADOS = /^(localhost|0\.|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.|\[|metadata\.)|\.internal$|\.local$/i;
@@ -657,6 +685,7 @@ Bun.serve({
 // Ao ligar: carrega a última lista guardada no bucket; só refaz os testes se ela tiver mais de 6 horas.
 {
   await conectarBucket();
+  await carregarPagina();
   const salvo = await ler("canais.json");
   if (salvo) {
     try {
