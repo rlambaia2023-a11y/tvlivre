@@ -41,6 +41,7 @@ A última lista testada fica guardada no bucket **tela-livre-dados** do Railway 
 | `/canais` | Lista em JSON, usada pela própria TV |
 | `/check?u=<link>` | Testa um link de transmissão |
 | `/falhou?id=<canal>` | A TV avisa que o canal não abriu; o servidor reconfere |
+| `/epg` | Guia "Agora / A seguir" dos canais do Pluto TV (próximos 3 programas de cada canal) |
 | `/health` | Responde `ok` quando o servidor está de pé |
 
 ## Rodar no seu computador
@@ -97,3 +98,15 @@ Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam d
 - Um vigia confere o vídeo a cada 2,5 s. Com 10 s parado, tenta destravar. Com 25 s parado, passa para o próximo link do canal.
 - Quando a página se atualiza durante uma troca de canal, ela volta direto no canal escolhido.
 - No Railway, o serviço não entra em modo de espera, reinicia sozinho se cair (política ALWAYS), passa pela checagem `/health` a cada publicação e mantém a versão antiga no ar por 20 s durante a troca de versão.
+
+## Recursos de uso (inspirados em apps de streaming)
+
+Ideias tiradas da análise do app YouCine (v1.17.6) e reescritas do zero aqui. Do app só veio a ideia de como usar; nenhum código, link ou fonte de vídeo dele entrou no Tela Livre.
+
+- **Favoritos**: botão amarelo (ou F no teclado) num canal da grade ou durante o canal. Aparece o filtro "★ Favoritos".
+- **Continuar assistindo e Recentes**: o botão "Continuar" leva ao último canal visto, e o filtro "Recentes" guarda os 12 últimos.
+- **Canal anterior**: botão vermelho (ou P) volta ao canal que estava passando antes.
+- **Lista de canais por cima do vídeo**: ← (ou verde / L) durante o canal. Mostra o que está passando agora nos canais do Pluto.
+- **Opções do canal**: → (ou azul / O). Qualidade máxima (a TV continua descendo sozinha se a internet piorar), áudio e legenda quando o canal tiver, favorito e bloqueio.
+- **Bloqueio parental**: senha de 4 números em Ajustes. Com senha, canais de conteúdo adulto ficam trancados e qualquer outro canal pode ser trancado pelo menu de opções. A senha fica guardada só nesta TV.
+- **Guia Agora / A seguir**: o servidor busca a grade do Pluto TV a cada 30 minutos (`guia_atualizado` nos logs). Aparece no cartão do canal, na barra do player e na lista.

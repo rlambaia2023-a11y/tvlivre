@@ -106,6 +106,53 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 .digits{position:fixed;top:calc(24px + env(safe-area-inset-top,0px));right:calc(32px + env(safe-area-inset-right,0px));z-index:30;font-family:var(--font-display);font-weight:800;font-size:clamp(48px,5vw,96px);color:var(--signal);background:rgba(0,0,0,.7);padding:.05em .35em;border-radius:12px;font-variant-numeric:tabular-nums}
 .closebtn{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:calc(16px + env(safe-area-inset-right,0px));background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:999px;padding:.5em 1em;font-weight:700;cursor:pointer}
 
+/* ---------- favoritos, bloqueio e guia nos cartões ---------- */
+.card .badges{position:absolute;top:.5em;right:.5em;display:flex;gap:.3em;z-index:1}
+.card .badges span{font-size:.75em;background:rgba(0,0,0,.6);padding:.15em .45em;border-radius:6px;line-height:1.3}
+.card .badges .fav{color:var(--signal)}
+.card.locked .art img,.card.locked .art .ini{filter:blur(10px);opacity:.5}
+.card .now{display:block;padding:0 .8em .7em;margin-top:-.35em;font-size:.78em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .now b{color:var(--live);font-weight:700;margin-right:.35em}
+.chip.resume{border-color:var(--signal);color:var(--fg)}
+.chip.resume::before{content:"▶ ";color:var(--signal)}
+
+/* ---------- guia no OSD ---------- */
+.osd .epg{margin-top:.5em;color:#c9d1dc;line-height:1.45;max-width:70ch}
+.osd .epg .bar{display:block;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:.35em 0;max-width:420px;overflow:hidden}
+.osd .epg .bar i{display:block;height:100%;background:var(--signal)}
+.osd .epg .next{color:#97a3b4;font-size:.9em}
+.osd .favstar{color:var(--signal)}
+
+/* ---------- painéis por cima do vídeo ---------- */
+.panel{position:absolute;top:0;bottom:0;z-index:3;width:min(440px,92vw);background:rgba(11,15,20,.94);display:flex;flex-direction:column;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 0 calc(20px + env(safe-area-inset-bottom,0px))}
+.panel.left{left:0;border-right:1px solid var(--line)}
+.player:has(.panel:not([hidden])) .closebtn{display:none}
+.panel.right{right:0;border-left:1px solid var(--line)}
+.panel h3{margin:0 0 .6em;padding:0 22px;font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:1.4em}
+.panel .scroll{overflow-y:auto;flex:1;padding:4px 14px}
+.prow{display:flex;align-items:center;gap:.8em;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:.5em .7em;cursor:pointer;min-width:0}
+.prow .num{font-family:var(--font-display);font-weight:600;color:var(--signal);font-variant-numeric:tabular-nums;min-width:2.6em}
+.prow .txt{min-width:0;flex:1}
+.prow .nm{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .sm{display:block;font-size:.8em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow[aria-current="true"]{background:var(--panel-2)}
+.prow:focus{outline:none;border-color:var(--signal)}
+.prow .val{margin-left:auto;color:var(--muted);font-size:.85em;white-space:nowrap}
+.prow .val.on{color:var(--signal)}
+.panel .sec{padding:.8em 22px .2em;font-size:.75em;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.panel .foot{padding:.6em 22px 0;font-size:.8em;color:var(--muted);line-height:1.5}
+
+/* ---------- senha (PIN) ---------- */
+.pin{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.75);padding:16px}
+.pin .box{width:min(420px,100%);align-items:center;text-align:center}
+.pin .dots{display:flex;gap:14px;justify-content:center;margin:.4em 0}
+.pin .dots i{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted)}
+.pin .dots i.on{background:var(--signal);border-color:var(--signal)}
+.pin .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.pin .keys button{padding:.6em 0;font-size:1.2em}
+.pin .msg{color:var(--live);min-height:1.4em;font-size:.9em}
+
 @media (prefers-reduced-motion:reduce){.card,.osd{transition:none}.card:focus{transform:none}}
 </style>
 </head>
@@ -198,7 +245,18 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
           <button class="btn danger f" id="wipe">Apagar tudo</button>
         </div>
         <div class="status" id="sys-status"></div>
-        <p>No controle: setas movem, OK abre, Voltar fecha. Dentro do player, CH+/CH− (ou ↑/↓) trocam de canal e os números levam direto ao canal.</p>
+        <p>No controle: setas movem, OK abre, Voltar fecha. Botão amarelo marca o canal como favorito. Dentro do player: CH+/CH− (ou ↑/↓) trocam de canal, os números levam direto ao canal, ← (ou verde) abre a lista de canais, → (ou azul) abre qualidade, áudio e legenda, e o vermelho volta ao canal anterior.</p>
+      </div>
+
+      <div class="box">
+        <h2>Bloqueio parental</h2>
+        <p id="pin-info">Crie uma senha de 4 números. Com ela, canais de conteúdo adulto ficam trancados e você pode trancar qualquer outro canal pelo menu → do player.</p>
+        <div class="field"><label for="pin-new">Senha de 4 números</label><input class="f" id="pin-new" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"></div>
+        <div class="row">
+          <button class="btn f" id="pin-save">Salvar senha</button>
+          <button class="btn ghost f" id="pin-off">Tirar a senha</button>
+        </div>
+        <div class="status" id="pin-status"></div>
       </div>
     </div>
   </section>
@@ -213,12 +271,31 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
     <div class="bignum" id="o-num"></div>
     <div>
       <div class="title" id="o-title"></div>
-      <div class="sub"><span class="pill" id="o-live">AO VIVO</span><span id="o-group"></span></div>
+      <div class="sub"><span class="pill" id="o-live">AO VIVO</span><span id="o-group"></span><span class="favstar" id="o-fav" hidden>★ favorito</span></div>
+      <div class="epg" id="o-epg" hidden></div>
     </div>
-    <div class="hint">OK mostra esta barra<br>Voltar sai</div>
+    <div class="hint">← canais · → opções<br>Voltar sai</div>
   </div>
+  <aside class="panel left" id="plist" hidden>
+    <h3 id="plist-title">Canais</h3>
+    <div class="scroll" id="plist-items"></div>
+  </aside>
+  <aside class="panel right" id="popts" hidden>
+    <h3>Opções</h3>
+    <div class="scroll" id="popts-items"></div>
+    <div class="foot" id="popts-foot"></div>
+  </aside>
 </div>
 <div class="digits" id="digits" hidden></div>
+<div class="pin" id="pin" hidden>
+  <div class="box">
+    <h2 id="pin-title">Canal bloqueado</h2>
+    <p id="pin-sub">Digite a senha de 4 números.</p>
+    <div class="dots" id="pin-dots"><i></i><i></i><i></i><i></i></div>
+    <div class="msg" id="pin-msg"></div>
+    <div class="keys" id="pin-keys"></div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -231,6 +308,32 @@ var localVideos=[]; // arquivos abertos do aparelho, só nesta sessão
 var tab="live", group="Todos", query="";
 var current=null, hls=null, osdTimer=null, digitBuf="", digitTimer=null, testing=false;
 var HAS_SERVER=/^https?:$/.test(location.protocol);
+var GUIA={}, desbloqueados={};
+var G_FAV="★ Favoritos", G_REC="Recentes";
+var ADULTO=/adult|xxx|\+ ?18|er[oó]tic|sexy|playboy|hot ?tv/i;
+
+/* ---------- favoritos, recentes e bloqueio parental ---------- */
+function arr(k){if(!Array.isArray(S[k]))S[k]=[];return S[k]}
+function byId(id){for(var i=0;i<S.channels.length;i++)if(S.channels[i].id===id)return S.channels[i];return null}
+function ehFav(it){return arr("favs").indexOf(it.id)>-1}
+function trancado(it){if(!S.pin||!it)return false;return arr("bloq").indexOf(it.id)>-1||ADULTO.test(it.group||"")||ADULTO.test(it.name||"")}
+function liberado(it){return !trancado(it)||!!desbloqueados[it.id]}
+function alternar(k,id){var l=arr(k),i=l.indexOf(id);if(i>-1)l.splice(i,1);else l.push(id);save();return i<0}
+function lembrarRecente(it){var l=arr("recentes").filter(function(x){return x!==it.id});l.unshift(it.id);S.recentes=l.slice(0,12)}
+/* Guia: devolve o programa de agora e o próximo, quando o servidor tem a grade do canal (Pluto TV). */
+function guiaDe(it){
+  var g=GUIA[String(it&&it.id||"").replace(/^a-/,"")];if(!g)return null;
+  var t=Date.now(),cur=null,nxt=null;
+  for(var i=0;i<g.length;i++){if(g[i].s<=t&&g[i].e>t)cur=g[i];else if(g[i].s>t&&!nxt)nxt=g[i]}
+  return cur||nxt?{cur:cur,nxt:nxt}:null;
+}
+function loadGuia(){
+  if(!HAS_SERVER)return;
+  fetch("/epg",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){
+    GUIA=j.guia||{};
+    if($("player").hidden)renderLive();else{renderEpgOsd();if(!$("plist").hidden)renderPlist(false)}
+  }).catch(function(){});
+}
 
 function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.channels){if(!d.name||d.name==="Tela Livre")d.name=NOME;return d}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){status("sys-status","O navegador da TV não deixou salvar. O que você adicionou some ao fechar.")}}
@@ -283,25 +386,43 @@ function fetchList(url,label,statusId){
 
 /* ---------- render ---------- */
 function filtered(){
-  return S.channels.filter(function(c){
-    return (group==="Todos"||c.group===group)&&(!query||c.name.toLowerCase().indexOf(query)>-1)&&!(S.onlyOk&&c.dead);
-  });
+  var base;
+  if(group===G_FAV)base=S.channels.filter(ehFav);
+  else if(group===G_REC)base=arr("recentes").map(byId).filter(Boolean);
+  else base=S.channels.filter(function(c){return group==="Todos"||c.group===group});
+  return base.filter(function(c){return (!query||c.name.toLowerCase().indexOf(query)>-1)&&!(S.onlyOk&&c.dead)});
 }
+function hm(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
 function card(item,num,showGroup){
   var art=item.logo?'<img src="'+esc(item.logo)+'" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'ini\',textContent:\''+esc(initials(item.name)).replace(/'/g,"")+'\'}))">':'<span class="ini">'+esc(initials(item.name))+'</span>';
-  return '<button class="card f'+(item.dead?' dead':'')+'" data-id="'+item.id+'">'+(item.dead?'<span class="off">fora do ar</span>':'')+
+  var lock=trancado(item),fav=ehFav(item),g=lock?null:guiaDe(item);
+  var badges=(fav?'<span class="fav" title="Favorito">★</span>':'')+(lock?'<span title="Bloqueado">🔒</span>':'');
+  return '<button class="card f'+(item.dead?' dead':'')+(lock?' locked':'')+'" data-id="'+item.id+'">'+(item.dead?'<span class="off">fora do ar</span>':'')+
+    (badges&&!item.dead?'<span class="badges">'+badges+'</span>':'')+
     '<div class="art">'+art+'</div>'+
     (showGroup?'<span class="grp">'+esc(item.group)+'</span>':'')+
-    '<div class="meta">'+(num?'<span class="num">'+String(num).padStart(3,"0")+'</span>':'')+'<span class="name">'+esc(item.name)+'</span></div></button>';
+    '<div class="meta">'+(num?'<span class="num">'+String(num).padStart(3,"0")+'</span>':'')+'<span class="name">'+esc(item.name)+'</span></div>'+
+    (g?'<span class="now">'+(g.cur?'<b>AGORA</b>'+esc(g.cur.t):'Às '+hm(g.nxt.s)+': '+esc(g.nxt.t))+'</span>':'')+'</button>';
 }
 function renderLive(){
-  var groups=["Todos"];S.channels.forEach(function(c){if(groups.indexOf(c.group)<0)groups.push(c.group)});
+  var foco=document.activeElement,focoId=foco&&foco.dataset&&(foco.dataset.id||foco.dataset.g||foco.id);
+  var groups=["Todos"];
+  if(S.channels.some(ehFav))groups.push(G_FAV);
+  if(arr("recentes").some(byId))groups.push(G_REC);
+  S.channels.forEach(function(c){if(groups.indexOf(c.group)<0)groups.push(c.group)});
   if(groups.indexOf(group)<0)group="Todos";
-  $("groups").innerHTML=groups.length>1?groups.map(function(g){return '<button class="chip f" aria-pressed="'+(g===group)+'" data-g="'+esc(g)+'">'+esc(g)+'</button>'}).join(""):"";
+  var ult=S.ultimo&&byId(S.ultimo);
+  $("groups").innerHTML=(ult?'<button class="chip resume f" id="resume">Continuar: '+esc(ult.name)+'</button>':'')+
+    (groups.length>1?groups.map(function(g){return '<button class="chip f" aria-pressed="'+(g===group)+'" data-g="'+esc(g)+'">'+esc(g)+'</button>'}).join(""):"");
   $("onlyok").setAttribute("aria-pressed",!!S.onlyOk);
   var list=filtered();
   $("channels").innerHTML=list.map(function(c){return card(c,S.channels.indexOf(c)+1,true)}).join("");
   $("live-empty").hidden=S.channels.length>0;
+  // Depois de redesenhar a grade, devolve o foco para onde estava (senão o controle "perde" a posição).
+  if(focoId&&foco&&!document.body.contains(foco)){
+    var volta=document.querySelector('#channels .card[data-id="'+CSS.escape(focoId)+'"]')||document.querySelector('#groups [data-g="'+CSS.escape(focoId)+'"]')||(focoId==="resume"&&$("resume"));
+    if(volta)volta.focus();
+  }
 }
 function allVideos(){return localVideos.concat(S.videos)}
 function renderVideos(){
@@ -322,7 +443,7 @@ function setTab(t){
 }
 document.querySelector(".tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(b)setTab(b.dataset.tab)});
 
-$("groups").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;group=b.dataset.g;renderLive();var again=document.querySelector('.chip[data-g="'+CSS.escape(group)+'"]');if(again)again.focus()});
+$("groups").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;if(b.id==="resume"){openById(S.ultimo,"live");return}group=b.dataset.g;renderLive();var again=document.querySelector('.chip[data-g="'+CSS.escape(group)+'"]');if(again)again.focus()});
 $("q").addEventListener("input",function(){query=this.value.trim().toLowerCase();renderLive()});
 $("channels").addEventListener("click",function(e){var b=e.target.closest(".card");if(b)openById(b.dataset.id,"live")});
 $("videos").addEventListener("click",function(e){var b=e.target.closest(".card");if(b)openById(b.dataset.id,"videos")});
@@ -454,12 +575,20 @@ function giveUp(c){
 }
 function skipNext(c){
   var l=listFor("live"),i=l.indexOf(c.item);
-  for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!x.dead){play(x,"live");return}}
+  for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!x.dead&&liberado(x)){play(x,"live");return}}
 }
 function play(item,kind,forceRelay,alt){
   if(recarregar&&kind==="live"){try{sessionStorage.setItem("tl.retomar",item.id)}catch(e){}location.reload();return}
+  if(kind==="live"&&!liberado(item)){
+    pedirPin(item.name+" está bloqueado","Digite a senha de 4 números para assistir.",function(){desbloqueados[item.id]=1;play(item,kind,forceRelay,alt)});
+    return;
+  }
+  var trocou=kind==="live"&&!(current&&current.item.id===item.id);
   stop();clearTimeout(skipTimer);$("perr-next").textContent="";
-  try{if(kind==="live"){S.ultimo=item.id;save()}}catch(e){}
+  if(trocou){
+    if(current&&current.kind==="live")S.anterior=current.item.id;
+    S.ultimo=item.id;lembrarRecente(item);save();
+  }
   alt=alt||0;var src=alt?item.alts[alt-1]:item;
   var relay=HAS_SERVER&&item.src!=="local"&&(forceRelay||needsRelay(src));
   current={item:item,kind:kind,relay:relay,alt:alt};$("perr").hidden=true;$("player").hidden=false;
@@ -482,6 +611,7 @@ function play(item,kind,forceRelay,alt){
       if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&jaTocou&&redeTent<2){redeTent++;setTimeout(function(){if(hls)hls.startLoad()},1500);return}
       fail();
     });
+    hls.on(Hls.Events.MANIFEST_PARSED,aplicarQualidade);
     hls.loadSource(u);hls.attachMedia(video);
   }else{video.src=u}
   var p=video.play();if(p&&p.catch)p.catch(function(){});
@@ -490,6 +620,9 @@ function play(item,kind,forceRelay,alt){
   $("o-title").textContent=item.name;
   $("o-group").textContent=kind==="live"?item.group:"";
   $("o-live").hidden=kind!=="live";
+  $("o-fav").hidden=!(kind==="live"&&ehFav(item));
+  renderEpgOsd();
+  if(!$("plist").hidden)renderPlist(true);
   showOsd();
 }
 video.addEventListener("error",function(){if(!hls&&current&&video.getAttribute("src"))fail()});
@@ -524,12 +657,159 @@ function showOsd(){var o=$("osd");o.classList.remove("hide");clearTimeout(osdTim
 function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
 function closePlayer(){
   if(recarregar){location.reload();return}
-  stop();clearTimeout(skipTimer);$("player").hidden=true;
-  var back=current&&document.querySelector('.card[data-id="'+current.item.id+'"]');current=null;
+  stop();clearTimeout(skipTimer);fecharPaineis();$("player").hidden=true;
+  var id=current&&current.item.id;current=null;
+  renderLive(); // atualiza "Continuar", "Recentes" e favoritos antes de devolver o foco
+  var back=(id&&document.querySelector('#channels .card[data-id="'+CSS.escape(id)+'"]'))||$("resume");
   if(back)back.focus();
 }
 $("pclose").onclick=closePlayer;
-$("player").addEventListener("click",function(e){if(e.target===video)showOsd()});
+$("player").addEventListener("click",function(e){if(e.target===video){if(painelAberto())fecharPaineis();else showOsd()}});
+
+/* ---------- guia (Agora / A seguir) no OSD ---------- */
+function renderEpgOsd(){
+  var el=$("o-epg"),g=current&&current.kind==="live"?guiaDe(current.item):null;
+  if(!g){el.hidden=true;el.innerHTML="";return}
+  var h="",t=Date.now();
+  if(g.cur){var pct=Math.max(0,Math.min(100,(t-g.cur.s)/(g.cur.e-g.cur.s)*100));
+    h+='<div><strong>Agora:</strong> '+esc(g.cur.t)+' <span class="next">· '+hm(g.cur.s)+'–'+hm(g.cur.e)+'</span></div><span class="bar"><i style="width:'+pct.toFixed(1)+'%"></i></span>'}
+  if(g.nxt)h+='<div class="next">A seguir, às '+hm(g.nxt.s)+': '+esc(g.nxt.t)+'</div>';
+  el.innerHTML=h;el.hidden=false;
+}
+
+/* ---------- lista de canais por cima do vídeo ---------- */
+function painelAberto(){return !$("plist").hidden||!$("popts").hidden}
+function fecharPaineis(){$("plist").hidden=true;$("popts").hidden=true}
+function listaDoPainel(){
+  var l=filtered();
+  if(current&&l.indexOf(current.item)<0)l=S.channels;
+  return l;
+}
+function renderPlist(focar){
+  var l=listaDoPainel(),cid=current&&current.item.id;
+  $("plist-title").textContent=l===S.channels||group==="Todos"?"Canais":group;
+  $("plist-items").innerHTML=l.map(function(c){
+    var g=trancado(c)?null:guiaDe(c),sub=g&&g.cur?"Agora: "+g.cur.t:(c.group||"");
+    return '<button class="prow f" data-id="'+esc(c.id)+'" aria-current="'+(c.id===cid)+'"><span class="num">'+String(S.channels.indexOf(c)+1).padStart(3,"0")+'</span>'+
+      '<span class="txt"><span class="nm">'+(ehFav(c)?'<span class="favstar">★</span> ':'')+(trancado(c)?'🔒 ':'')+esc(c.name)+'</span><span class="sm">'+esc(sub)+'</span></span></button>';
+  }).join("");
+  if(focar){var a=$("plist-items").querySelector('[aria-current="true"]')||$("plist-items").querySelector(".prow");if(a){a.focus();a.scrollIntoView({block:"center"})}}
+}
+function abrirLista(){if(!current||current.kind!=="live")return;$("popts").hidden=true;$("plist").hidden=false;renderPlist(true);$("osd").classList.add("hide")}
+$("plist-items").addEventListener("click",function(e){var b=e.target.closest(".prow");if(!b)return;var c=byId(b.dataset.id);if(c){fecharPaineis();play(c,"live")}});
+
+/* ---------- opções: favorito, canal anterior, qualidade, áudio, legenda, bloqueio ---------- */
+function linha(acao,nome,val,ligado){return '<button class="prow f" data-a="'+esc(acao)+'"><span class="txt"><span class="nm">'+esc(nome)+'</span></span>'+(val?'<span class="val'+(ligado?' on':'')+'">'+esc(val)+'</span>':'')+'</button>'}
+function faixasAudio(){
+  if(hls&&hls.audioTracks&&hls.audioTracks.length>1)return hls.audioTracks.map(function(t,i){return {i:i,nome:t.name||t.lang||("Áudio "+(i+1)),on:hls.audioTrack===i}});
+  var a=video.audioTracks;if(a&&a.length>1){var o=[];for(var i=0;i<a.length;i++)o.push({i:i,nome:a[i].label||a[i].language||("Áudio "+(i+1)),on:a[i].enabled});return o}
+  return [];
+}
+function faixasLegenda(){
+  if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length)return hls.subtitleTracks.map(function(t,i){return {i:i,nome:t.name||t.lang||("Legenda "+(i+1)),on:hls.subtitleTrack===i}});
+  var o=[],tt=video.textTracks;for(var i=0;tt&&i<tt.length;i++)if(/subtitles|captions/.test(tt[i].kind))o.push({i:i,nome:tt[i].label||tt[i].language||("Legenda "+(i+1)),on:tt[i].mode==="showing"});
+  return o;
+}
+function alturas(){
+  if(!hls||!hls.levels)return [];
+  var h=[];hls.levels.forEach(function(l){if(l.height&&h.indexOf(l.height)<0)h.push(l.height)});
+  return h.sort(function(a,b){return b-a});
+}
+/* Qualidade escolhida vira um teto: a TV continua baixando a qualidade sozinha se a internet piorar. */
+function aplicarQualidade(){
+  if(!hls||!hls.levels||!hls.levels.length)return;
+  if(!S.qual){hls.autoLevelCapping=-1;return}
+  var idx=-1,menor=0;
+  hls.levels.forEach(function(l,i){if(l.height<hls.levels[menor].height)menor=i;if(l.height&&l.height<=S.qual&&(idx<0||l.height>hls.levels[idx].height))idx=i});
+  hls.autoLevelCapping=idx<0?menor:idx;
+}
+function renderOpts(focoAcao){
+  if(!current)return;
+  var it=current.item,live=current.kind==="live",h="";
+  if(live){
+    h+=linha("fav","Favorito",ehFav(it)?"★ Sim":"Não",ehFav(it));
+    var ant=S.anterior&&byId(S.anterior);
+    if(ant&&ant.id!==it.id)h+=linha("ant","Voltar ao canal anterior",ant.name);
+  }
+  var hs=alturas();
+  h+='<div class="sec">Qualidade</div>';
+  if(hs.length>1){
+    h+=linha("q:0","Automática",S.qual?"":"●",!S.qual);
+    hs.forEach(function(x){h+=linha("q:"+x,"Até "+x+"p",S.qual===x?"●":"",S.qual===x)});
+  }else h+='<div class="foot" style="padding-top:0">'+(hls?"Este canal tem uma qualidade só.":"Neste aparelho a própria TV escolhe a qualidade.")+'</div>';
+  var au=faixasAudio();
+  if(au.length){h+='<div class="sec">Áudio</div>';au.forEach(function(a){h+=linha("a:"+a.i,a.nome,a.on?"●":"",a.on)})}
+  var lg=faixasLegenda();
+  if(lg.length){
+    var algum=lg.some(function(x){return x.on});
+    h+='<div class="sec">Legenda</div>'+linha("s:-1","Desligada",algum?"":"●",!algum);
+    lg.forEach(function(x){h+=linha("s:"+x.i,x.nome,x.on?"●":"",x.on)});
+  }
+  if(live){
+    h+='<div class="sec">Bloqueio parental</div>';
+    var auto=S.pin&&(ADULTO.test(it.group||"")||ADULTO.test(it.name||""));
+    var tr=arr("bloq").indexOf(it.id)>-1;
+    if(auto)h+='<div class="foot" style="padding-top:0">Canal de conteúdo adulto: fica sempre trancado enquanto houver senha.</div>';
+    else h+=linha("lock",tr?"Destrancar este canal":"Trancar este canal",tr?"🔒":"");
+  }
+  $("popts-items").innerHTML=h;
+  var g=live&&!trancado(it)?guiaDe(it):null;
+  $("popts-foot").innerHTML=g&&g.cur&&g.cur.d?'<strong>'+esc(g.cur.t)+'</strong><br>'+esc(g.cur.d):"";
+  var f=(focoAcao&&$("popts-items").querySelector('[data-a="'+CSS.escape(focoAcao)+'"]'))||$("popts-items").querySelector(".prow");
+  if(f)f.focus();
+}
+function abrirOpcoes(){if(!current)return;$("plist").hidden=true;$("popts").hidden=false;renderOpts();$("osd").classList.add("hide")}
+function msgOpcoes(t){$("popts-foot").textContent=t}
+$("popts-items").addEventListener("click",function(e){
+  var b=e.target.closest(".prow");if(!b||!current)return;
+  var a=b.dataset.a,it=current.item,n=parseInt(a.split(":")[1],10);
+  if(a==="fav"){alternar("favs",it.id);$("o-fav").hidden=!ehFav(it);renderOpts(a);return}
+  if(a==="ant"){var ant=byId(S.anterior);fecharPaineis();if(ant)play(ant,"live");return}
+  if(a.indexOf("q:")===0){S.qual=n||0;save();aplicarQualidade();renderOpts(a);return}
+  if(a.indexOf("a:")===0){if(hls&&hls.audioTracks&&hls.audioTracks.length>1)hls.audioTrack=n;else if(video.audioTracks)for(var i=0;i<video.audioTracks.length;i++)video.audioTracks[i].enabled=i===n;renderOpts(a);return}
+  if(a.indexOf("s:")===0){
+    if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length){hls.subtitleDisplay=n>=0;hls.subtitleTrack=n}
+    else{var tt=video.textTracks;for(var k=0;tt&&k<tt.length;k++)if(/subtitles|captions/.test(tt[k].kind))tt[k].mode=k===n?"showing":"disabled"}
+    renderOpts(a);return;
+  }
+  if(a==="lock"){
+    if(!S.pin){msgOpcoes("Primeiro crie uma senha em Ajustes › Bloqueio parental.");return}
+    if(arr("bloq").indexOf(it.id)>-1){pedirPin("Destrancar "+it.name,"Digite a senha para destrancar o canal.",function(){alternar("bloq",it.id);renderOpts("lock")});return}
+    alternar("bloq",it.id);desbloqueados[it.id]=1;renderOpts(a);msgOpcoes("Canal trancado. Da próxima vez ele vai pedir a senha.");return;
+  }
+});
+
+/* ---------- senha (PIN) ---------- */
+var pinBuf="",pinOk=null,pinVolta=null;
+$("pin-keys").innerHTML=["1","2","3","4","5","6","7","8","9","Cancelar","0","Apagar"].map(function(k){return '<button class="btn ghost f" data-k="'+k+'">'+k+'</button>'}).join("");
+function desenharPin(){Array.prototype.forEach.call($("pin-dots").children,function(d,i){d.classList.toggle("on",i<pinBuf.length)})}
+function pedirPin(titulo,sub,ok){
+  pinBuf="";pinOk=ok;pinVolta=document.activeElement;
+  $("pin-title").textContent=titulo;$("pin-sub").textContent=sub;$("pin-msg").textContent="";desenharPin();
+  $("pin").hidden=false;$("pin-keys").querySelector("button").focus();
+}
+function fecharPin(){$("pin").hidden=true;pinOk=null;if(pinVolta&&document.body.contains(pinVolta)&&pinVolta.offsetParent!==null)pinVolta.focus()}
+function pinDigito(d){
+  if(pinBuf.length>=4)return;pinBuf+=d;desenharPin();
+  if(pinBuf.length<4)return;
+  if(pinBuf===S.pin){var f=pinOk;fecharPin();if(f)f()}
+  else{$("pin-msg").textContent="Senha errada. Tente de novo.";pinBuf="";setTimeout(desenharPin,250)}
+}
+$("pin-keys").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;var k=b.dataset.k;
+  if(k==="Cancelar")fecharPin();else if(k==="Apagar"){pinBuf=pinBuf.slice(0,-1);desenharPin()}else pinDigito(k);
+});
+function infoPin(){$("pin-info").textContent=S.pin?"A senha está ativa. Canais de conteúdo adulto ficam trancados, e você pode trancar qualquer outro canal pelo menu → do player.":"Crie uma senha de 4 números. Com ela, canais de conteúdo adulto ficam trancados e você pode trancar qualquer outro canal pelo menu → do player."}
+$("pin-save").onclick=function(){
+  var v=$("pin-new").value.trim();
+  if(!/^\d{4}$/.test(v)){status("pin-status","A senha precisa ter exatamente 4 números.");return}
+  function gravar(){S.pin=v;desbloqueados={};save();$("pin-new").value="";infoPin();renderLive();status("pin-status","Senha salva. Os canais trancados vão pedir a senha.")}
+  if(S.pin)pedirPin("Trocar a senha","Digite a senha atual.",gravar);else gravar();
+};
+$("pin-off").onclick=function(){
+  if(!S.pin){status("pin-status","Não há senha criada.");return}
+  pedirPin("Tirar a senha","Digite a senha atual para desligar o bloqueio.",function(){S.pin="";S.bloq=[];save();infoPin();renderLive();status("pin-status","Bloqueio parental desligado.")});
+};
 
 /* ---------- números do controle ---------- */
 function digit(d){
@@ -543,7 +823,9 @@ function digit(d){
 }
 
 /* ---------- navegação pelo controle remoto ---------- */
-function focusables(){return Array.prototype.filter.call(document.querySelectorAll(".f"),function(e){return e.offsetParent!==null})}
+/* O foco fica preso na camada de cima: senha, depois painéis do player, depois a página. */
+function camada(){if(!$("pin").hidden)return $("pin");if(!$("plist").hidden)return $("plist");if(!$("popts").hidden)return $("popts");return document}
+function focusables(){return Array.prototype.filter.call(camada().querySelectorAll(".f"),function(e){return e.offsetParent!==null})}
 function move(dir){
   var els=focusables(),a=document.activeElement;
   if(els.indexOf(a)<0){if(els[0])els[0].focus();return}
@@ -559,10 +841,34 @@ function move(dir){
 var BACK=[27,8,10009,461,166];
 document.addEventListener("keydown",function(e){
   var k=e.keyCode,ae=document.activeElement,typing=ae&&ae.tagName==="INPUT"&&ae.type!=="file";
+  var map={37:"left",38:"up",39:"right",40:"down"};
+  /* Teclas coloridas do controle: vermelho 403, verde 404, amarelo 405, azul 406 (no teclado: P, L, F, O). */
+  var cor=typing?0:k===403||k===80?"ant":k===404||k===76?"lista":k===405||k===70?"fav":k===406||k===79?"opcoes":0;
+  if(!$("pin").hidden){
+    if(BACK.indexOf(k)>-1||e.key==="GoBack"){e.preventDefault();fecharPin();return}
+    if(k>=48&&k<=57){e.preventDefault();pinDigito(String(k-48));return}
+    if(k>=96&&k<=105){e.preventDefault();pinDigito(String(k-96));return}
+    if(map[k]){e.preventDefault();move(map[k])}
+    return;
+  }
+  if(!$("player").hidden&&painelAberto()){
+    var naLista=!$("plist").hidden;
+    if(BACK.indexOf(k)>-1||e.key==="GoBack"||(naLista&&k===39)||(!naLista&&k===37)){e.preventDefault();fecharPaineis();showOsd();return}
+    if(k===38||k===40){e.preventDefault();move(map[k]);return}
+    if(k===33||k===427){e.preventDefault();zap(-1);return}
+    if(k===34||k===428){e.preventDefault();zap(1);return}
+    if(cor==="lista"){e.preventDefault();if(naLista)fecharPaineis();else abrirLista();return}
+    if(cor==="opcoes"){e.preventDefault();if(naLista)abrirOpcoes();else fecharPaineis();return}
+    return; // OK (Enter) aperta o item focado normalmente
+  }
   if(!$("player").hidden){
     if(BACK.indexOf(k)>-1||e.key==="GoBack"){e.preventDefault();closePlayer();return}
     if(k===38||k===33||k===427){e.preventDefault();zap(-1);return}
     if(k===40||k===34||k===428){e.preventDefault();zap(1);return}
+    if(k===37||cor==="lista"){e.preventDefault();abrirLista();return}
+    if(k===39||cor==="opcoes"){e.preventDefault();abrirOpcoes();return}
+    if(cor==="ant"){e.preventDefault();var ant=S.anterior&&byId(S.anterior);if(ant&&current&&ant.id!==current.item.id)play(ant,"live");return}
+    if(cor==="fav"&&current&&current.kind==="live"){e.preventDefault();var on=alternar("favs",current.item.id);$("o-fav").hidden=!on;showOsd();return}
     if(k===13||k===32){e.preventDefault();showOsd();return}
     if(k>=48&&k<=57){digit(String(k-48));return}
     if(k>=96&&k<=105){digit(String(k-96));return}
@@ -573,18 +879,22 @@ document.addEventListener("keydown",function(e){
     else if(k===27||k===10009||k===461){ae.blur()}
     return;
   }
-  var map={37:"left",38:"up",39:"right",40:"down"};
   if(map[k]){e.preventDefault();move(map[k]);return}
+  if(cor==="fav"){var cd=ae&&ae.closest&&ae.closest("#channels .card");if(cd){e.preventDefault();alternar("favs",cd.dataset.id);renderLive()}return}
+  if(cor==="ant"&&S.ultimo){e.preventDefault();openById(S.ultimo,"live");return}
   if(BACK.indexOf(k)>-1){e.preventDefault();if(tab!=="live"){setTab("live");document.querySelector('.tab[data-tab="live"]').focus()}return}
   if(k>=48&&k<=57){digit(String(k-48))}else if(k>=96&&k<=105){digit(String(k-96))}
 });
 document.addEventListener("mousedown",function(){document.querySelectorAll(".kb").forEach(function(e){e.classList.remove("kb")})});
 
 /* Tizen (Samsung): pede as teclas de canal e números */
-try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","0","1","2","3","4","5","6","7","8","9"].forEach(function(n){try{tizen.tvinputdevice.registerKey(n)}catch(e){}})}}catch(e){}
+try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","ColorF0Red","ColorF1Green","ColorF2Yellow","ColorF3Blue","0","1","2","3","4","5","6","7","8","9"].forEach(function(n){try{tizen.tvinputdevice.registerKey(n)}catch(e){}})}}catch(e){}
 
-renderAll();
+renderAll();infoPin();
 loadAuto(false);
+loadGuia();setInterval(loadGuia,10*60*1000);
+/* A cada minuto, atualiza a barra de "Agora" do canal que está passando. */
+setInterval(function(){if(current&&!$("player").hidden)renderEpgOsd()},60*1000);
 setInterval(function(){loadAuto(false)},15*60*1000);
 /* Atualização automática: quando o servidor recebe uma versão nova da página, a TV recarrega sozinha
    (na hora, se estiver na grade; ao sair do canal, se estiver assistindo). */
@@ -599,7 +909,7 @@ function conferirVersao(){
 conferirVersao();setInterval(conferirVersao,5*60*1000);
 /* Depois de uma atualização automática feita durante a troca de canal, volta direto para o canal escolhido. */
 try{var retomar=sessionStorage.getItem("tl.retomar");if(retomar){sessionStorage.removeItem("tl.retomar");setTimeout(function(){openById(retomar,"live")},300)}}catch(e){}
-var first=document.querySelector(".card")||document.querySelector(".tab");if(first)first.focus();
+var first=$("resume")||document.querySelector(".card")||document.querySelector(".tab");if(first)first.focus();
 })();
 </script>
 </body>

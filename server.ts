@@ -305,11 +305,21 @@ const SEIS_HORAS = 6 * 60 * 60 * 1000;
 const IP_BR = Bun.env.PLUTO_IP_BR || "200.160.2.3";
 const CLIENTE_PLUTO = crypto.randomUUID();
 const UA_PLUTO = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15";
-async function gerarPlutoBR(): Promise<string> {
-  const h: Record<string, string> = { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO, accept: "application/json" };
+const H_PLUTO: Record<string, string> = { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO, accept: "application/json" };
+// A sessão do Pluto vale algumas horas; o gerador e o guia de programação usam a mesma.
+let sessaoPluto: { boot: any; ts: number } | null = null;
+async function bootPluto(): Promise<any> {
+  if (sessaoPluto && Date.now() - sessaoPluto.ts < 2 * 60 * 60 * 1000) return sessaoPluto.boot;
   const hora = encodeURIComponent(new Date().toISOString());
-  const boot = await (await fetch("https://boot.pluto.tv/v4/start?appName=web&appVersion=7.9.0-a9cca6b89aea4dc0998b92a51989d2adb9a9025d&deviceVersion=16.2.0&deviceModel=web&deviceMake=Chrome&deviceType=web&clientID=" + CLIENTE_PLUTO + "&clientModelNumber=1.0.0&channelID=5a4d3a00ad95e4718ae8d8db&serverSideAds=true&constraints=&drmCapabilities=&blockingMode=&clientTime=" + hora, { headers: h, signal: AbortSignal.timeout(20000) })).json() as any;
+  const boot = await (await fetch("https://boot.pluto.tv/v4/start?appName=web&appVersion=7.9.0-a9cca6b89aea4dc0998b92a51989d2adb9a9025d&deviceVersion=16.2.0&deviceModel=web&deviceMake=Chrome&deviceType=web&clientID=" + CLIENTE_PLUTO + "&clientModelNumber=1.0.0&channelID=5a4d3a00ad95e4718ae8d8db&serverSideAds=true&constraints=&drmCapabilities=&blockingMode=&clientTime=" + hora, { headers: H_PLUTO, signal: AbortSignal.timeout(20000) })).json() as any;
   if (!boot?.sessionToken || !boot?.servers?.stitcher) throw new Error("boot sem sessão");
+  sessaoPluto = { boot, ts: Date.now() };
+  return boot;
+}
+async function gerarPlutoBR(): Promise<string> {
+  sessaoPluto = null; // links novos pedem sessão nova
+  const h = H_PLUTO;
+  const boot = await bootPluto();
   const auth = { ...h, authorization: "Bearer " + boot.sessionToken };
   const [canais, cats] = await Promise.all([
     fetch("https://service-channels.clusters.pluto.tv/v2/guide/channels?channelIds=&offset=0&limit=1000&sort=number%3Aasc", { headers: auth, signal: AbortSignal.timeout(20000) }).then((r) => r.json() as any),
@@ -507,6 +517,66 @@ async function atualizarPluto(): Promise<void> {
   }
 }
 
+// ---------- Guia de programação (Agora / A seguir) do Pluto TV ----------
+// Usa a mesma sessão do gerador e pede ao Pluto a grade das próximas 4 horas, em lotes de canais.
+// A TV recebe só o essencial: título, início e fim de até 3 programas por canal.
+type Programa = { t: string; s: number; e: number; d?: string };
+const guia: { porCanal: Record<string, Programa[]>; ts: number; rodando: boolean } = { porCanal: {}, ts: 0, rodando: false };
+async function atualizarGuia(): Promise<void> {
+  if (guia.rodando) return;
+  guia.rodando = true;
+  const inicio = Date.now();
+  try {
+    const ids = estado.canais.filter((c) => c.id.startsWith("pluto:")).map((c) => c.id.slice(6)).filter((x) => PLUTO_ID.test(x));
+    if (!ids.length) throw new Error("sem canais Pluto");
+    const boot = await bootPluto();
+    const auth = { ...H_PLUTO, authorization: "Bearer " + boot.sessionToken };
+    const agora = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const lotes: string[][] = [];
+    for (let i = 0; i < ids.length; i += 80) lotes.push(ids.slice(i, i + 80));
+    const novo: Record<string, Programa[]> = {};
+    let erros = 0;
+    await emLotes(lotes, 3, async (lote) => {
+      try {
+        const r = await fetch("https://service-channels.clusters.pluto.tv/v2/guide/timelines?start=" + encodeURIComponent(agora) + "&channelIds=" + lote.join(",") + "&duration=300", { headers: auth, signal: AbortSignal.timeout(20000) });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const j = await r.json() as any;
+        for (const c of (j?.data || []) as any[]) {
+          const progs: Programa[] = [];
+          for (const t of (c?.timelines || []) as any[]) {
+            const s = Date.parse(t.start), e = Date.parse(t.stop);
+            if (!s || !e) continue;
+            const serie = t.episode?.series?.name, ep = t.episode?.name;
+            const titulo = String(t.title || serie || ep || "").trim();
+            if (!titulo) continue;
+            const d = String(t.episode?.description || "").trim().slice(0, 220);
+            progs.push(d ? { t: titulo, s, e, d } : { t: titulo, s, e });
+          }
+          if (progs.length) novo["pluto:" + String(c.channelId).toLowerCase()] = progs.sort((a, b) => a.s - b.s);
+        }
+      } catch (e) { erros++; console.log(JSON.stringify({ evt: "guia_lote_erro", erro: String(e) })); }
+    });
+    if (Object.keys(novo).length) { guia.porCanal = novo; guia.ts = Date.now(); }
+    console.log(JSON.stringify({ evt: "guia_atualizado", canais: Object.keys(novo).length, lotes: lotes.length, erros, ms: Date.now() - inicio }));
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "guia_erro", erro: String(e) }));
+  } finally {
+    guia.rodando = false;
+  }
+}
+function guiaRota(): Response {
+  if (Date.now() - guia.ts > 30 * 60 * 1000 && !guia.rodando) atualizarGuia();
+  const agora = Date.now();
+  const out: Record<string, Programa[]> = {};
+  for (const [id, progs] of Object.entries(guia.porCanal)) {
+    const vivos = progs.filter((p) => p.e > agora).slice(0, 3);
+    if (vivos.length) out[id] = vivos;
+  }
+  return new Response(JSON.stringify({ atualizado: guia.ts, guia: out }), {
+    headers: { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-cache" },
+  });
+}
+
 function canaisRota(q: URLSearchParams): Response {
   const velha = Date.now() - estado.atualizado > SEIS_HORAS;
   const forcar = q.get("forcar") === "1" && Date.now() - estado.ultimaTentativa > 10 * 60 * 1000;
@@ -573,6 +643,7 @@ Bun.serve({
     if (url.pathname === "/lista.m3u") { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); return listaM3U(); }
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
     if (url.pathname === "/falhou") return falhou(url.searchParams);
+    if (url.pathname === "/epg") return guiaRota();
     if (url.pathname === "/check") return testar(url.searchParams);
     if (url.pathname === "/diagnostico") return diagnostico(url.searchParams);
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
@@ -598,3 +669,6 @@ setInterval(() => { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.a
 // Guardião do Pluto: renova os links ao ligar (se a lista completa não estiver rodando) e depois a cada hora.
 setTimeout(() => { if (!estado.atualizando) atualizarPluto(); }, 30 * 1000);
 setInterval(() => { if (Date.now() - estado.plutoTs > UMA_HORA - 60 * 1000) atualizarPluto(); }, 15 * 60 * 1000);
+// Guia de programação do Pluto: primeira busca 1 minuto depois de ligar, depois a cada 30 minutos.
+setTimeout(atualizarGuia, 60 * 1000);
+setInterval(() => { if (Date.now() - guia.ts > 25 * 60 * 1000) atualizarGuia(); }, 10 * 60 * 1000);
