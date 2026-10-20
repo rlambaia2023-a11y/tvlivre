@@ -294,6 +294,8 @@ async function salvarLista(): Promise<void> {
 const FONTE_IPTV = Bun.env.FONTE_IPTV || "https://iptv-org.github.io/iptv/countries/br.m3u";
 // Pluto TV Brasil (repositório OwnerPlugins/pluto-tv-m3u, refeito a cada 6 horas com os links do dia).
 const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/OwnerPlugins/pluto-tv-m3u/main/pluto-live-BR.m3u";
+// Segunda lista pronta do Pluto Brasil (BuddyChewChew/pluto, refeita a cada 6 horas), usada como reserva.
+const FONTE_PLUTO2 = Bun.env.FONTE_PLUTO2 || "https://raw.githubusercontent.com/BuddyChewChew/pluto/main/pluto_br.m3u";
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
 
 // ---------- Gerador próprio de links do Pluto TV ----------
@@ -318,22 +320,25 @@ async function gerarPlutoBR(): Promise<string> {
   for (const c of (canais?.data || []) as any[]) {
     if (!c?.id || !c?.stitched?.path) continue;
     const url = boot.servers.stitcher + "/v2" + c.stitched.path + "?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&masterJWTPassthrough=true";
+    // Endereço alternativo do Pluto (método do BuddyChewChew/pluto): só IPv4 e qualidade fixa em 720p,
+    // que trava menos em TV com internet mais fraca.
+    const url720 = "https://ipv4.pluto.tv/api/tn/video/playout/v2/stitch/hls/channel/" + c.id + "/master.m3u8?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&quality=720p&includeExtendedEvents=true&masterJWTPassthrough=true";
     const grupo = (c.categoryIDs && nomeCat.get(c.categoryIDs[0])) || "";
     const logo = (c.images && c.images[0] && c.images[0].url) || "";
-    linhas.push('#EXTINF:-1 tvg-id="' + c.id + '" tvg-logo="' + logo + '" group-title="' + grupo.replace(/"/g, "'") + '",' + c.name, url);
+    const inf = '#EXTINF:-1 tvg-id="' + c.id + '" tvg-logo="' + logo + '" group-title="' + grupo.replace(/"/g, "'") + '",' + c.name;
+    linhas.push(inf, url, inf, url720);
   }
   const pais = (String(boot.stitcherParams || "").match(/country=([A-Z]+)/) || [])[1] || "?";
-  console.log(JSON.stringify({ evt: "pluto_gerado", canais: (linhas.length - 1) / 2, pais }));
+  console.log(JSON.stringify({ evt: "pluto_gerado", canais: (linhas.length - 1) / 4, pais }));
   return linhas.join("\n");
 }
-// Junta o gerador próprio com a lista do OwnerPlugins. Se um falhar, o outro segura.
+// Junta o gerador próprio com as listas do OwnerPlugins e do BuddyChewChew. Se uma falhar, as outras seguram.
 async function textoPluto(): Promise<string> {
-  const [gerado, owner] = await Promise.allSettled([
-    gerarPlutoBR(),
-    fetch(FONTE_PLUTO, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
-  ]);
+  const baixar = (u: string) => fetch(u, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : ""));
+  const [gerado, owner, buddy] = await Promise.allSettled([gerarPlutoBR(), baixar(FONTE_PLUTO), baixar(FONTE_PLUTO2)]);
   if (gerado.status === "rejected") console.log(JSON.stringify({ evt: "pluto_gerador_erro", erro: String(gerado.reason) }));
-  return (gerado.status === "fulfilled" ? gerado.value : "") + "\n" + (owner.status === "fulfilled" ? owner.value : "");
+  const txt = (x: PromiseSettledResult<string>) => (x.status === "fulfilled" ? x.value : "");
+  return txt(gerado) + "\n" + txt(owner) + "\n" + txt(buddy);
 }
 const GRUPOS: Record<string, string> = {
   news: "Notícias", entertainment: "Entretenimento", kids: "Infantil", animation: "Infantil", sports: "Esportes",

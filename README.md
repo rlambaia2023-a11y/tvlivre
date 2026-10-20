@@ -85,6 +85,7 @@ Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam d
 ## Gerador próprio do Pluto TV
 
 - Mesmo método do projeto NasiLemakk/Pluto-TV-Playlists. O servidor pede uma sessão nova em `boot.pluto.tv` se apresentando como um aparelho no Brasil (cabeçalho `X-Forwarded-For` com o IP de `PLUTO_IP_BR`). Depois monta os links com a chave do dia. O log registra o evento `pluto_gerado`, com o país que o Pluto reconheceu.
-- A lista gerada se junta à do OwnerPlugins. Se uma das duas falhar, a outra segura.
+- A lista gerada se junta às listas do OwnerPlugins e do BuddyChewChew/pluto (`pluto_br.m3u`, refeita a cada 6 horas). Se uma falhar, as outras seguram.
+- Para cada canal, o gerador monta também o endereço alternativo `ipv4.pluto.tv/api/tn/...` com qualidade fixa em 720p (método do BuddyChewChew), que trava menos com internet fraca.
 - Os pedidos do relay ao Pluto e ao jmp2.uk também levam o cabeçalho do Brasil.
-- O repositório github.com/orgs/Pluto-tv tem só bibliotecas antigas, sem listas de canais, e por isso não foi usado.
+- A organização github.com/pluto-tv (Pluto-tv) tem só bibliotecas internas antigas, sem listas de canais, e por isso não foi usada.
