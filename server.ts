@@ -194,17 +194,40 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
 
 // ---------- Armazenamento no Railway Bucket ----------
 // Guarda a última lista testada. Quando o servidor reinicia, a TV já recebe os canais na hora,
-// sem esperar a rodada de testes. Sem bucket configurado, o servidor funciona como antes.
-const S3 = Bun.env.S3_BUCKET && Bun.env.S3_ACCESS_KEY_ID && Bun.env.S3_SECRET_ACCESS_KEY
-  ? new Bun.S3Client({
-      bucket: Bun.env.S3_BUCKET,
-      accessKeyId: Bun.env.S3_ACCESS_KEY_ID,
-      secretAccessKey: Bun.env.S3_SECRET_ACCESS_KEY,
-      endpoint: Bun.env.S3_ENDPOINT,
-      region: Bun.env.S3_REGION || "auto",
-      virtualHostedStyle: true,
-    })
-  : null;
+// sem esperar a rodada de testes. Sem bucket configurado (ou se ele falhar), o servidor funciona como antes.
+const TEM_S3 = !!(Bun.env.S3_BUCKET && Bun.env.S3_ACCESS_KEY_ID && Bun.env.S3_SECRET_ACCESS_KEY);
+// O provedor do bucket aceita assinaturas em formatos diferentes; o servidor testa as combinações
+// ao ligar e fica com a primeira que funcionar.
+const COMBINACOES = [
+  { estilo: "virtual", virtualHostedStyle: true, region: Bun.env.S3_REGION || "auto" },
+  { estilo: "virtual", virtualHostedStyle: true, region: "us-east-1" },
+  { estilo: "caminho", virtualHostedStyle: false, region: Bun.env.S3_REGION || "auto" },
+  { estilo: "caminho", virtualHostedStyle: false, region: "us-east-1" },
+];
+function clienteS3(i: number) {
+  const c = COMBINACOES[i];
+  return new Bun.S3Client({
+    bucket: Bun.env.S3_BUCKET, accessKeyId: Bun.env.S3_ACCESS_KEY_ID, secretAccessKey: Bun.env.S3_SECRET_ACCESS_KEY,
+    endpoint: Bun.env.S3_ENDPOINT, region: c.region, virtualHostedStyle: c.virtualHostedStyle,
+  });
+}
+let S3: ReturnType<typeof clienteS3> | null = null;
+async function conectarBucket(): Promise<void> {
+  if (!TEM_S3) return;
+  const erros: string[] = [];
+  for (let i = 0; i < COMBINACOES.length; i++) {
+    try {
+      const c = clienteS3(i);
+      await c.write("teste-conexao.txt", "ok " + new Date().toISOString(), { type: "text/plain" });
+      S3 = c;
+      console.log(JSON.stringify({ evt: "bucket_ok", estilo: COMBINACOES[i].estilo, regiao: COMBINACOES[i].region }));
+      return;
+    } catch (e) {
+      erros.push(COMBINACOES[i].estilo + "/" + COMBINACOES[i].region + ": " + String(e));
+    }
+  }
+  console.log(JSON.stringify({ evt: "bucket_erro", acao: "conectar", tentativas: erros }));
+}
 const PASTA_LOCAL = Bun.env.TL_STORE_DIR || ""; // só para testes no computador
 
 async function guardar(nome: string, conteudo: string, tipo: string): Promise<void> {
@@ -408,6 +431,7 @@ Bun.serve({
 });
 // Ao ligar: carrega a última lista guardada no bucket; só refaz os testes se ela tiver mais de 6 horas.
 {
+  await conectarBucket();
   const salvo = await ler("canais.json");
   if (salvo) {
     try {
@@ -415,7 +439,7 @@ Bun.serve({
       if (Array.isArray(j.canais) && j.canais.length) { estado.canais = j.canais; estado.atualizado = j.atualizado || 0; }
     } catch {}
   }
-  console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
+  console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponível" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
 }
 console.log("Tela Livre no ar");
 if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
