@@ -465,18 +465,18 @@ function play(item,kind,forceRelay,alt){
   current={item:item,kind:kind,relay:relay,alt:alt};$("perr").hidden=true;$("player").hidden=false;
   var isHls=/\.m3u8?(\?|$)/i.test(src.url)||kind==="live"&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url);
   var u=relay?relayUrl(src):src.url;
-  jaTocou=false;ultimoTempo=-1;paradoDesde=Date.now();socorros=0;
+  jaTocou=false;ultimoTempo=-1;paradoDesde=Date.now();socorros=0;midiaTent=0;redeTent=0;andandoDesde=0;
   if(isHls&&!video.canPlayType("application/vnd.apple.mpegurl")&&window.Hls&&Hls.isSupported()){
     /* Ajustes de estabilidade, parecidos com os de serviços de streaming: buffer de até 30 s,
        distância segura do "ao vivo", qualidade que se adapta à internet e mais tentativas antes de desistir. */
     hls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:30,maxBufferLength:30,maxMaxBufferLength:60,
       liveSyncDurationCount:4,liveMaxLatencyDurationCount:12,capLevelToPlayerSize:true,startLevel:-1,abrEwmaDefaultEstimate:1500000,
       manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:1000,levelLoadingMaxRetry:4,levelLoadingRetryDelay:1000,
-      fragLoadingMaxRetry:6,fragLoadingRetryDelay:800,nudgeMaxRetry:6});
-    var midiaTent=0,redeTent=0;
+      fragLoadingMaxRetry:6,fragLoadingRetryDelay:800,nudgeMaxRetry:6,maxBufferHole:0.5});
     hls.on(Hls.Events.ERROR,function(_,d){
       if(!d.fatal)return;
-      // erro de imagem: o hls.js se recupera sem trocar de link (até 2 vezes)
+      // erro de imagem: o hls.js se recupera sem trocar de link (até 2 vezes seguidas; o vigia zera a conta
+      // depois de 1 minuto passando, senão o terceiro intervalo comercial do Pluto derrubava o canal)
       if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&midiaTent<2){if(midiaTent++)hls.swapAudioCodec();hls.recoverMediaError();return}
       // queda de rede no meio do canal que já estava passando: tenta continuar antes de trocar de link
       if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&jaTocou&&redeTent<2){redeTent++;setTimeout(function(){if(hls)hls.startLoad()},1500);return}
@@ -494,14 +494,27 @@ function play(item,kind,forceRelay,alt){
 }
 video.addEventListener("error",function(){if(!hls&&current&&video.getAttribute("src"))fail()});
 video.addEventListener("playing",function(){jaTocou=true;$("perr").hidden=true;if(current&&current.item.dead){current.item.dead=false;save()}});
-/* Vigia de travamento: se a imagem parar por 10 s, tenta destravar; se seguir parada por 25 s,
+/* Vigia de travamento: se a imagem parar e houver vídeo carregado logo à frente (buraco comum na troca
+   entre programa e intervalo), pula o buraco; se parar por 10 s, tenta destravar; se seguir parada por 25 s,
    passa para o próximo link do canal (ou para o servidor), como fazem os apps de streaming. */
-var jaTocou=false,ultimoTempo=-1,paradoDesde=0,socorros=0;
+var jaTocou=false,ultimoTempo=-1,paradoDesde=0,socorros=0,midiaTent=0,redeTent=0,andandoDesde=0;
+function pularBuraco(){
+  var b=video.buffered,t=video.currentTime;
+  for(var i=0;i<b.length;i++){
+    if(b.start(i)<=t+0.05&&b.end(i)>t+0.5)return false; // há vídeo onde está: não é buraco
+    if(b.start(i)>t&&b.start(i)-t<6){video.currentTime=b.start(i)+0.1;return true}
+  }
+  return false;
+}
 setInterval(function(){
   if(!current||$("player").hidden||video.paused&&jaTocou)return;
   var t=video.currentTime;
-  if(t!==ultimoTempo){ultimoTempo=t;paradoDesde=Date.now();socorros=0;return}
+  if(t!==ultimoTempo){ultimoTempo=t;paradoDesde=Date.now();socorros=0;
+    if(!andandoDesde)andandoDesde=Date.now();else if(Date.now()-andandoDesde>60000){midiaTent=0;redeTent=0}
+    return}
+  andandoDesde=0;
   var parado=Date.now()-paradoDesde;
+  if(socorros===0&&pularBuraco())return;
   if(parado>10000&&socorros===0){socorros=1;
     if(hls){hls.startLoad();try{hls.recoverMediaError()}catch(e){}}
     else{var tt=video.currentTime;video.load();video.currentTime=tt;var p=video.play();if(p&&p.catch)p.catch(function(){})}
