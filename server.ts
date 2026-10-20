@@ -97,14 +97,17 @@ async function relay(req: Request, q: URLSearchParams): Promise<Response> {
   }
   const tipo = res.headers.get("content-type") || "";
   if (res.ok && ehPlaylist(res.url || u.href, tipo)) {
-    const texto = await res.text();
-    if (texto.trimStart().startsWith("#EXTM3U")) {
-      return new Response(reescrever(texto, res.url || u.href, ref, ua), {
+    // Lê como bytes: o Pluto manda a chave do vídeo (16 bytes binários) marcada como playlist.
+    // Ler isso como texto estragava a chave e o vídeo não abria.
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const comeco = new TextDecoder().decode(bytes.subarray(0, 32)).replace(/^﻿/, "").trimStart();
+    if (comeco.startsWith("#EXTM3U")) {
+      return new Response(reescrever(new TextDecoder().decode(bytes), res.url || u.href, ref, ua), {
         status: 200,
         headers: { ...CORS, "content-type": "application/vnd.apple.mpegurl", "cache-control": "no-cache" },
       });
     }
-    return new Response(texto, { status: res.status, headers: { ...CORS, "content-type": tipo || "text/plain" } });
+    return new Response(bytes, { status: res.status, headers: { ...CORS, "content-type": "application/octet-stream", "content-length": String(bytes.length) } });
   }
   const h: Record<string, string> = { ...CORS };
   for (const k of ["content-type", "content-length", "content-range", "accept-ranges", "cache-control"]) {
