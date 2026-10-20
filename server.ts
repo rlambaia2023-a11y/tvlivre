@@ -100,7 +100,7 @@ async function relay(req: Request, q: URLSearchParams): Promise<Response> {
     // Lê como bytes: o Pluto manda a chave do vídeo (16 bytes binários) marcada como playlist.
     // Ler isso como texto estragava a chave e o vídeo não abria.
     const bytes = new Uint8Array(await res.arrayBuffer());
-    const comeco = new TextDecoder().decode(bytes.subarray(0, 32)).replace(/^﻿/, "").trimStart();
+    const comeco = new TextDecoder().decode(bytes.subarray(0, 32)).replace(/^\uFEFF/, "").trimStart();
     if (comeco.startsWith("#EXTM3U")) {
       return new Response(reescrever(new TextDecoder().decode(bytes), res.url || u.href, ref, ua), {
         status: 200,
@@ -373,11 +373,11 @@ function grupoPt(g: string): string {
   return GRUPOS[k.toLowerCase()] || k || "Geral";
 }
 function limparNome(n: string): string {
-  return n.replace(/[Ⓐ-ⓩ]/g, "").replace(/\s*\(\d+p\)/gi, "").replace(/\s*\[[^\]]*\]/g, "").trim() || n;
+  return n.replace(/[\u24B6-\u24E9]/g, "").replace(/\s*\(\d+p\)/gi, "").replace(/\s*\[[^\]]*\]/g, "").trim() || n;
 }
 function chaveDe(tvgId: string, nome: string): string {
   if (tvgId) return tvgId.split("@")[0].toLowerCase();
-  return limparNome(nome).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return limparNome(nome).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 function lerM3U(texto: string): Fonte[] {
   const out: Fonte[] = [];
@@ -517,6 +517,10 @@ async function atualizarPluto(): Promise<void> {
   }
 }
 
+// Amostra de 4 MB de bytes aleatórios para o teste de internet da TV (aleatórios para não serem comprimidos no caminho).
+const AMOSTRA = new Uint8Array(4 * 1024 * 1024);
+for (let i = 0; i < AMOSTRA.length; i += 65536) crypto.getRandomValues(AMOSTRA.subarray(i, i + 65536));
+
 // ---------- Guia de programação (Agora / A seguir) do Pluto TV ----------
 // Usa a mesma sessão do gerador e pede ao Pluto a grade das próximas 4 horas, em lotes de canais.
 // A TV recebe só o essencial: título, início e fim de até 3 programas por canal.
@@ -644,6 +648,7 @@ Bun.serve({
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
     if (url.pathname === "/falhou") return falhou(url.searchParams);
     if (url.pathname === "/epg") return guiaRota();
+    if (url.pathname === "/velocidade") return new Response(AMOSTRA, { headers: { ...CORS, "content-type": "application/octet-stream", "cache-control": "no-store", "content-length": String(AMOSTRA.length) } });
     if (url.pathname === "/check") return testar(url.searchParams);
     if (url.pathname === "/diagnostico") return diagnostico(url.searchParams);
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });

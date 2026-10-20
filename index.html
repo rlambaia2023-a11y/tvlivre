@@ -153,7 +153,23 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 .pin .keys button{padding:.6em 0;font-size:1.2em}
 .pin .msg{color:var(--live);min-height:1.4em;font-size:.9em}
 
-@media (prefers-reduced-motion:reduce){.card,.osd{transition:none}.card:focus{transform:none}}
+/* ---------- streams: carregando e informações ---------- */
+.loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;color:#c9d1dc;pointer-events:none;text-align:center}
+.loading i{width:54px;height:54px;border-radius:50%;border:5px solid rgba(255,255,255,.18);border-top-color:var(--signal);animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:.25em .9em;padding:.2em 22px .4em;font-size:.85em;color:var(--muted)}
+.stats b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums}
+.modos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.modo{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:.7em .9em;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:.25em}
+.modo strong{font-size:1em}
+.modo span{font-size:.8em;color:var(--muted);line-height:1.4}
+.modo[aria-pressed="true"]{border-color:var(--signal)}
+.modo[aria-pressed="true"] strong{color:var(--signal)}
+.modo:focus{outline:3px solid var(--signal);outline-offset:2px}
+.speed{font-family:var(--font-display);font-weight:800;font-size:2.2em;font-variant-numeric:tabular-nums;line-height:1}
+.speed small{font-family:var(--font-body);font-size:.4em;font-weight:500;color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){.card,.osd{transition:none}.card:focus{transform:none}.loading i{animation-duration:3s}}
 </style>
 </head>
 <body>
@@ -204,6 +220,33 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
   <!-- AJUSTES -->
   <section id="tab-settings" hidden>
     <div class="settings">
+      <div class="box" id="streams">
+        <h2>Streams sem travar</h2>
+        <p>Escolha como a TV segura o vídeo. Quanto mais folga, menos trava, mas o canal demora um pouco mais para abrir e fica alguns segundos atrás do ao vivo.</p>
+        <div class="modos" id="modos">
+          <button class="modo f" data-m="estavel"><strong>Estável</strong><span>Folga de até 2 min, começa em qualidade menor e sobe sozinho. Para internet que oscila.</span></button>
+          <button class="modo f" data-m="normal"><strong>Equilibrado</strong><span>Folga de 30 s a 1 min. Bom para a maioria das casas.</span></button>
+          <button class="modo f" data-m="rapido"><strong>Rápido</strong><span>Abre e troca de canal mais depressa, com folga de 15 s. Para internet boa e estável.</span></button>
+        </div>
+        <div class="field"><label>Qualidade máxima</label></div>
+        <div class="row" id="qmax">
+          <button class="chip f" data-q="0">Automática</button>
+          <button class="chip f" data-q="1080">Até 1080p</button>
+          <button class="chip f" data-q="720">Até 720p</button>
+          <button class="chip f" data-q="480">Até 480p</button>
+        </div>
+        <div class="row">
+          <button class="chip f" id="sempre-relay" aria-pressed="false">Passar sempre pelo servidor</button>
+        </div>
+        <p>Ligue “passar pelo servidor” só se os canais travarem logo ao abrir ou derem erro de conexão. Para a maioria dos canais o link direto é mais rápido.</p>
+        <div class="row" style="align-items:center">
+          <button class="btn f" id="speed-test">Testar minha internet</button>
+          <div class="speed" id="speed-val" hidden></div>
+        </div>
+        <div class="status" id="speed-status"></div>
+        <div class="row"><button class="btn ghost f" id="speed-apply" hidden>Usar a recomendação</button></div>
+      </div>
+
       <div class="box">
         <h2>Lista IPTV</h2>
         <p>Cole o endereço da lista M3U que você assina. Os canais entram na aba Ao vivo, separados pelos grupos da própria lista.</p>
@@ -267,6 +310,7 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
   <video id="video" playsinline autoplay></video>
   <button class="closebtn" id="pclose">Voltar</button>
   <div class="perr" id="perr" hidden><div><strong id="perr-title">Este canal não abriu agora</strong><p id="perr-why">Tentei o link direto, pelo servidor e os links reserva.</p><p id="perr-next"></p></div></div>
+  <div class="loading" id="loading" hidden><i></i><span id="loading-txt">Carregando…</span></div>
   <div class="osd" id="osd">
     <div class="bignum" id="o-num"></div>
     <div>
@@ -516,8 +560,8 @@ document.querySelectorAll("label.btn").forEach(function(l){l.addEventListener("k
 var video=$("video");
 function listFor(kind){return kind==="live"?S.channels:allVideos()}
 function openById(id,kind){var l=listFor(kind);for(var i=0;i<l.length;i++)if(l[i].id===id){play(l[i],kind);return}}
-function stop(){if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
-function needsRelay(item){return !!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
+function stop(){carregando(false);if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
+function needsRelay(item){return !!S.relay||!!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
 var skipTimer=null,lastStep=1;
 function ehPluto(item){return /^a-pluto:/.test(item.id||"")||/pluto\.tv|jmp2\.uk\/plu-/i.test(item.url||"")}
 /* Pluto TV: antes de mostrar erro, pede links novos ao servidor e tenta de novo (uma vez a cada 2 minutos por canal). */
@@ -595,13 +639,11 @@ function play(item,kind,forceRelay,alt){
   var isHls=/\.m3u8?(\?|$)/i.test(src.url)||kind==="live"&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url);
   var u=relay?relayUrl(src):src.url;
   jaTocou=false;ultimoTempo=-1;paradoDesde=Date.now();socorros=0;midiaTent=0;redeTent=0;andandoDesde=0;
+  carregando(true,"Abrindo "+item.name+"…");
   if(isHls&&!video.canPlayType("application/vnd.apple.mpegurl")&&window.Hls&&Hls.isSupported()){
     /* Ajustes de estabilidade, parecidos com os de serviços de streaming: buffer de até 30 s,
        distância segura do "ao vivo", qualidade que se adapta à internet e mais tentativas antes de desistir. */
-    hls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:30,maxBufferLength:30,maxMaxBufferLength:60,
-      liveSyncDurationCount:4,liveMaxLatencyDurationCount:12,capLevelToPlayerSize:true,startLevel:-1,abrEwmaDefaultEstimate:1500000,
-      manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:1000,levelLoadingMaxRetry:4,levelLoadingRetryDelay:1000,
-      fragLoadingMaxRetry:6,fragLoadingRetryDelay:800,nudgeMaxRetry:6,maxBufferHole:0.5});
+    hls=new Hls(cfgHls());
     hls.on(Hls.Events.ERROR,function(_,d){
       if(!d.fatal)return;
       // erro de imagem: o hls.js se recupera sem trocar de link (até 2 vezes seguidas; o vigia zera a conta
@@ -626,7 +668,7 @@ function play(item,kind,forceRelay,alt){
   showOsd();
 }
 video.addEventListener("error",function(){if(!hls&&current&&video.getAttribute("src"))fail()});
-video.addEventListener("playing",function(){jaTocou=true;$("perr").hidden=true;if(current&&current.item.dead){current.item.dead=false;save()}});
+video.addEventListener("playing",function(){carregando(false);jaTocou=true;$("perr").hidden=true;if(current&&current.item.dead){current.item.dead=false;save()}});
 /* Vigia de travamento: se a imagem parar e houver vídeo carregado logo à frente (buraco comum na troca
    entre programa e intervalo), pula o buraco; se parar por 10 s, tenta destravar; se seguir parada por 25 s,
    passa para o próximo link do canal (ou para o servidor), como fazem os apps de streaming. */
@@ -653,6 +695,77 @@ setInterval(function(){
     else{var tt=video.currentTime;video.load();video.currentTime=tt;var p=video.play();if(p&&p.catch)p.catch(function(){})}
   }else if(parado>25000&&socorros===1){socorros=2;fail()}
 },2500);
+/* ---------- streams: modos de folga, carregando, informações e teste de internet ---------- */
+/* Três jeitos de segurar o vídeo. "Estável" guarda mais vídeo de folga, fica mais longe do ao vivo
+   e começa numa qualidade menor; "Rápido" abre e troca de canal mais depressa com pouca folga. */
+var MODOS={
+  estavel:{backBufferLength:30,maxBufferLength:60,maxMaxBufferLength:120,liveSyncDurationCount:6,liveMaxLatencyDurationCount:18,
+    startLevel:0,abrEwmaDefaultEstimate:800000,abrBandWidthFactor:0.8,abrBandWidthUpFactor:0.6,maxBufferHole:1,
+    fragLoadingMaxRetry:10,levelLoadingMaxRetry:6,manifestLoadingMaxRetry:4,nudgeMaxRetry:10,maxStarvationDelay:6,maxLoadingDelay:6},
+  normal:{backBufferLength:30,maxBufferLength:30,maxMaxBufferLength:60,liveSyncDurationCount:4,liveMaxLatencyDurationCount:12,
+    startLevel:-1,abrEwmaDefaultEstimate:1500000,maxBufferHole:0.5,
+    fragLoadingMaxRetry:6,levelLoadingMaxRetry:4,manifestLoadingMaxRetry:3,nudgeMaxRetry:6},
+  rapido:{backBufferLength:15,maxBufferLength:15,maxMaxBufferLength:30,liveSyncDurationCount:3,liveMaxLatencyDurationCount:8,
+    startLevel:-1,abrEwmaDefaultEstimate:3000000,maxBufferHole:0.5,
+    fragLoadingMaxRetry:4,levelLoadingMaxRetry:3,manifestLoadingMaxRetry:2,nudgeMaxRetry:4}
+};
+var NOME_MODO={estavel:"Estável",normal:"Equilibrado",rapido:"Rápido"};
+function modo(){return MODOS[S.modo]?S.modo:"normal"}
+function cfgHls(){
+  var c={enableWorker:true,lowLatencyMode:false,capLevelToPlayerSize:true,manifestLoadingRetryDelay:1000,levelLoadingRetryDelay:1000,fragLoadingRetryDelay:800};
+  var m=MODOS[modo()];for(var k in m)c[k]=m[k];
+  return c;
+}
+var loadTimer=null;
+function carregando(on,txt){
+  clearTimeout(loadTimer);
+  if(!on){$("loading").hidden=true;return}
+  if(txt)$("loading-txt").textContent=txt;
+  loadTimer=setTimeout(function(){if(current&&!$("player").hidden)$("loading").hidden=false},600);
+}
+video.addEventListener("waiting",function(){if(jaTocou)carregando(true,"Segurando o vídeo para não travar…")});
+video.addEventListener("canplay",function(){if(!video.paused)carregando(false)});
+function folga(){var b=video.buffered,t=video.currentTime;for(var i=0;i<b.length;i++)if(b.start(i)<=t+0.3&&b.end(i)>=t)return Math.max(0,b.end(i)-t);return 0}
+function mbps(bits){return bits?(bits/1e6).toFixed(bits<1e7?1:0)+" Mbps":"—"}
+function infoStream(){
+  var lv=hls&&hls.levels&&hls.currentLevel>=0?hls.levels[hls.currentLevel]:null;
+  var linhas=[
+    ["Imagem",video.videoHeight?video.videoWidth+"×"+video.videoHeight:"—"],
+    ["Taxa do canal",lv?mbps(lv.bitrate):"—"],
+    ["Sua internet (estimada)",hls&&hls.bandwidthEstimate?mbps(hls.bandwidthEstimate):"—"],
+    ["Folga guardada",folga().toFixed(0)+" s"],
+    ["Modo",NOME_MODO[modo()]+(S.qual?" · até "+S.qual+"p":"")],
+    ["Caminho",current&&current.relay?"pelo servidor":"direto da emissora"]
+  ];
+  return '<div class="sec">Informações do stream</div><div class="stats">'+linhas.map(function(l){return '<span>'+l[0]+'</span><b>'+esc(l[1])+'</b>'}).join("")+'</div>';
+}
+function renderStreams(){
+  Array.prototype.forEach.call(document.querySelectorAll("#modos .modo"),function(b){b.setAttribute("aria-pressed",b.dataset.m===modo())});
+  Array.prototype.forEach.call(document.querySelectorAll("#qmax .chip"),function(b){b.setAttribute("aria-pressed",String(+b.dataset.q===(S.qual||0)))});
+  $("sempre-relay").setAttribute("aria-pressed",!!S.relay);
+}
+$("modos").addEventListener("click",function(e){var b=e.target.closest(".modo");if(!b)return;S.modo=b.dataset.m;save();renderStreams();status("speed-status","Modo "+NOME_MODO[S.modo]+" ligado. Vale a partir do próximo canal que você abrir.")});
+$("qmax").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;S.qual=+b.dataset.q||0;save();aplicarQualidade();renderStreams()});
+$("sempre-relay").onclick=function(){S.relay=!S.relay;save();renderStreams()};
+/* Teste de internet: baixa 4 MB do servidor da TV e mede quanto tempo levou. */
+var recomendado=null;
+$("speed-test").onclick=function(){
+  if(!HAS_SERVER){status("speed-status","O teste precisa do servidor (abra pelo endereço do Railway).");return}
+  var btn=this;btn.disabled=true;status("speed-status","Medindo… leva alguns segundos.");$("speed-val").hidden=true;$("speed-apply").hidden=true;
+  var t0=performance.now();
+  fetch("/velocidade?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.arrayBuffer()}).then(function(buf){
+    var seg=(performance.now()-t0)/1000,v=buf.byteLength*8/seg/1e6;
+    $("speed-val").innerHTML=v.toFixed(v<10?1:0)+' <small>Mbps</small>';$("speed-val").hidden=false;
+    if(v<4)recomendado={m:"estavel",q:480,txt:"Internet fraca para vídeo: recomendo o modo Estável com até 480p."};
+    else if(v<10)recomendado={m:"estavel",q:720,txt:"Dá para assistir bem em HD: recomendo o modo Estável com até 720p."};
+    else if(v<40)recomendado={m:"normal",q:0,txt:"Internet boa: o modo Equilibrado com qualidade automática deve rodar liso."};
+    else recomendado={m:"rapido",q:0,txt:"Internet muito boa: o modo Rápido troca de canal mais depressa sem travar."};
+    status("speed-status",recomendado.txt+" (medido até o servidor da TV; o link direto das emissoras costuma ser mais rápido)");
+    $("speed-apply").hidden=false;
+  }).catch(function(){status("speed-status","Não consegui medir agora. Confira a internet da TV e tente de novo.")}).then(function(){btn.disabled=false});
+};
+$("speed-apply").onclick=function(){if(!recomendado)return;S.modo=recomendado.m;S.qual=recomendado.q;save();aplicarQualidade();renderStreams();this.hidden=true;status("speed-status","Pronto: modo "+NOME_MODO[S.modo]+(S.qual?" com até "+S.qual+"p":" com qualidade automática")+".")};
+
 function showOsd(){var o=$("osd");o.classList.remove("hide");clearTimeout(osdTimer);osdTimer=setTimeout(function(){o.classList.add("hide")},4000)}
 function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
 function closePlayer(){
@@ -745,6 +858,7 @@ function renderOpts(focoAcao){
     h+='<div class="sec">Legenda</div>'+linha("s:-1","Desligada",algum?"":"●",!algum);
     lg.forEach(function(x){h+=linha("s:"+x.i,x.nome,x.on?"●":"",x.on)});
   }
+  h+=infoStream();
   if(live){
     h+='<div class="sec">Bloqueio parental</div>';
     var auto=S.pin&&(ADULTO.test(it.group||"")||ADULTO.test(it.name||""));
@@ -765,7 +879,7 @@ $("popts-items").addEventListener("click",function(e){
   var a=b.dataset.a,it=current.item,n=parseInt(a.split(":")[1],10);
   if(a==="fav"){alternar("favs",it.id);$("o-fav").hidden=!ehFav(it);renderOpts(a);return}
   if(a==="ant"){var ant=byId(S.anterior);fecharPaineis();if(ant)play(ant,"live");return}
-  if(a.indexOf("q:")===0){S.qual=n||0;save();aplicarQualidade();renderOpts(a);return}
+  if(a.indexOf("q:")===0){S.qual=n||0;save();aplicarQualidade();renderStreams();renderOpts(a);return}
   if(a.indexOf("a:")===0){if(hls&&hls.audioTracks&&hls.audioTracks.length>1)hls.audioTrack=n;else if(video.audioTracks)for(var i=0;i<video.audioTracks.length;i++)video.audioTracks[i].enabled=i===n;renderOpts(a);return}
   if(a.indexOf("s:")===0){
     if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length){hls.subtitleDisplay=n>=0;hls.subtitleTrack=n}
@@ -890,7 +1004,7 @@ document.addEventListener("mousedown",function(){document.querySelectorAll(".kb"
 /* Tizen (Samsung): pede as teclas de canal e números */
 try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","ColorF0Red","ColorF1Green","ColorF2Yellow","ColorF3Blue","0","1","2","3","4","5","6","7","8","9"].forEach(function(n){try{tizen.tvinputdevice.registerKey(n)}catch(e){}})}}catch(e){}
 
-renderAll();infoPin();
+renderAll();infoPin();renderStreams();
 loadAuto(false);
 loadGuia();setInterval(loadGuia,10*60*1000);
 /* A cada minuto, atualiza a barra de "Agora" do canal que está passando. */

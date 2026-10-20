@@ -42,6 +42,7 @@ A última lista testada fica guardada no bucket **tela-livre-dados** do Railway 
 | `/check?u=<link>` | Testa um link de transmissão |
 | `/falhou?id=<canal>` | A TV avisa que o canal não abriu; o servidor reconfere |
 | `/epg` | Guia "Agora / A seguir" dos canais do Pluto TV (próximos 3 programas de cada canal) |
+| `/velocidade` | 4 MB aleatórios para o teste de internet da TV |
 | `/health` | Responde `ok` quando o servidor está de pé |
 
 ## Rodar no seu computador
@@ -110,3 +111,11 @@ Ideias tiradas da análise do app YouCine (v1.17.6) e reescritas do zero aqui. D
 - **Opções do canal**: → (ou azul / O). Qualidade máxima (a TV continua descendo sozinha se a internet piorar), áudio e legenda quando o canal tiver, favorito e bloqueio.
 - **Bloqueio parental**: senha de 4 números em Ajustes. Com senha, canais de conteúdo adulto ficam trancados e qualquer outro canal pode ser trancado pelo menu de opções. A senha fica guardada só nesta TV.
 - **Guia Agora / A seguir**: o servidor busca a grade do Pluto TV a cada 30 minutos (`guia_atualizado` nos logs). Aparece no cartão do canal, na barra do player e na lista.
+
+## Streams sem travar (Ajustes)
+
+- **Modos**: Estável (folga de até 2 min, começa numa qualidade menor e sobe sozinho), Equilibrado (o padrão) e Rápido (troca de canal mais depressa, com pouca folga). Valem a partir do próximo canal aberto.
+- **Qualidade máxima**: funciona como teto, e a TV continua descendo a qualidade sozinha se a internet piorar.
+- **Passar sempre pelo servidor**: força o relay do Railway. Só vale a pena se os canais derem erro logo ao abrir.
+- **Testar minha internet**: baixa 4 MB do servidor, mostra a velocidade e sugere o modo e a qualidade.
+- No player, o menu → mostra imagem, taxa do canal, internet estimada, folga guardada e se o vídeo vem direto ou pelo servidor. Quando o vídeo para para carregar, aparece um aviso de "carregando".
