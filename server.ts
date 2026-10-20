@@ -245,7 +245,13 @@ async function atualizar(): Promise<void> {
     for (const [chave, lista] of grupos) {
       // 403 fica como reserva: pode ser bloqueio de região que só libera para quem está no Brasil.
       const bons = lista.filter((f) => status.get(f.url)?.ok);
-      const talvez = lista.filter((f) => status.get(f.url)?.motivo === "HTTP 403");
+      // Pluto TV: o link traz uma chave gerada para quem está no Brasil; o servidor (fora do Brasil)
+      // recebe recusa de acesso, mas a TV na sua casa abre. Só descarta se o link sumiu de vez.
+      const ehPluto = chave.startsWith("pluto:");
+      const talvez = lista.filter((f) => {
+        const m = status.get(f.url)?.motivo || "";
+        return m === "HTTP 403" || (ehPluto && /HTTP 4(00|01|03|10|51)|variante HTTP 4|não é transmissão/.test(m));
+      });
       const usar = [...bons, ...talvez];
       if (!usar.length) continue;
       const p = usar[0];
@@ -255,7 +261,9 @@ async function atualizar(): Promise<void> {
       });
     }
     if (canais.length) { estado.canais = canais; estado.atualizado = Date.now(); }
-    console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canais.filter((c) => c.id.startsWith("pluto:")).length, fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
+    const motivosPluto: Record<string, number> = {};
+    for (const f of fontes) if (f.chave.startsWith("pluto:")) { const m = status.get(f.url)?.motivo || "?"; motivosPluto[m] = (motivosPluto[m] || 0) + 1; }
+    console.log(JSON.stringify({ evt: "lista_atualizada", motivosPluto, pluto: canais.filter((c) => c.id.startsWith("pluto:")).length, fontes: fontes.length, links: urls.length, canais: canais.length, ms: Date.now() - inicio }));
   } catch (e) {
     console.log(JSON.stringify({ evt: "lista_erro", erro: String(e), mantidos: estado.canais.length }));
   } finally {
