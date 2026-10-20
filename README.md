@@ -89,3 +89,11 @@ Os add-ons do [SlyGuy](https://github.com/matthuisman/slyguy.addons) só rodam d
 - Para cada canal, o gerador monta também o endereço alternativo `ipv4.pluto.tv/api/tn/...` com qualidade fixa em 720p (método do BuddyChewChew), que trava menos com internet fraca.
 - Os pedidos do relay ao Pluto e ao jmp2.uk também levam o cabeçalho do Brasil.
 - A organização github.com/pluto-tv (Pluto-tv) tem só bibliotecas internas antigas, sem listas de canais, e por isso não foi usada.
+
+## Estabilidade do player e do servidor (padrão de streaming)
+
+- O player guarda até 30 s de vídeo de folga (até 60 s quando sobra memória) e fica um pouco atrás do "ao vivo", o que evita travadas. A qualidade se ajusta sozinha à internet e ao tamanho da tela, e o player tenta de novo várias vezes antes de desistir.
+- Se a rede cair no meio de um canal, o player retoma do ponto onde parou. Se o vídeo der erro de imagem, ele se recupera até duas vezes sem trocar de link.
+- Um vigia confere o vídeo a cada 2,5 s. Com 10 s parado, tenta destravar. Com 25 s parado, passa para o próximo link do canal.
+- Quando a página se atualiza durante uma troca de canal, ela volta direto no canal escolhido.
+- No Railway, o serviço não entra em modo de espera, reinicia sozinho se cair (política ALWAYS), passa pela checagem `/health` a cada publicação e mantém a versão antiga no ar por 20 s durante a troca de versão.
