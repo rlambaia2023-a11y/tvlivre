@@ -1,4 +1,4 @@
-# Tela Livre
+# Tela Livre: HRC & DV
 
 A TV própria que roda no navegador da Smart TV, com os canais abertos do Brasil já carregados.
 

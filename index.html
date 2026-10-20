@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tela Livre</title>
+<title>Tela Livre: HRC &amp; DV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Figtree:wght@400;500;700&display=swap">
@@ -109,7 +109,7 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 <body>
 
 <header class="top">
-  <div class="brand" id="brand">Tela <b>Livre</b></div>
+  <div class="brand" id="brand">Tela Livre: <b>HRC &amp; DV</b></div>
   <nav class="tabs" role="tablist">
     <button class="tab f" role="tab" data-tab="live" aria-selected="true">Ao vivo</button>
     <button class="tab f" role="tab" data-tab="videos" aria-selected="false">Meus vídeos</button>
@@ -221,14 +221,15 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 (function(){
 "use strict";
 var KEY="telalivre.v1";
-var DEFAULT={name:"Tela Livre",channels:[],videos:[],sources:[]};
+var NOME="Tela Livre: HRC & DV";
+var DEFAULT={name:NOME,channels:[],videos:[],sources:[]};
 var S=load();
 var localVideos=[]; // arquivos abertos do aparelho, só nesta sessão
 var tab="live", group="Todos", query="";
 var current=null, hls=null, osdTimer=null, digitBuf="", digitTimer=null, testing=false;
 var HAS_SERVER=/^https?:$/.test(location.protocol);
 
-function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.channels)return d}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
+function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.channels){if(!d.name||d.name==="Tela Livre")d.name=NOME;return d}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){status("sys-status","O navegador da TV não deixou salvar. O que você adicionou some ao fechar.")}}
 function $(id){return document.getElementById(id)}
 function uid(){return Math.random().toString(36).slice(2,10)}
@@ -239,7 +240,7 @@ function status(id,msg){$(id).textContent=msg}
 /* ---------- relógio e nome ---------- */
 function tick(){var d=new Date();$("clock").textContent=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
 tick();setInterval(tick,15000);
-function renderBrand(){var n=S.name||"Tela Livre";var parts=n.split(" ");var last=parts.length>1?parts.pop():"";$("brand").innerHTML=esc(parts.join(" "))+(last?" <b>"+esc(last)+"</b>":"");document.title=n;$("sys-name").value=n}
+function renderBrand(){var n=S.name||NOME;var c=n.indexOf(":");if(c>-1){$("brand").innerHTML=esc(n.slice(0,c+1))+" <b>"+esc(n.slice(c+1).trim())+"</b>"}else{var parts=n.split(" ");var last=parts.length>1?parts.pop():"";$("brand").innerHTML=esc(parts.join(" "))+(last?" <b>"+esc(last)+"</b>":"")}document.title=n;$("sys-name").value=n}
 
 /* ---------- M3U ---------- */
 function parseM3U(text,src){
@@ -375,7 +376,7 @@ function manual(kind){
 }
 $("add-channel").onclick=function(){manual("channel")};
 $("add-video").onclick=function(){manual("video")};
-$("save-name").onclick=function(){S.name=$("sys-name").value.trim()||"Tela Livre";save();renderBrand();status("sys-status","Nome salvo.")};
+$("save-name").onclick=function(){S.name=$("sys-name").value.trim()||NOME;save();renderBrand();status("sys-status","Nome salvo.")};
 var wipeArmed=false;
 $("wipe").onclick=function(){
   if(!wipeArmed){wipeArmed=true;this.textContent="Confirmar: apagar tudo";status("sys-status","Isso remove canais, listas e vídeos salvos. Aperte de novo para confirmar.");return}
