@@ -155,6 +155,39 @@ async function freeTv(): Promise<Response> {
   }
 }
 
+// Diagnóstico de um canal: segue a transmissão como o player faria (lista mestre, variante,
+// chave e primeiro pedaço do vídeo) e mostra o que cada etapa respondeu.
+async function diagnostico(q: URLSearchParams): Promise<Response> {
+  const etapas: Record<string, unknown>[] = [];
+  const ref = q.get("r"), ua = q.get("a");
+  async function passo(nome: string, url: string, range: string | null) {
+    const u = alvo(url);
+    if (!u) { etapas.push({ nome, url, erro: "endereço inválido" }); return null; }
+    try {
+      const r = await buscar(u, ref, ua, range, 15000);
+      const tipo = r.headers.get("content-type") || "";
+      const texto = ehPlaylist(r.url || u.href, tipo) ? await r.text() : null;
+      if (texto === null) r.body?.cancel();
+      etapas.push({ nome, url: u.href.slice(0, 160), final: (r.url || "").slice(0, 160), status: r.status, tipo, codificacao: r.headers.get("content-encoding"), tamanho: r.headers.get("content-length"), inicio: texto ? texto.slice(0, 400) : undefined });
+      return texto !== null ? { texto, base: r.url || u.href } : null;
+    } catch (e) { etapas.push({ nome, url: u.href.slice(0, 160), erro: String(e) }); return null; }
+  }
+  const primeiraUrl = (t: string) => t.split(/\r?\n/).map((l) => l.trim()).find((l) => l && !l.startsWith("#"));
+  const m = await passo("mestre", q.get("u") || "", null);
+  let media = m;
+  if (m && m.texto.includes("#EXT-X-STREAM-INF")) {
+    const v = primeiraUrl(m.texto);
+    if (v) media = await passo("variante", new URL(v, m.base).href, null);
+  }
+  if (media) {
+    const chave = media.texto.match(/#EXT-X-KEY:[^\n]*URI="([^"]+)"/);
+    if (chave) await passo("chave", new URL(chave[1], media.base).href, null);
+    const seg = primeiraUrl(media.texto);
+    if (seg) await passo("pedaco", new URL(seg, media.base).href, "bytes=0-1023");
+  }
+  return new Response(JSON.stringify({ etapas }, null, 1), { headers: { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
+}
+
 async function testar(q: URLSearchParams): Promise<Response> {
   const r = await verificar(q.get("u"), q.get("r"), q.get("a"));
   console.log(JSON.stringify({ evt: "check", host: (alvo(q.get("u"))?.hostname) || "?", ok: r.ok, motivo: r.motivo }));
@@ -495,6 +528,7 @@ Bun.serve({
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
     if (url.pathname === "/falhou") return falhou(url.searchParams);
     if (url.pathname === "/check") return testar(url.searchParams);
+    if (url.pathname === "/diagnostico") return diagnostico(url.searchParams);
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
   },
 });
