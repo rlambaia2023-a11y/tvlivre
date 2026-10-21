@@ -324,6 +324,8 @@ const FONTE_IPTV = Bun.env.FONTE_IPTV || "https://iptv-org.github.io/iptv/countr
 const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/OwnerPlugins/pluto-tv-m3u/main/pluto-live-BR.m3u";
 // Segunda lista pronta do Pluto Brasil (BuddyChewChew/pluto, refeita a cada 6 horas), usada como reserva.
 const FONTE_PLUTO2 = Bun.env.FONTE_PLUTO2 || "https://raw.githubusercontent.com/BuddyChewChew/pluto/main/pluto_br.m3u";
+// Famelack (antigo TV.Garden): base pública em JSON, montada a partir do iptv-org e de outras transmissões abertas.
+const FONTE_FAMELACK = Bun.env.FONTE_FAMELACK || "https://raw.githubusercontent.com/famelack/famelack-data/main/tv/raw/countries/br.json";
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
 
 // ---------- Gerador próprio de links do Pluto TV ----------
@@ -430,6 +432,26 @@ function naoPago(f: Fonte): boolean {
   if (/jmp2\.uk|pluto\.tv/i.test(f.url)) return true;
   return !PAGOS.test(f.nome);
 }
+// Lê o JSON do Famelack e devolve só os links de vídeo direto (os de YouTube não tocam no player).
+async function famelack(): Promise<Fonte[]> {
+  const r = await fetch(FONTE_FAMELACK, { signal: AbortSignal.timeout(30000) });
+  if (!r.ok) throw new Error("famelack HTTP " + r.status);
+  const dados = await r.json();
+  const out: Fonte[] = [];
+  for (const c of Array.isArray(dados) ? dados : []) {
+    const nome = typeof c?.name === "string" ? c.name.trim() : "";
+    const links = Array.isArray(c?.sources?.streams) ? c.sources.streams : [];
+    if (!nome) continue;
+    for (const u of links) if (typeof u === "string" && /^https?:\/\//i.test(u) && !/youtube|youtu\.be/i.test(u)) out.push({ nome, logo: "", grupo: "", chave: chaveDe("", nome), url: u.trim(), ref: "", ua: "" });
+  }
+  return out;
+}
+// Canal do Famelack com o mesmo nome de um que já veio das outras fontes entra como link reserva dele.
+function juntarPorNome(base: Fonte[], extras: Fonte[]): Fonte[] {
+  const porNome = new Map<string, Fonte>();
+  for (const f of base) { const k = chaveDe("", f.nome); if (!porNome.has(k)) porNome.set(k, f); }
+  return extras.map((f) => { const m = porNome.get(f.chave); return m ? { ...f, chave: m.chave, nome: m.nome, logo: m.logo, grupo: m.grupo } : f; });
+}
 async function emLotes<T, R>(itens: T[], n: number, f: (x: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(itens.length);
   let i = 0;
@@ -443,16 +465,20 @@ async function atualizar(): Promise<void> {
   estado.ultimaTentativa = Date.now();
   const inicio = Date.now();
   try {
-    const [free, iptv, pluto] = await Promise.allSettled([
+    const [free, iptv, pluto, fame] = await Promise.allSettled([
       freeTv().then((r) => (r.ok ? r.text() : "")),
       fetch(FONTE_IPTV, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
       textoPluto(),
+      famelack(),
     ]);
+    if (fame.status === "rejected") console.log(JSON.stringify({ evt: "famelack_erro", erro: String(fame.reason) }));
     // Free-TV primeiro: são as emissoras abertas oficiais, entram no topo da numeração.
-    const fontes = [
+    const principais = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
-    ].filter(naoPago);
+    ];
+    // Famelack por último: completa a lista e dá links reserva aos canais que já existem.
+    const fontes = [...principais, ...juntarPorNome(principais, fame.status === "fulfilled" ? fame.value : [])].filter(naoPago);
     // Pluto TV não passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
     // Se a fonte do Pluto falhar, os canais Pluto que já estavam na lista continuam.
     const fontesPluto = plutoFontes(pluto.status === "fulfilled" ? pluto.value : "");
@@ -488,7 +514,7 @@ async function atualizar(): Promise<void> {
     const abertos = canais.length ? canais : estado.canais.filter((c) => !c.id.startsWith("pluto:"));
     const todos = [...abertos, ...canaisPluto];
     if (todos.length) { estado.canais = todos; estado.atualizado = Date.now(); estado.plutoTs = Date.now(); await salvarLista(); }
-    console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canaisPluto.length, plutoDaFonte: fontesPluto.length > 0, fontes: fontes.length, links: urls.length, canais: todos.length, ms: Date.now() - inicio }));
+    console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canaisPluto.length, plutoDaFonte: fontesPluto.length > 0, fontes: fontes.length, famelack: fame.status === "fulfilled" ? fame.value.length : 0, links: urls.length, canais: todos.length, ms: Date.now() - inicio }));
   } catch (e) {
     console.log(JSON.stringify({ evt: "lista_erro", erro: String(e), mantidos: estado.canais.length }));
   } finally {
