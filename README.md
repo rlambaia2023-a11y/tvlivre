@@ -16,7 +16,7 @@ A TV própria que roda no navegador da Smart TV, com os canais abertos do Brasil
 
 ## Como a lista se mantém viva
 
-1. O servidor baixa as listas públicas do [iptv-org](https://github.com/iptv-org/iptv) (Brasil), do [Free-TV](https://github.com/Free-TV/IPTV) , do [Pluto TV Brasil](https://github.com/OwnerPlugins/pluto-tv-m3u) e do [Famelack](https://github.com/famelack/famelack-data) (antigo TV.Garden).
+1. O servidor baixa as listas públicas do [iptv-org](https://github.com/iptv-org/iptv) (Brasil), do [Free-TV](https://github.com/Free-TV/IPTV), do [Pluto TV Brasil](https://github.com/OwnerPlugins/pluto-tv-m3u) e do [Famelack](https://github.com/famelack/famelack-data) (antigo TV.Garden).
 2. Testa cada link, junta os links repetidos do mesmo canal e guarda os que funcionam como reserva.
 3. Refaz tudo a cada 6 horas, mesmo sem ninguém assistindo.
 4. A rotina do GitHub copia a lista testada para a pasta `listas/` a cada 6 horas. Se a TV estiver fora do ar, a rotina falha e o GitHub avisa você por e-mail.
