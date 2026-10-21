@@ -423,6 +423,13 @@ function lerM3U(texto: string): Fonte[] {
   }
   return out;
 }
+// Só canais abertos e gratuitos: retransmissões de canais de TV paga (links não oficiais) ficam de fora.
+// Os canais do Pluto (jmp2.uk / pluto.tv) são gratuitos e nunca passam por este filtro.
+const PAGOS = /\b(a&e|adult swim|amc|axn|arte 1|cartoon network|cinemax|combate|discovery|disney|espn|film ?& ?arts|fox|globonews|gloob|gnt|hbo|history|lifetime|megapix|multishow|music box brazil|national geographic|nat ?geo|nickelodeon|paramount|premiere|sony (channel|movies)|space|sportv|studio universal|syfy|telecine|tlc|tnt|travel box brazil|universal tv|canal viva|warner|woohoo|box kids)\b/i;
+function naoPago(f: Fonte): boolean {
+  if (/jmp2\.uk|pluto\.tv/i.test(f.url)) return true;
+  return !PAGOS.test(f.nome);
+}
 async function emLotes<T, R>(itens: T[], n: number, f: (x: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(itens.length);
   let i = 0;
@@ -445,7 +452,7 @@ async function atualizar(): Promise<void> {
     const fontes = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
-    ];
+    ].filter(naoPago);
     // Pluto TV não passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
     // Se a fonte do Pluto falhar, os canais Pluto que já estavam na lista continuam.
     const fontesPluto = plutoFontes(pluto.status === "fulfilled" ? pluto.value : "");
