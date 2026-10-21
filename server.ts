@@ -446,11 +446,14 @@ async function famelack(): Promise<Fonte[]> {
   }
   return out;
 }
-// Canal do Famelack com o mesmo nome de um que já veio das outras fontes entra como link reserva dele.
+// Famelack só serve de reserva: o link entra apenas em canal que já veio das outras fontes (mesmo nome).
+// Canal que só existe no Famelack fica de fora, porque a origem de alguns links não é garantida.
 function juntarPorNome(base: Fonte[], extras: Fonte[]): Fonte[] {
   const porNome = new Map<string, Fonte>();
   for (const f of base) { const k = chaveDe("", f.nome); if (!porNome.has(k)) porNome.set(k, f); }
-  return extras.map((f) => { const m = porNome.get(f.chave); return m ? { ...f, chave: m.chave, nome: m.nome, logo: m.logo, grupo: m.grupo } : f; });
+  const out: Fonte[] = [];
+  for (const f of extras) { const m = porNome.get(f.chave); if (m) out.push({ ...f, chave: m.chave, nome: m.nome, logo: m.logo, grupo: m.grupo }); }
+  return out;
 }
 async function emLotes<T, R>(itens: T[], n: number, f: (x: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(itens.length);
@@ -477,7 +480,7 @@ async function atualizar(): Promise<void> {
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
     ];
-    // Famelack por último: completa a lista e dá links reserva aos canais que já existem.
+    // Famelack por último: só dá links reserva aos canais que já existem, sem trazer canais novos.
     const fontes = [...principais, ...juntarPorNome(principais, fame.status === "fulfilled" ? fame.value : [])].filter(naoPago);
     // Pluto TV não passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
     // Se a fonte do Pluto falhar, os canais Pluto que já estavam na lista continuam.
