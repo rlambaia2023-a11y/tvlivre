@@ -697,7 +697,7 @@ Bun.serve({
   if (salvo) {
     try {
       const j = JSON.parse(salvo);
-      if (Array.isArray(j.canais) && j.canais.length) { estado.canais = j.canais; estado.atualizado = j.atualizado || 0; }
+      if (Array.isArray(j.canais) && j.canais.length) { estado.canais = j.canais.filter((c: Canal) => c.id.startsWith("pluto:") || naoPago({ nome: c.name, url: c.url } as Fonte)); estado.atualizado = j.atualizado || 0; }
     } catch {}
   }
   console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponível" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
