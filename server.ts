@@ -327,6 +327,19 @@ const FONTE_PLUTO2 = Bun.env.FONTE_PLUTO2 || "https://raw.githubusercontent.com/
 // Famelack (antigo TV.Garden): base pública em JSON, montada a partir do iptv-org e de outras transmissões abertas.
 const FONTE_FAMELACK = Bun.env.FONTE_FAMELACK || "https://raw.githubusercontent.com/famelack/famelack-data/main/tv/raw/countries/br.json";
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
+// Doramas: canais FAST oficiais e gratuitos (Pluto TV América Latina/Espanha e Samsung TV Plus),
+// abertos pelo jmp2.uk. O Pluto Brasil não tem canal de dorama, por isso eles vêm de outros países.
+// Nada de sites piratas: só canais que o próprio dono distribui de graça com anúncios.
+const DORAMAS: { id: string; nome: string; links: string[] }[] = [
+  { id: "dorama:dramascoreanos", nome: "Dramas Coreanos (Pluto TV)", links: ["https://jmp2.uk/plu-6185a9a88b2ce30007de5128.m3u8"] },
+  { id: "dorama:dramascoreanosteen", nome: "Dramas Coreanos Teen (Pluto TV)", links: ["https://jmp2.uk/plu-6661d5424b10960008599fa3.m3u8"] },
+  { id: "dorama:kdramaes", nome: "K-Drama (Pluto TV Espanha)", links: ["https://jmp2.uk/plu-6475bfec536e0c0008858e9f.m3u8"] },
+  { id: "dorama:knovela", nome: "K-Novela en Español", links: ["https://jmp2.uk/stvp-US1700019P7", "https://jmp2.uk/stvp-ES1700003C6"] },
+  { id: "dorama:kstories", nome: "K-Stories (legendas em inglês)", links: ["https://jmp2.uk/stvp-US17000164B"] },
+];
+function doramaFontes(): Fonte[] {
+  return DORAMAS.flatMap((d) => d.links.map((url) => ({ nome: d.nome, logo: "", grupo: "Doramas", chave: d.id, url, ref: "", ua: "" })));
+}
 
 // ---------- Gerador próprio de links do Pluto TV ----------
 // Mesmo método do projeto NasiLemakk/Pluto-TV-Playlists: o servidor pede uma sessão nova ao próprio
@@ -479,6 +492,7 @@ async function atualizar(): Promise<void> {
     const principais = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
+      ...doramaFontes(),
     ];
     // Famelack por último: só dá links reserva aos canais que já existem, sem trazer canais novos.
     const fontes = [...principais, ...juntarPorNome(principais, fame.status === "fulfilled" ? fame.value : [])].filter(naoPago);
