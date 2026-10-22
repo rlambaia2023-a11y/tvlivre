@@ -336,6 +336,12 @@ const DORAMAS: { id: string; nome: string; links: string[] }[] = [
   { id: "dorama:kdramaes", nome: "K-Drama (Pluto TV Espanha)", links: ["https://jmp2.uk/plu-6475bfec536e0c0008858e9f.m3u8"] },
   { id: "dorama:knovela", nome: "K-Novela en Español", links: ["https://jmp2.uk/stvp-US1700019P7", "https://jmp2.uk/stvp-ES1700003C6"] },
   { id: "dorama:kstories", nome: "K-Stories (legendas em inglês)", links: ["https://jmp2.uk/stvp-US17000164B"] },
+  // Arirang TV: canal público internacional da Coreia, em inglês e gratuito (links da CDN da própria emissora, via iptv-org).
+  { id: "dorama:arirang", nome: "Arirang TV (Coreia, em inglês)", links: [
+    "https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
+    "https://amdlive-ch02-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
+    "https://amdlive-ch03-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
+  ] },
 ];
 function doramaFontes(): Fonte[] {
   return DORAMAS.flatMap((d) => d.links.map((url) => ({ nome: d.nome, logo: "", grupo: "Doramas", chave: d.id, url, ref: "", ua: "" })));
