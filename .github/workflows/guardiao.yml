@@ -1,11 +1,11 @@
 name: Guardião da TV
 
-# Confere a TV a cada hora. Se o servidor não responder, se a lista estiver vazia
+# Confere a TV a cada 4 horas. Se o servidor não responder, se a lista estiver vazia
 # ou se os canais do Pluto sumirem, pede uma atualização na hora e marca a execução
 # como falha (o GitHub manda um e-mail avisando).
 on:
   schedule:
-    - cron: "41 * * * *"
+    - cron: "41 */4 * * *"
   workflow_dispatch:
 
 jobs:
