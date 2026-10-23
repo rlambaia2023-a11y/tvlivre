@@ -7,45 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions: { contents: write }
     steps:
+      - uses: actions/checkout@v4
       - run: |
-          mkdir out; cd out
-          cat > yt.py <<'PY'
-          import json, re, sys, urllib.request, urllib.parse
-          UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
-          def get(u):
-              r = urllib.request.Request(u, headers={"user-agent": UA, "accept-language": "pt-BR,pt;q=0.9", "cookie": "CONSENT=YES+1; SOCS=CAI"})
-              return urllib.request.urlopen(r, timeout=30).read().decode("utf-8", "replace")
-          def walk(o, out):
-              if isinstance(o, dict):
-                  if "videoRenderer" in o:
-                      v = o["videoRenderer"]
-                      badges = json.dumps(v.get("badges", [])) + json.dumps(v.get("thumbnailOverlays", []))
-                      live = "LIVE" in badges or "BADGE_STYLE_TYPE_LIVE_NOW" in badges
-                      t = "".join(x.get("text", "") for x in v.get("title", {}).get("runs", []))
-                      ch = v.get("ownerText", {}).get("runs", [{}])[0]
-                      cid = ch.get("navigationEndpoint", {}).get("browseEndpoint", {}).get("browseId", "")
-                      vc = json.dumps(v.get("viewCountText", {}), ensure_ascii=False)
-                      out.append({"v": v.get("videoId"), "t": t, "ch": ch.get("text", ""), "cid": cid, "live": live, "vc": vc[:80]})
-                  for x in o.values(): walk(x, out)
-              elif isinstance(o, list):
-                  for x in o: walk(x, out)
-          res = {}
-          for q in sys.argv[1:]:
-              try:
-                  h = get("https://www.youtube.com/results?search_query=" + urllib.parse.quote(q) + "&sp=EgJAAQ%253D%253D")
-                  m = re.search(r"var ytInitialData = (\{.*?\});</script>", h)
-                  out = []
-                  if m: walk(json.loads(m.group(1)), out)
-                  res[q] = out[:25]
-              except Exception as e:
-                  res[q] = str(e)
-          json.dump(res, open("yt.json", "w"), ensure_ascii=False, indent=1)
-          PY
-          python3 yt.py "webcam ao vivo" "câmera ao vivo praia" "live cam 24/7" "earthcam live" "explore.org live cam" "times square live" "shibuya live camera" "iss live earth" "aquarium live cam" "rio de janeiro ao vivo câmera" "aeroporto ao vivo" "skylinewebcams live" "africam live" "northern lights live" "volcano live cam" "jackson hole live" "venice live cam" "paris live cam" "new york live cam" "tokyo live camera" "balneario camboriu ao vivo" "são paulo ao vivo câmera" "florianópolis ao vivo" "cataratas ao vivo" "trem ao vivo câmera" "porto ao vivo navios" "zoo live cam" "panda live cam" "beach live cam hawaii" "alps live webcam"
-          rm yt.py
+          mkdir out
+          python3 ferramentas/webcams.py out/webcams.json 2>&1 | tee out/log.txt
       - run: |
           cd out
-          git init -q; git checkout -q -b sondagem2
+          git init -q; git checkout -q -b sondagem3
           git config user.name bot; git config user.email bot@users.noreply.github.com
           git add -A; git commit -qm sondagem
-          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem2
+          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem3
