@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele.
-const HTML_REF = Bun.env.TL_HTML_REF || "26e4a053af4171ce9f3551cc23eac542f20d2048";
+const HTML_REF = Bun.env.TL_HTML_REF || "c4f697c0b499be6903ba006d43718973f3406b70";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
@@ -665,6 +665,120 @@ function guiaRota(): Response {
   });
 }
 
+// ---------- Filmes e séries do Pluto TV (sob demanda, grátis) ----------
+// Catálogo oficial do Pluto Brasil, pedido com a mesma sessão do gerador. A TV recebe um resumo
+// (tipo, nome, sinopse curta, duração) e abre o vídeo pelo /vod/hls: o servidor busca só as playlists,
+// que o Pluto não libera para outros sites, e os pedaços de vídeo vão direto do Pluto para a TV.
+const vod: { json: string; ts: number; rodando: Promise<void> | null } = { json: "", ts: 0, rodando: null };
+const temporadas = new Map<string, { json: string; ts: number }>();
+const JSON_H = { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-cache" };
+async function authPluto(): Promise<{ boot: any; auth: Record<string, string> }> {
+  const boot = await bootPluto();
+  return { boot, auth: { ...H_PLUTO, authorization: "Bearer " + boot.sessionToken } };
+}
+async function atualizarVod(): Promise<void> {
+  const inicio = Date.now();
+  try {
+    const { auth } = await authPluto();
+    const r = await fetch("https://service-vod.clusters.pluto.tv/v4/vod/categories?includeItems=true&offset=1000&page=1", { headers: auth, signal: AbortSignal.timeout(30000) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json() as any;
+    const itens: Record<string, (string | number)[]> = {};
+    const cats: { n: string; i: string[] }[] = [];
+    for (const c of (j?.categories || []) as any[]) {
+      const ids: string[] = [];
+      for (const it of (c?.items || []) as any[]) {
+        const id = String(it?._id || it?.id || "");
+        if (!PLUTO_ID.test(id) || (it.type !== "movie" && it.type !== "series")) continue;
+        if (!itens[id]) itens[id] = [it.type === "series" ? "s" : "f", String(it.name || "").trim(), String(it.summary || it.description || "").trim().slice(0, 240), it.type === "movie" ? Math.round((it.duration || 0) / 60000) : 0, String(it.rating || ""), String(it.genre || "")];
+        ids.push(id);
+      }
+      if (ids.length) cats.push({ n: String(c.name || "").trim(), i: ids });
+    }
+    if (!cats.length) throw new Error("catálogo vazio");
+    vod.json = JSON.stringify({ atualizado: Date.now(), cats, itens });
+    vod.ts = Date.now();
+    console.log(JSON.stringify({ evt: "vod_atualizado", categorias: cats.length, titulos: Object.keys(itens).length, bytes: vod.json.length, ms: Date.now() - inicio }));
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "vod_erro", erro: String(e) }));
+  }
+}
+async function vodRota(req: Request): Promise<Response> {
+  if (Date.now() - vod.ts > SEIS_HORAS && !vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; });
+  if (!vod.json && vod.rodando) await vod.rodando;
+  if (!vod.json) return new Response(JSON.stringify({ erro: "catálogo indisponível" }), { status: 503, headers: JSON_H });
+  // O catálogo tem quase 1 MB; compactado chega à TV com um quarto disso.
+  if (/gzip/.test(req.headers.get("accept-encoding") || "")) return new Response(Bun.gzipSync(vod.json), { headers: { ...JSON_H, "content-encoding": "gzip" } });
+  return new Response(vod.json, { headers: JSON_H });
+}
+async function serieRota(q: URLSearchParams): Promise<Response> {
+  const id = String(q.get("id") || "").toLowerCase();
+  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id inválido" }), { status: 400, headers: JSON_H });
+  const salvo = temporadas.get(id);
+  if (salvo && Date.now() - salvo.ts < SEIS_HORAS) return new Response(salvo.json, { headers: JSON_H });
+  try {
+    const { auth } = await authPluto();
+    const r = await fetch("https://service-vod.clusters.pluto.tv/v4/vod/series/" + id + "/seasons?offset=1000&page=1", { headers: auth, signal: AbortSignal.timeout(20000) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json() as any;
+    const temps = ((j?.seasons || []) as any[]).map((t) => ({
+      n: Number(t.number) || 0,
+      eps: ((t.episodes || []) as any[]).filter((e) => PLUTO_ID.test(String(e?._id || ""))).map((e) => [String(e._id), Number(e.number) || 0, String(e.name || "").trim(), Math.round((e.duration || 0) / 60000), String(e.description || "").trim().slice(0, 200)]),
+    })).filter((t) => t.eps.length).sort((a, b) => a.n - b.n);
+    const json = JSON.stringify({ id, nome: String(j?.name || ""), sinopse: String(j?.summary || j?.description || "").slice(0, 300), temporadas: temps });
+    if (temporadas.size > 300) temporadas.clear();
+    temporadas.set(id, { json, ts: Date.now() });
+    return new Response(json, { headers: JSON_H });
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "vod_serie_erro", id, erro: String(e) }));
+    return new Response(JSON.stringify({ erro: "não consegui abrir esta série agora" }), { status: 502, headers: JSON_H });
+  }
+}
+// Link do filme ou episódio com a sessão do momento; o endereço "dash" do Pluto fica de reserva.
+async function playVodRota(q: URLSearchParams): Promise<Response> {
+  const id = String(q.get("id") || "").toLowerCase();
+  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id inválido" }), { status: 400, headers: JSON_H });
+  try {
+    const { boot } = await authPluto();
+    const fim = "/v2/stitch/hls/episode/" + id + "/master.m3u8?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&masterJWTPassthrough=true";
+    const hosts = [boot.servers?.stitcher, boot.servers?.stitcherDash, "https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv"].filter((h, i, l) => h && l.indexOf(h) === i);
+    return new Response(JSON.stringify({ url: hosts[0] + fim, alts: hosts.slice(1).map((h) => h + fim) }), { headers: JSON_H });
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "vod_play_erro", id, erro: String(e) }));
+    return new Response(JSON.stringify({ erro: "Pluto TV não respondeu" }), { status: 502, headers: JSON_H });
+  }
+}
+// Playlists do Pluto: só endereços *.pluto.tv. Playlists filhas continuam passando por aqui;
+// chaves e pedaços de vídeo (plutotv.net, liberados para qualquer site) ficam com o endereço direto.
+async function vodHls(req: Request, q: URLSearchParams): Promise<Response> {
+  const u = alvo(q.get("u"));
+  if (!u || u.protocol !== "https:" || !/\.pluto\.tv$/i.test(u.hostname)) return new Response("Endereço inválido", { status: 400, headers: CORS });
+  try {
+    const r = await fetch(u, { headers: { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO }, signal: AbortSignal.timeout(20000) });
+    const texto = await r.text();
+    if (!r.ok || !texto.trimStart().startsWith("#EXTM3U")) return new Response("Pluto TV recusou (HTTP " + r.status + ")", { status: r.ok ? 502 : r.status, headers: CORS });
+    const base = r.url || u.href;
+    const troca = (x: string): string => {
+      try {
+        const a = new URL(x, base);
+        return /\.m3u8$/i.test(a.pathname) ? "/vod/hls?u=" + encodeURIComponent(a.href) : a.href;
+      } catch { return x; }
+    };
+    const saida = texto.split(/\r?\n/).map((linha) => {
+      const l = linha.trim();
+      if (!l) return linha;
+      if (l.startsWith("#")) return linha.replace(/URI="([^"]+)"/g, (_m, uri) => 'URI="' + troca(uri) + '"');
+      return troca(l);
+    }).join("\n");
+    const h: Record<string, string> = { ...CORS, "content-type": "application/vnd.apple.mpegurl", "cache-control": "no-cache" };
+    if (/gzip/.test(req.headers.get("accept-encoding") || "")) return new Response(Bun.gzipSync(saida), { headers: { ...h, "content-encoding": "gzip" } });
+    return new Response(saida, { headers: h });
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "vod_hls_erro", host: u.hostname, erro: String(e) }));
+    return new Response("Não foi possível alcançar o Pluto TV", { status: 502, headers: CORS });
+  }
+}
+
 function canaisRota(q: URLSearchParams): Response {
   const velha = Date.now() - estado.atualizado > SEIS_HORAS;
   const forcar = q.get("forcar") === "1" && Date.now() - estado.ultimaTentativa > 10 * 60 * 1000;
@@ -804,6 +918,10 @@ Bun.serve({
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
     if (url.pathname === "/falhou") return falhou(url.searchParams);
     if (url.pathname === "/epg") return guiaRota();
+    if (url.pathname === "/vod") return vodRota(req);
+    if (url.pathname === "/vod/serie") return serieRota(url.searchParams);
+    if (url.pathname === "/vod/play") return playVodRota(url.searchParams);
+    if (url.pathname === "/vod/hls") return vodHls(req, url.searchParams);
     if (url.pathname === "/velocidade") return new Response(AMOSTRA, { headers: { ...CORS, "content-type": "application/octet-stream", "cache-control": "no-store", "content-length": String(AMOSTRA.length) } });
     if (url.pathname === "/check") return testar(url.searchParams);
     if (url.pathname === "/diagnostico") return diagnostico(url.searchParams);
@@ -838,3 +956,6 @@ setInterval(() => { if (Date.now() - estado.plutoTs > UMA_HORA - 60 * 1000) atua
 // Guia de programação do Pluto: primeira busca 1 minuto depois de ligar, depois a cada 30 minutos.
 setTimeout(atualizarGuia, 60 * 1000);
 setInterval(() => { if (Date.now() - guia.ts > 25 * 60 * 1000) atualizarGuia(); }, 10 * 60 * 1000);
+// Filmes e séries: catálogo 2 minutos depois de ligar e renovado a cada 6 horas.
+setTimeout(() => { if (!vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; }); }, 2 * 60 * 1000);
+setInterval(() => { if (Date.now() - vod.ts > SEIS_HORAS && !vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; }); }, 30 * 60 * 1000);
