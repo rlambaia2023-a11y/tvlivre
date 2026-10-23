@@ -724,8 +724,15 @@ async function fecharDia(): Promise<void> {
   await guardar("relatorio-" + velho.dia + ".json", JSON.stringify(r), "application/json");
   await guardar("estatisticas.json", JSON.stringify(estat), "application/json");
 }
+let ultimaParcial = 0;
 async function conferirDia(): Promise<void> {
   if (estat.dia !== diaBR()) await fecharDia();
+  // Uma vez por hora deixa no log a contagem parcial do dia (serve para relatórios de teste).
+  if (Date.now() - ultimaParcial > UMA_HORA - 5 * 60 * 1000) {
+    ultimaParcial = Date.now();
+    const r = resumoEstat(estat);
+    console.log(JSON.stringify({ evt: "relatorio_parcial", ...r, canais: r.canais.slice(0, 40).map((c) => c.nome + " | " + c.aparelhos + " aparelho(s) | " + c.vezes + "x") }));
+  }
   if (estatMudou) { estatMudou = false; await guardar("estatisticas.json", JSON.stringify(estat), "application/json"); }
 }
 function contar(q: URLSearchParams): Response {
