@@ -1,0 +1,7 @@
+Brasil: 18 câmeras
+Praias do mundo: 18 câmeras
+Cidades do mundo: 18 câmeras
+Natureza e animais: 18 câmeras
+Céu e espaço: 18 câmeras
+Aeroportos, trens e portos: 18 câmeras
+Gravado out/webcams.json: 108 câmeras
