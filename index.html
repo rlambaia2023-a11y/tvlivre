@@ -424,6 +424,10 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
         <div class="row">
           <button class="chip f" id="sempre-relay" aria-pressed="false">Passar sempre pelo servidor</button>
         </div>
+        <div class="row">
+          <button class="chip f" id="leg-pt" aria-pressed="true">Legenda em português automática</button>
+        </div>
+        <p>Quando o canal traz legenda em português, ela já abre ligada. Se num canal ela não fizer falta, desligue em Opções › Legenda: a TV lembra a escolha daquele canal.</p>
         <p>Ligue “passar pelo servidor” só se os canais travarem logo ao abrir ou derem erro de conexão. Para a maioria dos canais o link direto é mais rápido.</p>
         <div class="row" style="align-items:center">
           <button class="btn f" id="speed-test">Testar minha internet</button>
@@ -1315,6 +1319,7 @@ function play(item,kind,forceRelay,alt){
       fail();
     });
     hls.on(Hls.Events.MANIFEST_PARSED,aplicarQualidade);
+    hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED,legendaAuto);
     hls.loadSource(u);hls.attachMedia(video);
   }else{video.src=u}
   var p=video.play();if(p&&p.catch)p.catch(function(){});
@@ -1404,10 +1409,12 @@ function renderStreams(){
   Array.prototype.forEach.call(document.querySelectorAll("#modos .modo"),function(b){b.setAttribute("aria-pressed",b.dataset.m===modo())});
   Array.prototype.forEach.call(document.querySelectorAll("#qmax .chip"),function(b){b.setAttribute("aria-pressed",String(+b.dataset.q===(S.qual||0)))});
   $("sempre-relay").setAttribute("aria-pressed",!!S.relay);
+  $("leg-pt").setAttribute("aria-pressed",S.legPt!==false);
 }
 $("modos").addEventListener("click",function(e){var b=e.target.closest(".modo");if(!b)return;S.modo=b.dataset.m;save();renderStreams();status("speed-status","Modo "+NOME_MODO[S.modo]+" ligado. Vale a partir do próximo canal que você abrir.")});
 $("qmax").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;S.qual=+b.dataset.q||0;save();aplicarQualidade();renderStreams()});
 $("sempre-relay").onclick=function(){S.relay=!S.relay;save();renderStreams()};
+$("leg-pt").onclick=function(){S.legPt=S.legPt===false;save();renderStreams()};
 /* Teste de internet: baixa 4 MB do servidor da TV e mede quanto tempo levou. */
 var recomendado=null;
 $("speed-test").onclick=function(){
@@ -1485,6 +1492,27 @@ function faixasLegenda(){
   var o=[],tt=video.textTracks;for(var i=0;tt&&i<tt.length;i++)if(/subtitles|captions/.test(tt[i].kind))o.push({i:i,nome:tt[i].label||tt[i].language||("Legenda "+(i+1)),on:tt[i].mode==="showing"});
   return o;
 }
+/* Legenda em português automática: se o canal traz legenda em português, liga sozinha.
+   Canais de emissoras brasileiras (.br) ficam de fora; e quem desligar num canal, a TV lembra. */
+function ehPt(t){return /^(pt|por)/i.test(t||"")||/portugu/i.test(t||"")}
+function legendaAuto(){
+  if(S.legPt===false||!current||current.kind!=="live")return;
+  var it=current.item;
+  if(/\.br$/i.test(it.id)||arr("legOff").indexOf(it.id)>-1)return;
+  var i=-1;
+  if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length){
+    hls.subtitleTracks.some(function(t,k){if(ehPt(t.lang)||ehPt(t.name)){i=k;return true}return false});
+    if(i<0||(hls.subtitleTrack===i&&hls.subtitleDisplay))return;
+    hls.subtitleDisplay=true;hls.subtitleTrack=i;
+  }else{
+    var tt=video.textTracks;
+    for(var k=0;tt&&k<tt.length;k++)if(/subtitles|captions/.test(tt[k].kind)&&(ehPt(tt[k].language)||ehPt(tt[k].label))){i=k;break}
+    if(i<0||tt[i].mode==="showing")return;
+    for(var j=0;j<tt.length;j++)if(/subtitles|captions/.test(tt[j].kind))tt[j].mode=j===i?"showing":"disabled";
+  }
+  $("o-group").textContent=it.group+" · legenda em português";showOsd();
+}
+if(video.textTracks&&video.textTracks.addEventListener)video.textTracks.addEventListener("addtrack",function(){if(!hls)setTimeout(legendaAuto,300)});
 function alturas(){
   if(!hls||!hls.levels)return [];
   var h=[];hls.levels.forEach(function(l){if(l.height&&h.indexOf(l.height)<0)h.push(l.height)});
@@ -1546,6 +1574,7 @@ $("popts-items").addEventListener("click",function(e){
   if(a.indexOf("s:")===0){
     if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length){hls.subtitleDisplay=n>=0;hls.subtitleTrack=n}
     else{var tt=video.textTracks;for(var k=0;tt&&k<tt.length;k++)if(/subtitles|captions/.test(tt[k].kind))tt[k].mode=k===n?"showing":"disabled"}
+    if(current.kind==="live"){var off=arr("legOff"),p=off.indexOf(it.id);if(n<0&&p<0)off.push(it.id);if(n>=0&&p>-1)off.splice(p,1);save()}
     renderOpts(a);return;
   }
   if(a==="lock"){
