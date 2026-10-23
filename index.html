@@ -339,6 +339,16 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
 .rart.pausa .eq i{animation-play-state:paused}
 @keyframes eq{from{height:18%}to{height:100%}}
 @media (prefers-reduced-motion:reduce){.eq i{animation:none}}
+/* Filmes e séries: capas em pé, como nos apps de streaming */
+.rrow.capas{grid-auto-columns:clamp(124px,10.2vw,196px)}
+.grid.capas{grid-template-columns:repeat(auto-fill,minmax(clamp(124px,10.2vw,196px),1fr))}
+.card.capa .art{aspect-ratio:347/500;background:#0d131b}
+.card.capa .art img{max-width:none;max-height:none;width:100%;height:100%;object-fit:cover;filter:none}
+.card.ep .art img{max-width:none;max-height:none;width:100%;height:100%;object-fit:cover;filter:none}
+.card .dur{display:block;padding:0 .8em .7em;margin-top:-.35em;font-size:.78em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .vbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.12)}
+.card .vbar i{display:block;height:100%;background:var(--c)}
+.vsinopse{color:var(--fg-dim);max-width:80ch;line-height:1.5;margin:0 0 14px}
 @media (max-width:760px){.xfil{flex-wrap:nowrap;overflow-x:auto;padding:0 4px 4px;margin-left:-4px;margin-right:-4px}.xfil .chip{flex:none}}
 @media (prefers-reduced-motion:reduce){.card,.osd,.ctile,.drawer,.scrim{transition:none;animation:none}.card:focus,.ctile:focus{transform:none}.loading i{animation-duration:3s}.rrow{scroll-behavior:auto}}
 
@@ -520,6 +530,16 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
     <div id="cams-corpo"></div>
     <p class="xfonte">Câmeras públicas transmitidas ao vivo no YouTube. A lista se renova sozinha a cada 3 horas, porque as transmissões mudam de endereço quando reiniciam.</p>
   </section>
+
+  <!-- FILMES E SÉRIES -->
+  <section id="tab-vod" hidden>
+    <div class="vhead" style="--c:#ff9386"><button class="btn ghost f" id="vod-voltar" hidden>‹ Voltar</button><span class="vic" id="vod-ic"></span><h2 class="vtitle" id="vod-title"></h2>
+      <div class="vtools"><input class="search f" id="vq" type="search" placeholder="Buscar filme ou série…" aria-label="Buscar filme ou série"></div></div>
+    <div class="row xfil" id="vod-filtro"></div>
+    <div class="xmsg" id="vod-msg"></div>
+    <div id="vod-corpo"></div>
+    <p class="xfonte">Filmes e séries do catálogo gratuito e oficial do Pluto TV Brasil, com os intervalos comerciais do próprio Pluto. O catálogo se renova sozinho a cada 6 horas. No player: ← volta 10 s, → avança 30 s, OK pausa, ↑/↓ vão para o título anterior ou o próximo.</p>
+  </section>
 </main>
 
 <!-- PLAYER -->
@@ -537,7 +557,7 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
       <div class="sub"><span class="pill" id="o-live">AO VIVO</span><span id="o-group"></span><span class="favstar" id="o-fav" hidden>★ favorito</span></div>
       <div class="epg" id="o-epg" hidden></div>
     </div>
-    <div class="hint">← canais · → opções<br>Voltar sai</div>
+    <div class="hint" id="o-hint">← canais · → opções<br>Voltar sai</div>
   </div>
   <aside class="panel left" id="plist" hidden>
     <h3 id="plist-title">Canais</h3>
@@ -784,7 +804,7 @@ function renderHome(){
   }).join("");
   if(tiles)h+='<section class="rail" style="--c:#ffb547"><div class="rhead"><span class="ricon">'+ico("diversos")+'</span><h3>Categorias</h3></div><div class="ctiles">'+tiles+'</div></section>';
   h+='<section class="rail" style="--c:#4fc3f7"><div class="rhead"><span class="ricon">'+ico("mundo")+'</span><h3>Explorar</h3></div><div class="ctiles">'+
-    [["radio","radio","Rádios","Brasil e mundo","#c792ff"],["mundo","mundo","TV de outros países","canais abertos","#4fc3f7"],["cams","cam","Webcams ao vivo","praias, cidades, natureza","#7ee2a8"]].map(function(x){
+    [["vod","filmes","Filmes e séries","grátis, quando quiser","#ff9386"],["radio","radio","Rádios","Brasil e mundo","#c792ff"],["mundo","mundo","TV de outros países","canais abertos","#4fc3f7"],["cams","cam","Webcams ao vivo","praias, cidades, natureza","#7ee2a8"]].map(function(x){
       return '<button class="ctile f" data-tab="'+x[0]+'" style="--c:'+x[4]+'">'+ico(x[1])+'<span><b>'+x[2]+'</b><small>'+x[3]+'</small></span></button>'}).join("")+
     '<button class="ctile f" data-act="sorte" style="--c:#ffb547">'+ico("dado")+'<span><b>Canal surpresa</b><small>sorteia um canal no ar</small></span></button></div></section>';
   var favs=S.channels.filter(ehFav).filter(visivel);
@@ -825,7 +845,8 @@ function renderMenu(){
   }
   var aqui=function(g){return tab==="live"&&!query&&group===g};
   var h=item('data-g="inicio"',"inicio","Início",null,"#ffb547",aqui("inicio"))+
-    item('data-g="todos"',"todos","Todos os canais",S.channels.length,"#ffb547",aqui("todos"));
+    item('data-g="todos"',"todos","Todos os canais",S.channels.length,"#ffb547",aqui("todos"))+
+    item('data-tab="vod"',"filmes","Filmes e séries",VOD.total||null,"#ff9386",tab==="vod");
   var nf=S.channels.filter(ehFav).length;if(nf)h+=item('data-g="fav"',"fav","Favoritos",nf,CAT_COR[G_FAV],aqui(G_FAV));
   var nr=arr("recentes").map(byId).filter(Boolean).length;if(nr)h+=item('data-g="recentes"',"recentes","Recentes",nr,CAT_COR[G_REC],aqui(G_REC));
   h+='<div class="dsec">Categorias</div>';
@@ -849,6 +870,7 @@ function renderCrumb(){
   else if(tab==="radio"){nome="Rádios";cor="#c792ff"}
   else if(tab==="mundo"){nome=MUNDO.pais?MUNDO.pais.nome:"TV de outros países";cor="#4fc3f7"}
   else if(tab==="cams"){nome="Webcams ao vivo";cor="#7ee2a8"}
+  else if(tab==="vod"){nome=VOD.serie?VOD.serie.nome:"Filmes e séries";cor="#ff9386"}
   else if(query){nome="Busca";cor="#ffb547"}
   else{nome=CAT_NOME[group]||group;cor=CAT_COR[group]||"#ffb547"}
   $("crumb").innerHTML='<span class="dot" style="--c:'+cor+'"></span>'+esc(nome);
@@ -1132,11 +1154,176 @@ window.addEventListener("message",function(e){
 });
 $("radio-ic").innerHTML=ico("radio");$("cams-ic").innerHTML=ico("cam");
 
+/* ----- Filmes e séries: catálogo grátis e oficial do Pluto TV Brasil, sob demanda -----
+   O servidor manda o catálogo resumido (/vod), as temporadas de cada série (/vod/serie) e, na hora de assistir,
+   o link do título com a sessão do momento (/vod/play). O vídeo abre pelo /vod/hls, que só ajeita as playlists. */
+var VOD={cats:null,itens:{},obj:{},total:0,ts:0,filtro:"",busca:"",cat:-1,serie:null,temp:0,volta:null,fila:[]};
+var VOD_COR="#ff9386",VOD_RAILS=14;
+function vodItem(pid){
+  if(VOD.obj[pid])return VOD.obj[pid];var a=VOD.itens[pid];if(!a)return null;
+  return VOD.obj[pid]={id:"v-"+pid,pid:pid,tipo:a[0],name:a[1],desc:a[2],min:a[3],rating:a[4],group:a[5]||"",src:"vod"};
+}
+function durTxt(min){if(!min)return "";var h=Math.floor(min/60),m=min%60;return h?h+"h"+(m?" "+String(m).padStart(2,"0"):""):m+" min"}
+function capaVod(it){return "https://images.pluto.tv/"+(it.tipo==="s"?"series":"episodes")+"/"+it.pid+"/poster.jpg?fm=jpg&q=70&w=240"}
+function posVod(){if(!S.vodPos||typeof S.vodPos!=="object")S.vodPos={};return S.vodPos}
+function cardVod(it){
+  var ini=esc(initials(it.name)).replace(/'/g,""),p=posVod()[it.pid],pct=p&&p.d?Math.min(100,p.t/p.d*100):0;
+  return '<button class="card capa f" data-v="'+it.pid+'" style="--c:'+VOD_COR+'"><span class="grp">'+(it.tipo==="s"?"Série":esc(durTxt(it.min)||"Filme"))+'</span>'+
+    '<div class="art"><img src="'+esc(capaVod(it))+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<span class=ini>'+ini+'</span>\'"></div>'+
+    '<div class="meta"><span class="name">'+esc(it.name)+'</span></div>'+(pct>2?'<span class="vbar"><i style="width:'+pct.toFixed(0)+'%"></i></span>':'')+'</button>';
+}
+function vodPassa(it){return it&&(!VOD.filtro||it.tipo===VOD.filtro)}
+function carregarVod(){
+  if(!HAS_SERVER){$("vod-msg").textContent="Filmes e séries precisam do servidor da TV (abra pelo endereço do Railway).";renderVod();return}
+  if(VOD.cats&&Date.now()-VOD.ts<60*60*1000){renderVod();return}
+  if(!VOD.cats)$("vod-msg").textContent="Carregando filmes e séries do Pluto TV…";
+  renderVod();
+  fetch("/vod").then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(j){
+    VOD.cats=j.cats||[];VOD.itens=j.itens||{};VOD.obj={};VOD.ts=Date.now();VOD.total=Object.keys(VOD.itens).length;
+    $("vod-msg").textContent=VOD.total?"":"O catálogo veio vazio. Tente de novo daqui a pouco.";
+    var foco=document.activeElement&&document.activeElement.closest("#tab-vod");
+    renderVod();renderMenu();if(tab==="vod"&&!foco)focarPrimeiro("vod-corpo");
+  }).catch(function(){if(!VOD.cats)$("vod-msg").textContent="Não consegui baixar o catálogo do Pluto TV agora. Tente de novo daqui a pouco."});
+}
+function railVod(i,c,lista){
+  var LIM=24,mostra=lista.slice(0,LIM),sobra=lista.length-mostra.length;
+  return '<section class="rail" style="--c:'+VOD_COR+'"><div class="rhead"><span class="ricon">'+ico("filmes")+'</span><h3>'+esc(c.n)+'</h3><span class="rcount">'+lista.length+'</span>'+
+    (sobra>0?'<button class="rmore f" data-cat="'+i+'">Ver tudo ›</button>':'')+'</div><div class="rrow capas">'+mostra.map(cardVod).join("")+
+    (sobra>0?'<button class="card more f" data-cat="'+i+'" style="--c:'+VOD_COR+'">'+ico("mais")+'<span>Ver os '+lista.length+'</span><small>+'+sobra+' títulos</small></button>':'')+'</div></section>';
+}
+function renderVod(){
+  var s=VOD.serie,emCat=VOD.cat>-1&&VOD.cats&&VOD.cats[VOD.cat];
+  $("vod-voltar").hidden=!(s||emCat||VOD.busca);
+  $("vod-ic").innerHTML=ico(s?"series":"filmes");
+  $("vod-filtro").hidden=!!s;
+  if(!s)$("vod-filtro").innerHTML=chipsHtml("data-vf",[["","Tudo"],["f","Filmes"],["s","Séries"]],VOD.filtro);
+  if(s){renderSerie();return}
+  var corpo=$("vod-corpo");
+  if(!VOD.cats){$("vod-title").innerHTML='Filmes e séries';corpo.innerHTML="";return}
+  if(VOD.busca){
+    var b=normS(VOD.busca),achou=Object.keys(VOD.itens).map(vodItem).filter(function(it){return vodPassa(it)&&normS(it.name).indexOf(b)>-1}).slice(0,240);
+    $("vod-title").innerHTML='Busca<small>“'+esc(VOD.busca)+'” · '+achou.length+' títulos</small>';
+    corpo.innerHTML=achou.length?'<div class="grid capas" id="vod-grid">'+achou.map(cardVod).join("")+'</div>':'<p class="secao-vazia">Nenhum filme ou série com esse nome.</p>';
+    return;
+  }
+  if(emCat){
+    var l=emCat.i.map(vodItem).filter(vodPassa);
+    $("vod-title").innerHTML=esc(emCat.n)+'<small>'+l.length+' títulos</small>';
+    corpo.innerHTML='<div class="grid capas" id="vod-grid">'+l.map(cardVod).join("")+'</div>';
+    return;
+  }
+  var nf=0,ns=0;Object.keys(VOD.itens).forEach(function(k){if(VOD.itens[k][0]==="s")ns++;else nf++});
+  $("vod-title").innerHTML='Filmes e séries<small>'+nf+' filmes · '+ns+' séries</small>';
+  var h="",feitas=0;
+  /* Continuar assistindo: o que ficou pela metade neste aparelho. */
+  var pos=posVod(),cont=Object.keys(pos).sort(function(a,b){return pos[b].em-pos[a].em}).map(function(k){return vodItem(pos[k].s||k)}).filter(function(it,i,l){return it&&vodPassa(it)&&l.indexOf(it)===i}).slice(0,24);
+  if(cont.length)h+=railVod(-1,{n:"Continuar assistindo"},cont).replace(/<button class="rmore[^>]*>[^<]*<\/button>/,"");
+  var tiles="";
+  VOD.cats.forEach(function(c,i){
+    var l=c.i.map(vodItem).filter(vodPassa);if(!l.length)return;
+    if(feitas<VOD_RAILS){h+=railVod(i,c,l);feitas++}
+    tiles+='<button class="ctile f" data-cat="'+i+'" style="--c:'+VOD_COR+'">'+ico("filmes")+'<span><b>'+esc(c.n)+'</b><small>'+l.length+' títulos</small></span></button>';
+  });
+  if(tiles)h+='<section class="rail" style="--c:'+VOD_COR+'"><div class="rhead"><span class="ricon">'+ico("diversos")+'</span><h3>Todas as categorias</h3></div><div class="ctiles">'+tiles+'</div></section>';
+  corpo.innerHTML=h;
+}
+function abrirSerie(it){
+  VOD.volta={cat:VOD.cat,busca:VOD.busca,pid:it.pid};
+  VOD.serie={pid:it.pid,nome:it.name,it:it,temps:null};VOD.temp=0;
+  $("vod-msg").textContent="Carregando episódios…";renderVod();renderCrumb();window.scrollTo(0,0);$("vod-voltar").focus({preventScroll:true});
+  fetch("/vod/serie?id="+it.pid).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(j){
+    if(!VOD.serie||VOD.serie.pid!==it.pid)return;
+    VOD.serie.temps=(j.temporadas||[]).map(function(t){return {n:t.n,eps:t.eps.map(function(e){
+      return {id:"v-"+e[0],pid:e[0],tipo:"e",num:e[1],name:e[2],min:e[3],desc:e[4],temp:t.n,serie:it.name,serieId:it.pid,group:it.name+" · T"+t.n+" E"+e[1],src:"vod"}})}});
+    VOD.serie.sinopse=j.sinopse||it.desc||"";
+    /* Abre na temporada do último episódio visto. */
+    var p=posVod()[it.pid];if(p&&p.ep)VOD.serie.temps.forEach(function(t,i){t.eps.forEach(function(e){if(e.pid===p.ep)VOD.temp=i})});
+    $("vod-msg").textContent=VOD.serie.temps.length?"":"Esta série não tem episódios liberados agora.";
+    renderVod();if(document.activeElement===$("vod-voltar"))focarPrimeiro("vod-eps");
+  }).catch(function(){if(VOD.serie&&VOD.serie.pid===it.pid)$("vod-msg").textContent="Não consegui abrir esta série agora. Tente de novo daqui a pouco."});
+}
+function renderSerie(){
+  var s=VOD.serie,t=s.temps&&s.temps[VOD.temp];
+  $("vod-title").innerHTML=esc(s.nome)+'<small>'+(s.temps?s.temps.length+(s.temps.length===1?" temporada":" temporadas"):"")+'</small>';
+  if(!s.temps){$("vod-corpo").innerHTML="";return}
+  var h=s.sinopse?'<p class="vsinopse">'+esc(s.sinopse)+'</p>':'';
+  if(s.temps.length>1)h+='<div class="row xfil">'+chipsHtml("data-vt",s.temps.map(function(x,i){return [String(i),"Temporada "+x.n]}),String(VOD.temp))+'</div>';
+  if(t)h+='<div class="grid" id="vod-eps">'+t.eps.map(function(e){
+    var p=posVod()[e.pid],pct=p&&p.d?Math.min(100,p.t/p.d*100):0;
+    return '<button class="card ep f" data-e="'+e.pid+'" style="--c:'+VOD_COR+'"><span class="grp">T'+e.temp+' · E'+e.num+'</span>'+
+      '<div class="art"><img src="https://images.pluto.tv/episodes/'+e.pid+'/screenshot16_9.jpg?fm=jpg&q=70&w=400" alt="" loading="lazy" onerror="this.remove()"></div>'+
+      '<div class="meta"><span class="name">'+esc(e.name)+'</span></div><span class="dur">'+esc(durTxt(e.min))+(e.desc?' · '+esc(e.desc):'')+'</span>'+
+      (pct>2?'<span class="vbar"><i style="width:'+pct.toFixed(0)+'%"></i></span>':'')+'</button>'}).join("")+'</div>';
+  $("vod-corpo").innerHTML=h;
+}
+function vodVoltar(){
+  if(VOD.serie){
+    var v=VOD.volta||{};VOD.serie=null;VOD.cat=v.cat==null?-1:v.cat;$("vod-msg").textContent="";renderVod();renderCrumb();
+    var c=v.pid&&$("vod-corpo").querySelector('[data-v="'+v.pid+'"]');if(c){c.focus({preventScroll:true});c.scrollIntoView({block:"center",inline:"nearest"})}else focarPrimeiro("vod-corpo");
+    return true;
+  }
+  if(VOD.busca){VOD.busca="";$("vq").value="";renderVod();focarPrimeiro("vod-corpo");return true}
+  if(VOD.cat>-1){var era=VOD.cat;VOD.cat=-1;renderVod();window.scrollTo(0,0);var t=$("vod-corpo").querySelector('[data-cat="'+era+'"]');if(t){t.focus({preventScroll:true});t.scrollIntoView({block:"center",inline:"nearest"})}else focarPrimeiro("vod-corpo");return true}
+  return false;
+}
+$("vod-voltar").onclick=vodVoltar;
+$("vq").addEventListener("input",function(){VOD.busca=this.value.trim();VOD.serie=null;VOD.cat=-1;renderVod();renderCrumb()});
+$("tab-vod").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b||b.id==="vod-voltar")return;
+  if(b.dataset.vf!=null){VOD.filtro=b.dataset.vf;renderVod();var c=$("vod-filtro").querySelector('[data-vf="'+VOD.filtro+'"]');if(c)c.focus();return}
+  if(b.dataset.vt!=null){VOD.temp=+b.dataset.vt;renderVod();var x=$("vod-corpo").querySelector('[data-vt="'+VOD.temp+'"]');if(x)x.focus();return}
+  if(b.dataset.cat!=null){VOD.cat=+b.dataset.cat;renderVod();window.scrollTo(0,0);focarPrimeiro("vod-grid");return}
+  if(b.dataset.e){var t=VOD.serie&&VOD.serie.temps&&VOD.serie.temps[VOD.temp];if(!t)return;
+    var fila=[];VOD.serie.temps.forEach(function(x){fila=fila.concat(x.eps)});
+    var ep=acha(fila,"v-"+b.dataset.e);if(ep){VOD.fila=fila;play(ep,"vod")}return}
+  if(b.dataset.v){var it=vodItem(b.dataset.v);if(!it)return;
+    if(it.tipo==="s"){abrirSerie(it);return}
+    var grade=b.closest(".rrow,.grid");VOD.fila=grade?Array.prototype.map.call(grade.querySelectorAll("[data-v]"),function(x){return vodItem(x.dataset.v)}).filter(function(x){return x&&x.tipo==="f"}):[it];
+    if(VOD.fila.indexOf(it)<0)VOD.fila=[it];
+    play(it,"vod")}
+});
+$("vod-ic").innerHTML=ico("filmes");
+/* Pede ao servidor o link do título (vale algumas horas) e então abre no player. */
+function linkVod(item){
+  stop();clearTimeout(skipTimer);current={item:item,kind:"vod",relay:false,alt:0};
+  $("perr").hidden=true;$("player").hidden=false;$("o-title").textContent=item.name;carregando(true,"Abrindo "+item.name+"…");
+  fetch("/vod/play?id="+item.pid).then(function(r){return r.json()}).then(function(j){
+    if(!current||current.item!==item)return;
+    if(!j.url)throw new Error(j.erro||"sem link");
+    item.url=j.url;item.alts=(j.alts||[]).map(function(u){return {url:u}});item.urlTs=Date.now();
+    play(item,"vod");
+  }).catch(function(){if(current&&current.item===item){carregando(false);$("perr-title").textContent=item.name+" não abriu agora";$("perr-why").textContent="O Pluto TV não respondeu. Tente de novo em alguns minutos.";$("perr-next").textContent="";$("perr").hidden=false}});
+}
+/* Guarda onde parou (a cada 10 s) para continuar depois; ao terminar um episódio, abre o próximo. */
+var vodSalvoEm=0;
+$("video").addEventListener("timeupdate",function(){
+  if(!current||current.kind!=="vod")return;
+  var it=current.item,d=video.duration,t=video.currentTime;
+  if(isFinite(d)&&d>0)$("o-group").textContent=(it.group&&it.tipo==="e"?it.group+" · ":"")+tempo(t)+" / "+tempo(d);
+  if(Date.now()-vodSalvoEm<10000||!isFinite(d)||t<30)return;vodSalvoEm=Date.now();
+  var pos=posVod(),fim=d-t<120;
+  if(fim)delete pos[it.pid];else pos[it.pid]={t:Math.floor(t),d:Math.floor(d),em:Date.now()};
+  if(it.serieId){if(fim)delete pos[it.serieId];else pos[it.serieId]={t:Math.floor(t),d:Math.floor(d),em:Date.now(),ep:it.pid,s:it.serieId}}
+  var ks=Object.keys(pos);if(ks.length>60)ks.sort(function(a,b){return pos[a].em-pos[b].em}).slice(0,ks.length-60).forEach(function(k){delete pos[k]});
+  save();
+});
+$("video").addEventListener("loadedmetadata",function(){
+  if(!current||current.kind!=="vod"||!current.retomar)return;
+  var r=current.retomar;current.retomar=0;if(isFinite(video.duration)&&r<video.duration-60)video.currentTime=r;
+});
+$("video").addEventListener("ended",function(){
+  if(!current||current.kind!=="vod")return;
+  var l=VOD.fila,i=l.indexOf(current.item);if(current.item.tipo==="e"&&i>-1&&i<l.length-1)play(l[i+1],"vod");
+});
+function tempo(s){s=Math.floor(s||0);var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0")}
+function pular(s){if(!isFinite(video.duration))return;video.currentTime=Math.max(0,Math.min(video.duration-1,video.currentTime+s));showOsd()}
+
 /* ---------- abas ---------- */
 function setTab(t){
   tab=t;
-  ["live","videos","settings","radio","mundo","cams"].forEach(function(k){$("tab-"+k).hidden=k!==t});
+  ["live","videos","settings","radio","mundo","cams","vod"].forEach(function(k){$("tab-"+k).hidden=k!==t});
   renderCrumb();
+  if(t==="vod")carregarVod();
   if(t==="radio"&&!RADIO.lista.length&&!RADIO.carregando)carregarRadios();
   if(t==="mundo")carregarPaises();
   if(t==="cams")carregarCams();
@@ -1220,7 +1407,7 @@ document.querySelectorAll("label.btn").forEach(function(l){l.addEventListener("k
 
 /* ---------- player ---------- */
 var video=$("video");
-function listFor(kind){return kind==="live"?S.channels:kind==="radio"?RADIO.lista:kind==="mundo"?MUNDO.lista:kind==="cam"?CAMS.lista:allVideos()}
+function listFor(kind){return kind==="live"?S.channels:kind==="radio"?RADIO.lista:kind==="mundo"?MUNDO.lista:kind==="cam"?CAMS.lista:kind==="vod"?VOD.fila:allVideos()}
 function openById(id,kind){var l=listFor(kind);for(var i=0;i<l.length;i++)if(l[i].id===id){play(l[i],kind);return}}
 function stop(){carregando(false);pararCam();$("rart").hidden=true;if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
 function needsRelay(item){return !!S.relay||!!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
@@ -1265,6 +1452,7 @@ function giveUp(c){
   $("perr-title").textContent=c.item.name+" não abriu agora";
   $("perr-why").textContent="Tentei o link direto, pelo servidor e "+((c.item.alts||[]).length?(c.item.alts.length+" link(s) reserva."):"não há link reserva.");
   $("perr").hidden=false;
+  if(c.item.src==="vod"){$("perr-why").textContent="O Pluto TV não liberou este título agora. Tente de novo em alguns minutos ou escolha outro.";return}
   if(c.item.src!=="local")marcar(c.item,false);else c.item.dead=true;save();
   if(HAS_SERVER&&c.item.src!=="local"){
     fetch(relayUrl(c.item,"/check")).then(function(r){return r.json()}).then(function(j){if(current===c&&!j.ok)$("perr-why").textContent=motivoAmigavel(j.motivo||"",c.item)}).catch(function(){});
@@ -1285,6 +1473,7 @@ function skipNext(c){
 }
 function play(item,kind,forceRelay,alt){
   if(kind==="cam"){playCam(item);return}
+  if(kind==="vod"&&!alt&&!forceRelay&&!(item.url&&Date.now()-(item.urlTs||0)<2*60*60*1000)){if(!(current&&current.item===item))contarCanal(item,kind);linkVod(item);return}
   if(recarregar&&kind==="live"){try{sessionStorage.setItem("tl.retomar",item.id)}catch(e){}location.reload();return}
   if(kind==="live"&&!liberado(item)){
     pedirPin(item.name+" está bloqueado","Digite a senha de 4 números para assistir.",function(){desbloqueados[item.id]=1;play(item,kind,forceRelay,alt)});
@@ -1298,14 +1487,18 @@ function play(item,kind,forceRelay,alt){
     S.ultimo=item.id;lembrarRecente(item);save();
   }
   alt=alt||0;var src=alt?item.alts[alt-1]:item;
-  var relay=HAS_SERVER&&item.src!=="local"&&(forceRelay||needsRelay(src));
+  // Filmes e séries já passam pelo /vod/hls; o relay completo (/p) fica só de reserva.
+  var relay=HAS_SERVER&&item.src!=="local"&&(forceRelay||kind!=="vod"&&needsRelay(src));
   current={item:item,kind:kind,relay:relay,alt:alt};$("perr").hidden=true;$("player").hidden=false;
-  var isHls=/\.m3u8?(\?|$)/i.test(src.url)||(kind==="live"||kind==="mundo")&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url)||kind==="radio"&&!!item.hls;
+  if(kind==="vod"){var pv=posVod()[item.pid];current.retomar=pv&&pv.t>30?pv.t:0}
+  var isHls=/\.m3u8?(\?|$)/i.test(src.url)||(kind==="live"||kind==="mundo")&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url)||kind==="radio"&&!!item.hls||kind==="vod";
   if(kind==="radio")mostrarRadio(item);
-  var u=relay?relayUrl(src):src.url;
+  var u=relay?relayUrl(src):kind==="vod"?"/vod/hls?u="+encodeURIComponent(src.url):src.url;
   jaTocou=false;ultimoTempo=-1;paradoDesde=Date.now();socorros=0;midiaTent=0;redeTent=0;andandoDesde=0;
   carregando(true,"Abrindo "+item.name+"…");
-  if(isHls&&!video.canPlayType("application/vnd.apple.mpegurl")&&window.Hls&&Hls.isSupported()){
+  // Filmes e séries vão pelo hls.js mesmo onde há HLS nativo: o player nativo do Chrome recusa a playlist
+  // do /vod/hls, que aponta os pedaços de vídeo direto para o Pluto (outro endereço).
+  if(isHls&&(kind==="vod"||!video.canPlayType("application/vnd.apple.mpegurl"))&&window.Hls&&Hls.isSupported()){
     /* Ajustes de estabilidade, parecidos com os de serviços de streaming: buffer de até 30 s,
        distância segura do "ao vivo", qualidade que se adapta à internet e mais tentativas antes de desistir. */
     hls=new Hls(cfgHls());
@@ -1326,8 +1519,9 @@ function play(item,kind,forceRelay,alt){
   var l=listFor(kind),n=l.indexOf(item)+1;
   $("o-num").textContent=kind==="live"?String(n).padStart(3,"0"):"";
   $("o-title").textContent=item.name;
-  $("o-group").textContent=kind==="live"||kind==="mundo"||kind==="radio"?item.group:"";
-  $("o-live").hidden=kind==="videos";
+  $("o-group").textContent=kind==="live"||kind==="mundo"||kind==="radio"||kind==="vod"?item.group:"";
+  $("o-live").hidden=kind==="videos"||kind==="vod";
+  $("o-hint").innerHTML=kind==="vod"?"← volta 10 s · → avança 30 s<br>OK pausa · Voltar sai":"← canais · → opções<br>Voltar sai";
   $("o-fav").hidden=!(kind==="live"&&ehFav(item));
   renderEpgOsd();
   if(!$("plist").hidden)renderPlist(true);
@@ -1441,8 +1635,10 @@ function closePlayer(){
   stop();clearTimeout(skipTimer);fecharPaineis();$("player").hidden=true;
   var id=current&&current.item.id;current=null;
   renderLive(); // atualiza "Continuar", "Recentes" e favoritos antes de devolver o foco
+  if(tab==="vod")renderVod(); // barras de "onde parou"
   var raiz=$("tab-"+tab)||$("tab-live");
-  var back=(id&&raiz.querySelector('.card[data-id="'+CSS.escape(id)+'"]'))||(tab==="live"?$("resume"):raiz.querySelector(".f"));
+  var vid=id&&/^v-[0-9a-f]{24}$/.test(id)?id.slice(2):"";
+  var back=(id&&raiz.querySelector('.card[data-id="'+CSS.escape(id)+'"]'))||(vid&&raiz.querySelector('[data-v="'+vid+'"],[data-e="'+vid+'"]'))||(tab==="live"?$("resume"):raiz.querySelector(".f"));
   if(back)back.focus();
 }
 $("pclose").onclick=closePlayer;
@@ -1677,6 +1873,12 @@ document.addEventListener("keydown",function(e){
   }
   if(!$("player").hidden){
     if(BACK.indexOf(k)>-1||e.key==="GoBack"){e.preventDefault();closePlayer();return}
+    /* Filmes e séries: ← volta 10 s, → avança 30 s, OK (ou play/pause do controle) pausa. */
+    if(current&&current.kind==="vod"){
+      if(k===37||k===412){e.preventDefault();pular(-10);return}
+      if(k===39||k===417){e.preventDefault();pular(30);return}
+      if(k===13||k===32||k===415||k===19||k===10252){e.preventDefault();if(video.paused){var pp=video.play();if(pp&&pp.catch)pp.catch(function(){})}else video.pause();showOsd();return}
+    }
     if(k===38||k===33||k===427){e.preventDefault();zap(-1);return}
     if(k===40||k===34||k===428){e.preventDefault();zap(1);return}
     if(k===37||cor==="lista"){e.preventDefault();abrirLista();return}
@@ -1697,7 +1899,7 @@ document.addEventListener("keydown",function(e){
   if(cor==="fav"){var cd=ae&&ae.closest&&ae.closest("#tab-live .card[data-id]");if(cd){e.preventDefault();alternar("favs",cd.dataset.id);renderLive()}return}
   if(cor==="ant"&&S.ultimo){e.preventDefault();openById(S.ultimo,"live");return}
   /* Voltar: de qualquer página vai para o Início; no Início, abre o menu. */
-  if(BACK.indexOf(k)>-1){e.preventDefault();if(tab==="mundo"&&MUNDO.pais){voltarPaises();return}if(tab!=="live"||group!=="inicio"||query)abrirGrupo("inicio");else abrirMenu();return}
+  if(BACK.indexOf(k)>-1){e.preventDefault();if(tab==="mundo"&&MUNDO.pais){voltarPaises();return}if(tab==="vod"&&vodVoltar())return;if(tab!=="live"||group!=="inicio"||query)abrirGrupo("inicio");else abrirMenu();return}
   if(k===77||k===10133){e.preventDefault();abrirMenu();return} // M ou tecla Menu abre o menu
   if(k>=48&&k<=57){digit(String(k-48))}else if(k>=96&&k<=105){digit(String(k-96))}
 });
