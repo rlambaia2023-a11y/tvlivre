@@ -1090,7 +1090,12 @@ function pararCam(){
   if(f&&!f.hidden){f.src="about:blank";f.hidden=true}
   $("player").classList.remove("cam");
 }
+/* Contagem de uso: manda ao servidor só um código aleatório deste aparelho e o canal aberto. */
+function aparelho(){var d="";try{d=localStorage.getItem("tl.aparelho")||""}catch(e){}if(!/^[a-z0-9]{8,32}$/.test(d)){d=(Date.now().toString(36)+Math.random().toString(36).slice(2,12)).slice(0,20);try{localStorage.setItem("tl.aparelho",d)}catch(e){}}return d}
+function contarUso(q){if(!HAS_SERVER)return;try{fetch("/contar?d="+aparelho()+q,{cache:"no-store",keepalive:true}).catch(function(){})}catch(e){}}
+function contarCanal(item,kind){contarUso("&id="+encodeURIComponent(String(item.id||item.name).replace(/^a-/,""))+"&n="+encodeURIComponent(item.name||"")+"&k="+kind)}
 function playCam(item){
+  if(!(current&&current.item===item))contarCanal(item,"cam");
   stop();clearTimeout(skipTimer);$("perr-next").textContent="";
   current={item:item,kind:"cam",relay:false,alt:0};$("perr").hidden=true;$("player").hidden=false;$("player").classList.add("cam");
   camTocou=false;carregando(true,"Abrindo "+item.name+"…");
@@ -1282,6 +1287,7 @@ function play(item,kind,forceRelay,alt){
     return;
   }
   var trocou=kind==="live"&&!(current&&current.item.id===item.id);
+  if(!alt&&!forceRelay&&!(current&&current.item.id===item.id))contarCanal(item,kind);
   stop();clearTimeout(skipTimer);$("perr-next").textContent="";
   if(trocou){
     if(current&&current.kind==="live")S.anterior=current.item.id;
@@ -1673,6 +1679,8 @@ try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","ColorF0Red
 
 renderAll();infoPin();renderStreams();
 loadAuto(false);
+/* Conta este aparelho ao abrir a TV e, se ela ficar ligada, de novo a cada hora (para entrar no dia seguinte). */
+contarUso("&abriu=1");setInterval(function(){contarUso("&ativo=1")},60*60*1000);
 loadGuia();setInterval(loadGuia,10*60*1000);
 /* A cada minuto, atualiza a barra de "Agora" do canal que está passando. */
 setInterval(function(){if(current&&!$("player").hidden)renderEpgOsd()},60*1000);
