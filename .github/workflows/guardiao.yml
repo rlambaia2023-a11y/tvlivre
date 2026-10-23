@@ -2,7 +2,8 @@ name: Guardião da TV
 
 # Confere a TV a cada 4 horas. Se o servidor não responder, se a lista estiver vazia
 # ou se os canais do Pluto sumirem, pede uma atualização na hora e marca a execução
-# como falha (o GitHub manda um e-mail avisando).
+# como falha (o GitHub manda um e-mail avisando). Também abre filmes do catálogo
+# Filmes e séries do mesmo jeito que a TV abre.
 on:
   schedule:
     - cron: "41 */4 * * *"
@@ -33,3 +34,32 @@ jobs:
             curl -sS -m 60 "$TV/canais?forcar=1" >/dev/null || true
             exit 1
           fi
+
+      # Catálogo do Pluto TV sob demanda e 3 filmes sorteados: link do título, playlist mestre
+      # e variante pelo /vod/hls. Os pedaços de vídeo vão direto do Pluto para a TV no Brasil,
+      # por isso não são baixados daqui (o GitHub roda fora do Brasil). Um título com problema
+      # é tolerado; dois ou mais marcam falha.
+      - name: Conferir Filmes e séries
+        if: always()
+        env:
+          TV: https://tela-livre-production.up.railway.app
+        run: |
+          set -u
+          curl -fsS -m 90 --compressed "$TV/vod" -o vod.json || { echo "Catálogo de Filmes e séries não respondeu"; exit 1; }
+          cats=$(jq '.cats | length' vod.json 2>/dev/null || echo 0)
+          titulos=$(jq '.itens | length' vod.json 2>/dev/null || echo 0)
+          echo "Filmes e séries: $cats categorias | $titulos títulos"
+          if [ "$cats" -lt 10 ] || [ "$titulos" -lt 100 ]; then echo "Catálogo menor que o esperado"; exit 1; fi
+          falhas=0
+          for id in $(jq -r '.itens | to_entries[] | select(.value[0] == "f") | .key' vod.json | shuf -n 3); do
+            nome=$(jq -r --arg id "$id" '.itens[$id][1]' vod.json)
+            url=$(curl -fsS -m 30 "$TV/vod/play?id=$id" | jq -r '.url // empty')
+            if [ -z "$url" ]; then echo "FALHA $nome: sem link"; falhas=$((falhas + 1)); continue; fi
+            enc=$(jq -rn --arg u "$url" '$u | @uri')
+            if ! mestre=$(curl -fsS -m 30 --compressed "$TV/vod/hls?u=$enc"); then echo "FALHA $nome: playlist mestre"; falhas=$((falhas + 1)); continue; fi
+            var=$(printf '%s\n' "$mestre" | grep -m1 '^/vod/hls')
+            pedacos=$(curl -fsS -m 30 --compressed "$TV$var" | grep -c '^https' || true)
+            if [ "${pedacos:-0}" -lt 10 ]; then echo "FALHA $nome: variante sem pedaços"; falhas=$((falhas + 1)); continue; fi
+            echo "OK $nome: $pedacos pedaços"
+          done
+          if [ "$falhas" -gt 1 ]; then echo "$falhas filmes não abriram"; exit 1; fi
