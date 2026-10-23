@@ -112,6 +112,16 @@ Ideias tiradas da análise do app YouCine (v1.17.6) e reescritas do zero aqui. D
 - **Bloqueio parental**: senha de 4 números em Ajustes. Com senha, canais de conteúdo adulto ficam trancados e qualquer outro canal pode ser trancado pelo menu de opções. A senha fica guardada só nesta TV.
 - **Guia Agora / A seguir**: o servidor busca a grade do Pluto TV a cada 30 minutos (`guia_atualizado` nos logs). Aparece no cartão do canal, na barra do player e na lista.
 
+## Visual novo e separação por categorias
+
+A grade de canais agora vem separada em doze blocos com cor própria, nesta ordem: **Canais livres** (TV aberta e canais públicos), **Notícias**, **Esportes**, **Documentários** (junta natureza, ciência, curiosidades e investigação), **Filmes**, **Séries**, **Infantil**, **Doramas**, **Música**, **Religioso**, **Entretenimento** e **Diversos**. Os grupos brutos das listas ("Pluto TV · Esportes", "Geral" etc.) entram no bloco certo automaticamente.
+
+- O filtro em cima virou um "rail" de pílulas, cada uma com o pontinho da cor, o nome e a contagem da categoria.
+- Na visão **Todos** a grade aparece dividida por blocos de categoria; ao escolher uma categoria, ela abre a própria grade de cheio.
+- A divisão **funcionando / parados** do teste continua valendo (na visão Todos, por cima dos blocos).
+
+O acabamento geral ficou mais harmonioso: topo em vidro (blur) com o relógio, abas em pílula (a de "Ao vivo" tem um pontinho vermelho), busca com lupa, cartões com sombra e movimento suave, cabeçalhos de seção com régua colorida e painéis do player translúcidos. Navegação pelo controle remoto continua igual: setas movem, OK abre, Voltar fecha.
+
 ## Canais funcionando e canais parados
 
 Depois de "Testar canais", a grade se divide em duas partes: **Canais funcionando** em cima e **Canais parados** embaixo, com a contagem de cada uma e a hora do teste. O resultado fica guardado por canal na TV, então continua valendo depois que a lista se atualiza. Um canal parado volta sozinho para "funcionando" quando abre normalmente, e o "Só os que funcionam" esconde a parte dos parados. O Pluto TV fica fora do teste (o servidor está fora do Brasil) e aparece entre os que funcionam, a menos que falhe na hora de assistir.
