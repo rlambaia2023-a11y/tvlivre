@@ -159,6 +159,8 @@ Ideias tiradas do Famelack (famelack.com), somadas ao que já existia, sem mexer
 
 Recursos que ficam fora da página principal. O servidor baixa cada módulo do mesmo commit da página (`HTML_REF`), guarda uma cópia no bucket e coloca a tag `<script>` na página na hora de entregar, logo depois do hls.js. O `index.html` não muda. Para ligar ou desligar um módulo, edite a lista `EXTRAS` no topo do `server.ts`.
 
+**Atenção:** no Railway existe a variável `TL_HTML_REF`, que tem prioridade sobre o `HTML_REF` do código. Ao publicar um commit novo da página ou dos extras, atualize essa variável com o SHA completo (o log `pagina` mostra o `ref` em uso e a lista `extras` carregada).
+
 ### `controles.js`: pausar, voltar e avançar
 
 - Vale para canais ao vivo, rádios, TV de outros países e "Meus vídeos". Os filmes e séries do Pluto continuam com os comandos da própria página e ganham a mesma barra.
