@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele.
-const HTML_REF = Bun.env.TL_HTML_REF || "08fc5dc5bdbc421eefe3801539a4b08db3d7f959";
+const HTML_REF = Bun.env.TL_HTML_REF || "b64aae8ed158d87de106edab88ee895f9f34a0c3";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
@@ -699,6 +699,69 @@ async function falhou(q: URLSearchParams): Promise<Response> {
   return resp(false);
 }
 
+// Estatísticas de uso: quantos aparelhos abriram a TV e quais canais foram assistidos, por dia
+// (horário de Brasília). Cada aparelho manda só um código aleatório criado pela própria página;
+// o IP de quem baixa a lista do Kodi vira um resumo (hash) com sal do dia e nunca é guardado nem
+// mostrado. No fim do dia o resumo sai no log `relatorio_diario` e fica no bucket.
+type CanalVisto = { n: string; k: string; vezes: number; ap: string[] };
+type Estat = { dia: string; aparelhos: string[]; canais: Record<string, CanalVisto>; kodi: string[]; aberturas: number };
+const diaBR = (t = Date.now()) => new Date(t - 3 * 3600 * 1000).toISOString().slice(0, 10);
+const estatVazia = (dia = diaBR()): Estat => ({ dia, aparelhos: [], canais: {}, kodi: [], aberturas: 0 });
+let estat: Estat = estatVazia();
+let estatMudou = false;
+function resumoEstat(e: Estat) {
+  const canais = Object.entries(e.canais)
+    .map(([id, c]) => ({ id, nome: c.n, tipo: c.k, vezes: c.vezes, aparelhos: c.ap.length }))
+    .sort((a, b) => b.aparelhos - a.aparelhos || b.vezes - a.vezes);
+  return { dia: e.dia, aparelhos: e.aparelhos.length, aberturas: e.aberturas, kodi: e.kodi.length, canaisDiferentes: canais.length, assistidos: canais.reduce((s, c) => s + c.vezes, 0), canais };
+}
+async function fecharDia(): Promise<void> {
+  const velho = estat;
+  estat = estatVazia();
+  estatMudou = true;
+  const r = resumoEstat(velho);
+  console.log(JSON.stringify({ evt: "relatorio_diario", ...r, canais: r.canais.slice(0, 40).map((c) => c.nome + " | " + c.aparelhos + " aparelho(s) | " + c.vezes + "x") }));
+  await guardar("relatorio-" + velho.dia + ".json", JSON.stringify(r), "application/json");
+  await guardar("estatisticas.json", JSON.stringify(estat), "application/json");
+}
+async function conferirDia(): Promise<void> {
+  if (estat.dia !== diaBR()) await fecharDia();
+  if (estatMudou) { estatMudou = false; await guardar("estatisticas.json", JSON.stringify(estat), "application/json"); }
+}
+function contar(q: URLSearchParams): Response {
+  if (estat.dia !== diaBR()) conferirDia();
+  const d = (q.get("d") || "").replace(/[^a-z0-9]/gi, "").slice(0, 32);
+  if (d.length >= 8) {
+    if (!estat.aparelhos.includes(d) && estat.aparelhos.length < 20000) estat.aparelhos.push(d);
+    const id = (q.get("id") || "").slice(0, 120);
+    if (id) {
+      let c = estat.canais[id];
+      if (!c && Object.keys(estat.canais).length < 3000) c = estat.canais[id] = { n: (q.get("n") || id).slice(0, 80), k: (q.get("k") || "live").replace(/[^a-z]/g, "").slice(0, 10), vezes: 0, ap: [] };
+      if (c) { c.vezes++; if (!c.ap.includes(d) && c.ap.length < 20000) c.ap.push(d); }
+    } else if (q.get("abriu")) estat.aberturas++;
+    estatMudou = true;
+  }
+  return new Response(null, { status: 204, headers: { ...CORS, "cache-control": "no-store" } });
+}
+function contarKodi(req: Request): void {
+  const ip = (req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for") || "").split(",")[0].trim();
+  if (!ip || /^(curl|wget|python|go-http|bun)/i.test(req.headers.get("user-agent") || "")) return;
+  const h = Bun.hash(ip + "|" + estat.dia + "|tela-livre").toString(36);
+  if (!estat.kodi.includes(h) && estat.kodi.length < 20000) { estat.kodi.push(h); estatMudou = true; }
+}
+async function relatorioRota(q: URLSearchParams): Promise<Response> {
+  const dia = (q.get("dia") || "").replace(/[^0-9-]/g, "");
+  let corpo: string;
+  if (!dia || dia === estat.dia) corpo = JSON.stringify({ parcial: true, ...resumoEstat(estat) });
+  else corpo = (await ler("relatorio-" + dia + ".json")) || JSON.stringify({ dia, erro: "sem relatório para esse dia" });
+  return new Response(corpo, { headers: { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
+}
+async function carregarEstat(): Promise<void> {
+  const salvo = await ler("estatisticas.json");
+  if (!salvo) return;
+  try { const j = JSON.parse(salvo); if (j && j.dia && Array.isArray(j.aparelhos) && j.canais) estat = { kodi: [], aberturas: 0, ...j }; } catch {}
+}
+
 // Lista no formato M3U para o Kodi (PVR IPTV Simple Client) e outros players.
 function textoM3U(): string {
   const q = (t: string) => t.replace(/"/g, "'");
@@ -728,7 +791,9 @@ Bun.serve({
     if (url.pathname === "/p") return relay(req, url.searchParams);
     if (url.pathname === "/list") return lista(url.searchParams);
     if (url.pathname === "/freetv") return freeTv();
-    if (url.pathname === "/lista.m3u") { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); return listaM3U(); }
+    if (url.pathname === "/contar") return contar(url.searchParams);
+    if (url.pathname === "/relatorio") return relatorioRota(url.searchParams);
+    if (url.pathname === "/lista.m3u") { contarKodi(req); if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); return listaM3U(); }
     if (url.pathname === "/canais") return canaisRota(url.searchParams);
     if (url.pathname === "/falhou") return falhou(url.searchParams);
     if (url.pathname === "/epg") return guiaRota();
@@ -742,6 +807,7 @@ Bun.serve({
 {
   await conectarBucket();
   await carregarPagina();
+  await carregarEstat();
   const salvo = await ler("canais.json");
   if (salvo) {
     try {
@@ -752,6 +818,9 @@ Bun.serve({
   console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponível" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
 }
 console.log("Tela Livre no ar");
+// Estatísticas: guarda a cada 10 minutos e fecha o dia logo depois da meia-noite de Brasília.
+conferirDia();
+setInterval(conferirDia, 10 * 60 * 1000);
 if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
 // Confere a cada 30 minutos se a lista passou de 6 horas e, se passou, refaz os testes sozinho,
 // mesmo que ninguém esteja assistindo.
