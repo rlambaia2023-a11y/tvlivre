@@ -1,32 +1,49 @@
 // A página da TV fica em index.html no repositório tvlivre. O servidor carrega a página ao ligar:
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
-// fica pequeno e a página não precisa vir embutida nele.
-const HTML_REF = Bun.env.TL_HTML_REF || "c4f697c0b499be6903ba006d43718973f3406b70";
+// fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
+const HTML_REF = Bun.env.TL_HTML_REF || "2eb2d4f15441a3fa4eb3c62ef91d00a7498bc3a7";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
-async function carregarPagina(): Promise<void> {
+// Módulos extras (pasta extras/ do repositório): ficam fora da página principal e entram nela na hora
+// de entregar, logo depois do hls.js. Vêm do mesmo commit da página, com reserva no bucket.
+const EXTRAS = ["controles.js"];
+const extras: Record<string, string> = {};
+async function baixarDoRepo(caminho: string): Promise<{ texto: string; origem: string } | null> {
   try {
-    const local = Bun.file(new URL("./index.html", import.meta.url));
-    if (await local.exists()) { HTML = await local.text(); console.log(JSON.stringify({ evt: "pagina", origem: "arquivo" })); return; }
+    const local = Bun.file(new URL("./" + caminho, import.meta.url));
+    if (await local.exists()) return { texto: await local.text(), origem: "arquivo" };
   } catch {}
   try {
-    const r = await fetch(HTML_URL, { signal: AbortSignal.timeout(20000) });
-    const t = r.ok ? await r.text() : "";
-    if (t.includes("<html")) {
-      HTML = t;
-      console.log(JSON.stringify({ evt: "pagina", origem: "github", ref: HTML_REF.slice(0, 7), bytes: t.length }));
-      await guardar("index.html", t, "text/html; charset=utf-8");
-      return;
-    }
-    throw new Error("HTTP " + r.status);
+    const r = await fetch("https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/" + caminho, { signal: AbortSignal.timeout(20000) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const texto = await r.text();
+    await guardar(caminho, texto, caminho.endsWith(".js") ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
+    return { texto, origem: "github" };
   } catch (e) {
-    const salvo = await ler("index.html");
-    if (salvo && salvo.includes("<html")) { HTML = salvo; console.log(JSON.stringify({ evt: "pagina", origem: "bucket", erroGithub: String(e) })); return; }
-    console.log(JSON.stringify({ evt: "pagina_erro", erro: String(e) }));
-    setTimeout(carregarPagina, 60 * 1000);
+    const salvo = await ler(caminho);
+    if (salvo) return { texto: salvo, origem: "bucket" };
+    console.log(JSON.stringify({ evt: "arquivo_erro", caminho, erro: String(e) }));
+    return null;
   }
+}
+function comExtras(pagina: string): string {
+  const tags = Object.keys(extras).map((n) => '<script src="/extras/' + n + '?v=' + HTML_REF.slice(0, 7) + '"></script>').join("");
+  if (!tags) return pagina;
+  const marca = 'hls.min.js"></script>';
+  return pagina.includes(marca) ? pagina.replace(marca, marca + tags) : pagina.replace("<script>", tags + "<script>");
+}
+async function carregarPagina(): Promise<void> {
+  const pag = await baixarDoRepo("index.html");
+  for (const n of EXTRAS) { const x = await baixarDoRepo("extras/" + n); if (x) extras[n] = x.texto; }
+  if (pag && pag.texto.includes("<html")) {
+    HTML = comExtras(pag.texto);
+    console.log(JSON.stringify({ evt: "pagina", origem: pag.origem, ref: HTML_REF.slice(0, 7), bytes: pag.texto.length, extras: Object.keys(extras) }));
+    return;
+  }
+  console.log(JSON.stringify({ evt: "pagina_erro" }));
+  setTimeout(carregarPagina, 60 * 1000);
 }
 
 const UA_PADRAO = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0 Safari/537.36";
@@ -909,6 +926,7 @@ Bun.serve({
     }
     if (url.pathname === "/health") return new Response("ok");
     if (url.pathname === "/v") return new Response(String(Bun.hash(HTML)));
+    if (url.pathname.startsWith("/extras/")) { const n = url.pathname.slice(8); if (extras[n]) return new Response(extras[n], { headers: { "content-type": "text/javascript; charset=utf-8", "cache-control": "public, max-age=3600" } }); }
     if (url.pathname === "/p") return relay(req, url.searchParams);
     if (url.pathname === "/list") return lista(url.searchParams);
     if (url.pathname === "/freetv") return freeTv();
