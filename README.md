@@ -137,3 +137,10 @@ Depois de "Testar canais", a grade se divide em duas partes: **Canais funcionand
 ## Como a página chega ao Railway
 
 O código do Railway é só o `server.ts`. Ao ligar, ele baixa o `index.html` do GitHub preso a um commit (constante `HTML_REF` no topo do `server.ts`, ou a variável `TL_HTML_REF`) e guarda uma cópia no bucket. Se o GitHub não responder, usa a cópia do bucket. Para publicar uma página nova: faça push do `index.html`, troque o `HTML_REF` pelo commit novo e publique o `server.ts`. O log mostra `pagina` com a origem (`github`, `bucket` ou `arquivo`).
+
+## Visual com menu hambúrguer (out/2026)
+
+- Menu lateral (☰): Início, Todos os canais, Favoritos, Recentes, as categorias com ícone e contagem, Meus vídeos, Testar canais e Ajustes. No controle, ← na borda esquerda, Voltar no Início ou a tecla M abrem o menu. → ou Voltar fecham.
+- Início: destaque "Continuar assistindo" (ou boas-vindas), blocos coloridos de categorias e uma fileira deslizante por categoria, com "Ver tudo".
+- Página de categoria: título, "Só os que funcionam", "Testar canais" e a grade completa.
+- Backups: a tag `bkp-2026-10-23-antes-do-menu` guarda a versão anterior. Para voltar, troque a variável `TL_HTML_REF` do Railway pelo commit dessa tag (a página que estava no ar era `08fc5dc5bdbc421eefe3801539a4b08db3d7f959`).
