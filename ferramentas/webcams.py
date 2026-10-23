@@ -32,7 +32,7 @@ PRECISA = re.compile(r"cam|câm|camera|webcam|ao vivo|live view|24/7|panorama|fr
 FORA = re.compile(r"not[ií]cia|news|jornal|m[uú]sica|music|lo-?fi|r[aá]dio\b|radio|gam(e|ing)|jogo|futebol|football|soccer|"
                   r"\bmatch\b|bingo|cassino|casino|\bbet\b|aposta|igreja|church|culto|missa|ora[cç][aã]o|prayer|"
                   r"bikini|biqu[ií]ni|sexy|hot girl|girls|asmr|podcast|q&a|fortnite|minecraft|roblox|gta|"
-                  r"trading|crypto|bitcoin|forex|sorteio", re.I)
+                  r"trading|crypto|bitcoin|forex|sorteio|pagode|samba|sertanejo|funk|forr[oó]|\bshow\b|\bdj\b|playlist|karaok", re.I)
 # No grupo Brasil só entra o que tem cara de Brasil (o YouTube mistura câmeras do mundo todo na busca).
 BRASIL = re.compile(r"brasil|brazil|🇧🇷|rio de janeiro|copacabana|ipanema|leblon|barra da|s[aã]o paulo|\bsp\b|santos|"
                     r"guaruj|ubatuba|santa catarina|florian[oó]polis|cambori[uú]|itaja[ií]|bombinhas|cabo frio|arraial|"
