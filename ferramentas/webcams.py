@@ -39,6 +39,9 @@ BRASIL = re.compile(r"brasil|brazil|🇧🇷|rio de janeiro|copacabana|ipanema|l
                     r"b[uú]zios|niter[oó]i|bahia|salvador|porto seguro|recife|fortaleza|natal|macei[oó]|curitiba|"
                     r"foz do igua|gramado|porto alegre|belo horizonte|bras[ií]lia|manaus|bel[eé]m|guarapari|ilhabela|"
                     r"praia grande|guarulhos|sbgr|congonhas|viracopos|ao vivo|câmera|\bpraia", re.I)
+# Além de ter cara de Brasil, precisa ter cara de câmera (senão entram canais de TV que transmitem "ao vivo 24 horas").
+CAMERA_BR = re.compile(r"cam|c[aâ]mera|webcam|praia|aeroporto|airport|porto|trem|rodovia|estrada|tempo real|vista|ao vivo", re.I)
+TV_BR = re.compile(r"\btv\b|rede ?vida|novo tempo|can[c]?ão nova|canal|programa|jornal|telejornal|ora[cç][aã]o|ter[cç]o|santa missa", re.I)
 SO_NO_GRUPO = {"brasil": BRASIL}
 FORA_SEMPRE = re.compile(r"rel[oó]gio|clock|hora certa", re.I)
 POR_GRUPO = 18
@@ -106,6 +109,8 @@ def main(destino):
                 continue
             exige = SO_NO_GRUPO.get(gid)
             if exige and not exige.search(x["t"] + " " + x["ch"]):
+                continue
+            if gid == "brasil" and (not CAMERA_BR.search(x["t"]) or TV_BR.search(x["t"] + " " + x["ch"])):
                 continue
             vistos.add(x["v"])
             if not incorporavel(x["v"]):
