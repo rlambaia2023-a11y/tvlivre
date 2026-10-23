@@ -1,0 +1,15 @@
+  1994 cams.txt
+  2773 categories.json
+ 18955 countries.json
+   703 ic.h
+ 17144 outdoor.m3u
+   707 pt.h
+ 19780 pt.m3u
+   264 rb.h
+ 49007 rb.json
+   285 rb2.h
+  1814 rbcountries.json
+   123 rbservers.json
+  1611 rbtags.json
+  2296 relax.m3u
+117456 total

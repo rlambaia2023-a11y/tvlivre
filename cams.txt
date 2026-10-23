@@ -1,0 +1,28 @@
+#EXTINF:-1 tvg-id="AbazaTV.ru@SD" tvg-logo="https://i.imgur.com/7Jo7UAf.png" group-title="General",Abaza TV (1080p)
+https://public.apsny.camera/tv_abaza_tv_to_site/index.m3u8
+--
+#EXTINF:-1 tvg-id="AnshunComprehensiveNewsChannel.cn@SD" tvg-logo="https://www.tvchinese.net/uploads/tv/anshun.jpg" group-title="News",Anshun Comprehensive News Channel
+https://hplayer1.juyun.tv/camera/154379194.m3u8
+--
+https://cdn.pishow.tv/ott/live/963/master.m3u8
+#EXTINF:-1 tvg-id="CAM10TV.cm@SD" tvg-logo="https://i.imgur.com/xspb9uY.png" group-title="General",CAM 10 TV (720p)
+https://stream.it-innov.com/cam10tv/index.m3u8
+#EXTINF:-1 tvg-id="CameradeiDeputati.it@SD" tvg-logo="https://i.imgur.com/hv4zi9N.png" group-title="Legislative",Camera dei Deputati (240p)
+https://video-ar.radioradicale.it/diretta/camera2/playlist.m3u8
+#EXTINF:-1 tvg-id="CameraSmileTV.us@SD" tvg-logo="https://i.imgur.com/V5h4R83.png" group-title="Comedy",Camera Smile TV (480p)
+https://rpn.bozztv.com/gusa/gusa-camerasmile/index.m3u8
+--
+#EXTINF:-1 tvg-id="CatveFM.br@SD" tvg-logo="https://i.imgur.com/w89yw36.png" group-title="General",Catve FM (720p) [Not 24/7]
+https://5b33b873179a2.streamlock.net:1443/radiocamera/livestream/playlist.m3u8
+--
+#EXTINF:-1 tvg-id="MetropolitanadelCuzco.pe@SD" tvg-logo="https://i.imgur.com/0B04qgM.png" group-title="Music",Metropolitana del Cuzco
+https://video1.earthcam.com/myearthcam/075ff02f78c35af55564cf3af3b3f750.flv/playlist.m3u8
+--
+#EXTINF:-1 tvg-id="MosaiqueFM.tn@SD" tvg-logo="https://i.imgur.com/GDUykah.png" group-title="Music",Mosaique FM (1080p)
+https://webcam.mosaiquefm.net/mosatv/_definst_/studio/playlist.m3u8?DVR
+--
+#EXTINF:-1 tvg-id="SorTV.md@SD" tvg-logo="https://i.imgur.com/BcfZgD8.png" group-title="General",Sor TV (720p)
+http://188.237.212.16:8888/live/cameraFeed.m3u8
+--
+#EXTINF:-1 tvg-id="WLNGRadio.us@SD" tvg-logo="" group-title="Undefined",WLNG Radio (410p) [Not 24/7]
+http://wlngstudiowebcam.srfms.com:1935/wlngstudiowebcam/livestream/playlist.m3u8
