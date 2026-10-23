@@ -1,0 +1,6392 @@
+{
+ "total": 470,
+ "canais": [
+  {
+   "id": "combrasil.br",
+   "nome": "COM Brasil",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "br5093.streamingdevideo.com.br"
+  },
+  {
+   "id": "sbtnacional.br",
+   "nome": "SBT Nacional",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "6836041ea1117.streamlock.net"
+  },
+  {
+   "id": "canalfutura.br",
+   "nome": "Canal Futura",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "recordnews.br",
+   "nome": "Record News",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "rnw-rn.otteravision.com"
+  },
+  {
+   "id": "istvhd.br",
+   "nome": "ISTV",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvstm.com"
+  },
+  {
+   "id": "redebrasil.br",
+   "nome": "Rede Brasil",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "tvcamara.br",
+   "nome": "TV Câmara",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [
+    "?"
+   ],
+   "cc608": true,
+   "link": "stream3.camara.gov.br"
+  },
+  {
+   "id": "tvers.br",
+   "nome": "TVE RS",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "streaming.procergs.com.br"
+  },
+  {
+   "id": "tvcultura.br",
+   "nome": "TV Cultura",
+   "grupo": "TV aberta",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "player-tvcultura.stream.uol.com.br"
+  },
+  {
+   "id": "plusmaisum.br",
+   "nome": "+MaisUm",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stream.ichibansys.com"
+  },
+  {
+   "id": "adessotv.br",
+   "nome": "Adesso TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "adrenalinapuratv.us",
+   "nome": "Adrenalina Pura TV Brazil",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "agrocanal.br",
+   "nome": "AgroCanal",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [
+    "por",
+    "por"
+   ],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "agromais.br",
+   "nome": "AgroMais",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "amazonsat.br",
+   "nome": "Amazon Sat",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "amazonsat.brasilstream.com.br"
+  },
+  {
+   "id": "angeltv.in",
+   "nome": "Angel TV Portuguese",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "janya-digimix.akamaized.net"
+  },
+  {
+   "id": "ararunatv.br",
+   "nome": "Araruna TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video05.logicahost.com.br"
+  },
+  {
+   "id": "aratuon.br",
+   "nome": "Aratu On",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.live.br1.jmvstream.com"
+  },
+  {
+   "id": "avataralendadeaang.us",
+   "nome": "Avatar: A lenda de Aang",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "awtv.br",
+   "nome": "AWTV",
+   "grupo": "Clássicos",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "awtv.nuvemplay.live"
+  },
+  {
+   "id": "band.br",
+   "nome": "Band",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "bandsports.br",
+   "nome": "Band Sports",
+   "grupo": "Esportes",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "bandnews.br",
+   "nome": "BandNews",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "bemmaistv.br",
+   "nome": "Bem Mais TV",
+   "grupo": "Cultura",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "betplutotv.us",
+   "nome": "BET Pluto TV BR",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "bmcnews.br",
+   "nome": "BM&C News",
+   "grupo": "Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "boasnovas.br",
+   "nome": "Boas Novas",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "bobesponjacalcaquadrada.us",
+   "nome": "Bob Esponja Calca Quadrada",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "canal25jundiai.br",
+   "nome": "Canal 25 Jundiai",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stream01.msolutionbrasil.com.br"
+  },
+  {
+   "id": "canal38.br",
+   "nome": "Canal 38",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "canaldoboi.br",
+   "nome": "Canal do Boi",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "canaleducacao.br",
+   "nome": "Canal Educacao",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "canalfdr.br",
+   "nome": "Canal FDR",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+   "id": "canalgov.br",
+   "nome": "Canal Gov",
+   "grupo": "Governo",
+   "legendas": [],
+   "audio": [
+    "?",
+    "?"
+   ],
+   "cc608": false,
+   "link": "45.177.114.115"
+  },
+  {
+   "id": "canalmetropolitanodenoticias.br",
+   "nome": "Canal Metropolitano de Noticias",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv5.samcast.com.br"
+  },
+  {
+   "id": "canalrural.br",
+   "nome": "Canal Rural",
+   "grupo": "Campo e natureza",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "170.83.49.66"
+  },
+  {
+   "id": "canalsaude.br",
+   "nome": "Canal Saude",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "canalsete.br",
+   "nome": "Canal Sete",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "URLError: <urlopen error timed out>"
+  },
+  {
+   "id": "canaluol.br",
+   "nome": "Canal UOL",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video24.mais.uol.com.br"
+  },
+  {
+   "id": "cazetv.br",
+   "nome": "CazeTV",
+   "grupo": "Esportes",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "138.204.86.4"
+  },
+  {
+   "id": "cheftv.br",
+   "nome": "Chef TV",
+   "grupo": "Culinária",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "chromatv.br",
+   "nome": "Chroma TV",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5c483b9d1019c.streamlock.net"
+  },
+  {
+   "id": "cineterror.us",
+   "nome": "Cine Terror BR",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "classiquetv.br",
+   "nome": "Classique TV",
+   "grupo": "Filmes",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "cnnbrasil.br",
+   "nome": "CNN Brasil",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "d25usgadhphvwi.cloudfront.net"
+  },
+  {
+   "id": "comedycentralbrasil.br",
+   "nome": "Comedy Central Brasil",
+   "grupo": "Comédia",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv2.srvif.com"
+  },
+  {
+   "id": "comedycentralplutotv.us",
+   "nome": "Comedy Central Pluto TV BR",
+   "grupo": "Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "comedycentralsouthpark.us",
+   "nome": "Comedy Central South Park",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "conectamaistv.br",
+   "nome": "Conecta Mais TV",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "adylnet.streampool.net"
+  },
+  {
+   "id": "conectvbrasil.br",
+   "nome": "ConecTV Brasil",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stream01.msolutionbrasil.com.br"
+  },
+  {
+   "id": "conexaotv.br",
+   "nome": "Conexao TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "csimiami.us",
+   "nome": "CSI: Miami BR",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "culturafast.br",
+   "nome": "Cultura Fast",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "fpa-gateway.tvcultura.com.br"
+  },
+  {
+   "id": "culturapara.br",
+   "nome": "Cultura Para",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "demaistv.br",
+   "nome": "Demais TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.samcast.com.br"
+  },
+  {
+   "id": "despertartv.br",
+   "nome": "Despertar TV",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "br.conectmy.com.br"
+  },
+  {
+   "id": "detetivesmedicos.us",
+   "nome": "Detetives Medicos",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "diffrentstrokesarnold.us",
+   "nome": "Diff'rent Strokes Arnold",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "dumdum.br",
+   "nome": "DumDum",
+   "grupo": "Infantil",
+   "legendas": [],
+   "audio": [
+    "por",
+    "por"
+   ],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "elementalchannel.br",
+   "nome": "Elemental Channel",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.samcast.com.br"
+  },
+  {
+   "id": "elytv.br",
+   "nome": "ElyTV",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvsite.com"
+  },
+  {
+   "id": "eutv.br",
+   "nome": "EUTV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "não é HLS"
+  },
+  {
+   "id": "failarmy.us",
+   "nome": "FailArmy Brazil",
+   "grupo": "Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "falalitoral.br",
+   "nome": "Fala Litoral",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5c483b9d1019c.streamlock.net"
+  },
+  {
+   "id": "fifaplus.uk",
+   "nome": "FIFA+ Portuguese",
+   "grupo": "Esportes",
+   "legendas": [
+    {
+     "tipo": "CLOSED-CAPTIONS",
+     "idioma": "eng",
+     "nome": "English"
+    }
+   ],
+   "audio": [],
+   "cc608": true,
+   "link": "e3be9ac5.wurl.com"
+  },
+  {
+   "id": "filmessuspense.us",
+   "nome": "Filmes Suspense",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "fontetv.br",
+   "nome": "Fonte TV",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "59fb88a1b1108.streamlock.net"
+  },
+  {
+   "id": "foratediotv.br",
+   "nome": "Fora Tedio TV",
+   "grupo": "Comédia",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv2.srvif.com"
+  },
+  {
+   "id": "futura.br",
+   "nome": "Futura",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "170.83.49.66"
+  },
+  {
+   "id": "gospelcartoon.br",
+   "nome": "Gospel Cartoon",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "gospelmovietv.br",
+   "nome": "Gospel Movie TV",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "icarly.us",
+   "nome": "iCarly (United States)",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "istv.br",
+   "nome": "ISTV (Brazil)",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvstm.com"
+  },
+  {
+   "id": "j3newstv.br",
+   "nome": "J3NEWS TV",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video01.brascast.com"
+  },
+  {
+   "id": "jornadanasestrelasanovageracao.us",
+   "nome": "Jornada nas Estrelas: A Nova Geracao",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "jornadanasestrelasdeepspacenine.us",
+   "nome": "Jornada nas Estrelas: Deep Space Nine",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "jornadanasestrelasvoyager.us",
+   "nome": "Jornada nas Estrelas: Voyager",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "jovempannews.br",
+   "nome": "Jovem Pan News",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "170.83.49.66"
+  },
+  {
+   "id": "kenankel.us",
+   "nome": "Kenan & Kel BR",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "kpoptvplay.br",
+   "nome": "KpopTV Play",
+   "grupo": "Música",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "giatv.bozztv.com"
+  },
+  {
+   "id": "kuriakoskids.pt",
+   "nome": "Kuriakos Kids",
+   "grupo": "Infantil",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "w2.manasat.com"
+  },
+  {
+   "id": "lke.br",
+   "nome": "L!ke",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cnl-cl.otteravision.com"
+  },
+  {
+   "id": "lamorerockshowwebtv.br",
+   "nome": "Lamore Rock Show WebTV",
+   "grupo": "Música",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "a.cdni.live"
+  },
+  {
+   "id": "loading.br",
+   "nome": "Loading",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "macgyver.us",
+   "nome": "MacGyver (United States)",
+   "grupo": "Clássicos",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "masterchef.us",
+   "nome": "MasterChef",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvareyoutheone.us",
+   "nome": "MTV Are you the One?",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvbiggestpop.us",
+   "nome": "MTV Biggest Pop BR",
+   "grupo": "Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvcatfish.us",
+   "nome": "MTV Catfish (United States) BR",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvclassic.us",
+   "nome": "MTV Classic BR",
+   "grupo": "Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvcomoex.us",
+   "nome": "MTV Com o Ex",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvdating.us",
+   "nome": "MTV Dating (United States)",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvdrag.us",
+   "nome": "MTV Drag",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvjovensemaes.us",
+   "nome": "MTV Jovens e Maes",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvplutotv.us",
+   "nome": "MTV Pluto TV BR",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvreality.us",
+   "nome": "MTV Reality (United States)",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvrocks.us",
+   "nome": "MTV Rocks",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mtvshore.us",
+   "nome": "MTV Shore",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "mytimemovienetwork.br",
+   "nome": "MyTime Movie Network (Brazil)",
+   "grupo": "Filmes",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "appletree-mytime-samsungbrazil.amagi.tv"
+  },
+  {
+   "id": "naruto.us",
+   "nome": "Naruto Brazil",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "ncis.us",
+   "nome": "NCIS (United States)",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "nickjrclub.us",
+   "nome": "Nick Jr. Club (United States) BR",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "nickelodeonclassico.us",
+   "nome": "Nickelodeon Classico",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "nickelodeonteen.us",
+   "nome": "Nickelodeon Teen",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "nickelodeontoons.us",
+   "nome": "Nickelodeon Toons",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "nickonline.br",
+   "nome": "NickOnline HD",
+   "grupo": "Infantil",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "não é HLS"
+  },
+  {
+   "id": "novaeratv.br",
+   "nome": "Nova Era TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "wz3.dnip.com.br"
+  },
+  {
+   "id": "novotempo.br",
+   "nome": "Novo Tempo",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "ntv.br",
+   "nome": "NTV (Brazil)",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.livespanel.com"
+  },
+  {
+   "id": "numbers.us",
+   "nome": "Numbers (United States)",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "odiatv.br",
+   "nome": "O Dia TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "6836041ea1117.streamlock.net"
+  },
+  {
+   "id": "oencantadordecaes.us",
+   "nome": "O Encantador de Caes",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "oreinoinfantil.us",
+   "nome": "O Reino Infantil",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "oggyeasbaratastontas.us",
+   "nome": "Oggy e as Baratas Tontas",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "onepiece.us",
+   "nome": "One Piece BR",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "petloverstv.br",
+   "nome": "Petlovers TV",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video04.logicahost.com.br"
+  },
+  {
+   "id": "playtv.br",
+   "nome": "Play TV (Brazil)",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "plenatv.br",
+   "nome": "Plena TV",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "plenitudetv.br",
+   "nome": "Plenitude TV",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "strv.painelvox.top"
+  },
+  {
+   "id": "plutotvaliens.us",
+   "nome": "Pluto TV Aliens",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvanimais.us",
+   "nome": "Pluto TV Animais",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvanime.us",
+   "nome": "Pluto TV Anime BR",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvanimeacao.us",
+   "nome": "Pluto TV Anime Acao",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvbangbang.us",
+   "nome": "Pluto TV Bang Bang",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcanaluol.us",
+   "nome": "Pluto TV Canal UOL",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcineclassicos.us",
+   "nome": "Pluto TV Cine Classicos",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinecomedia.us",
+   "nome": "Pluto TV Cine Comedia (United States) BR",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinecomediaromantica.us",
+   "nome": "Pluto TV Cine Comedia Romantica",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinecrime.us",
+   "nome": "Pluto TV Cine Crime",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinedrama.us",
+   "nome": "Pluto TV Cine Drama",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinefamilia.us",
+   "nome": "Pluto TV Cine Familia",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcineinspiracao.us",
+   "nome": "Pluto TV Cine Inspiracao",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcineromance.us",
+   "nome": "Pluto TV Cine Romance",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcinesucessos.us",
+   "nome": "Pluto TV Cine Sucessos",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvcozinha.us",
+   "nome": "Pluto TV Cozinha",
+   "grupo": "Estilo de vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvdesenhosclassicos.us",
+   "nome": "Pluto TV Desenhos Classicos",
+   "grupo": "Clássicos",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvesportes.us",
+   "nome": "Pluto TV Esportes",
+   "grupo": "Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvficcaocientifica.us",
+   "nome": "Pluto TV Ficcao Cientifica",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvfilmesacao.us",
+   "nome": "Pluto TV Filmes Acao",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvfilmesaventura.us",
+   "nome": "Pluto TV Filmes Aventura",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvfilmesdeluta.us",
+   "nome": "Pluto TV Filmes de Luta",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvfilmesnacionais.us",
+   "nome": "Pluto TV Filmes Nacionais",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvhistoria.us",
+   "nome": "Pluto TV Historia (United States)",
+   "grupo": "Geral",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvinvestigacao.us",
+   "nome": "Pluto TV Investigacao",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvjunior.us",
+   "nome": "Pluto TV Junior",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvkfood.us",
+   "nome": "Pluto TV KFOOD",
+   "grupo": "Culinária",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvkids.us",
+   "nome": "Pluto TV Kids",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvkidsclub.us",
+   "nome": "Pluto TV Kids Club",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvmisterios.us",
+   "nome": "Pluto TV Misterios",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvnatureza.us",
+   "nome": "Pluto TV Natureza",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvnegociofechado.us",
+   "nome": "Pluto TV Negocio Fechado",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvnetmovies.us",
+   "nome": "Pluto TV Netmovies",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvnovelas.us",
+   "nome": "Pluto TV Novelas BR",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvpaisagensporstingray.us",
+   "nome": "Pluto TV Paisagens por Stingray",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvpolicial.us",
+   "nome": "Pluto TV Policial",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvrecordnews.us",
+   "nome": "Pluto TV Record News",
+   "grupo": "Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvretro.us",
+   "nome": "Pluto TV Retro",
+   "grupo": "Entretenimento",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriesacao.us",
+   "nome": "Pluto TV Series Acao",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriescomedia.us",
+   "nome": "Pluto TV Series Comedia",
+   "grupo": "Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriescriminais.us",
+   "nome": "Pluto TV Series Criminais",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriesdrama.us",
+   "nome": "Pluto TV Series Drama",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriesnovelescas.us",
+   "nome": "Pluto TV Series Novelescas",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvseriesscifi.us",
+   "nome": "Pluto TV Series Sci-Fi",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvshowsporstingray.us",
+   "nome": "Pluto TV Shows por Stingray",
+   "grupo": "Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvterrortrash.us",
+   "nome": "Pluto TV Terror Trash",
+   "grupo": "Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvturbo.us",
+   "nome": "Pluto TV Turbo",
+   "grupo": "Automóveis",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvviagens.us",
+   "nome": "Pluto TV Viagens",
+   "grupo": "Estilo de vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "plutotvvidareal.us",
+   "nome": "Pluto TV Vida Real",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "primertv.br",
+   "nome": "Primer TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "200.194.238.229"
+  },
+  {
+   "id": "prontosocorrohistoriasdeemergencia.us",
+   "nome": "Pronto-socorro: Historias De Emergencia",
+   "grupo": "Educação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "rbatv.br",
+   "nome": "RBATV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "InvalidURL: URL can't contain control characters. '/w/LVW-15748/LVW15748_Yed7yzLuRC/�\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00�ѻ' (found at l"
+  },
+  {
+   "id": "rctvbrasil.br",
+   "nome": "RCTV Brasil",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "record.br",
+   "nome": "Record",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordrs.br",
+   "nome": "Record RS",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvbelem.br",
+   "nome": "RecordTV Belem",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvbrasilia.br",
+   "nome": "RecordTV Brasilia",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvgoias.br",
+   "nome": "RecordTV Goias",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvinteriorsp.br",
+   "nome": "RecordTV Interior SP",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "não é HLS"
+  },
+  {
+   "id": "recordtvitapoan.br",
+   "nome": "RecordTV Itapoan",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvrio.br",
+   "nome": "RecordTV Rio",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "recordtvsaopaulo.br",
+   "nome": "RecordTV Sao Paulo",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "redbulltv.at",
+   "nome": "Red Bull TV BR",
+   "grupo": "Campo e natureza",
+   "legendas": [
+    {
+     "tipo": "CLOSED-CAPTIONS",
+     "idioma": "eng",
+     "nome": "English"
+    }
+   ],
+   "audio": [],
+   "cc608": true,
+   "link": "d03ae6b5c6724c24867e97a3dc04934a.mediatailor.us-west-2.amazonaws.com"
+  },
+  {
+   "id": "redecntriodejaneiro.br",
+   "nome": "Rede CNT Rio de Janeiro",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "redefamilia.br",
+   "nome": "Rede Familia",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "redeglobo.br",
+   "nome": "Rede Globo",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn-sp2.satlabscloud.com.br"
+  },
+  {
+   "id": "redegospel.br",
+   "nome": "Rede Gospel",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.live.br1.jmvstream.com"
+  },
+  {
+   "id": "redemeionorte.br",
+   "nome": "Rede Meio Norte",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "maystreaming.cloudecast.com"
+  },
+  {
+   "id": "redeminas.br",
+   "nome": "Rede Minas",
+   "grupo": "Educação",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "8hzcavccys.zoeweb.tv"
+  },
+  {
+   "id": "redengt.br",
+   "nome": "Rede NGT",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "isaocorp.cloudecast.com"
+  },
+  {
+   "id": "redeseculo21.br",
+   "nome": "Rede Seculo 21",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "redesptv.br",
+   "nome": "Rede SPTV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video01.logicahost.com.br"
+  },
+  {
+   "id": "redetv.br",
+   "nome": "Rede TV! SD",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "redetvmais.br",
+   "nome": "Rede TV! Mais",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "não é HLS"
+  },
+  {
+   "id": "redevida.br",
+   "nome": "Rede Vida",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "redetvparana.br",
+   "nome": "RedeTV! Parana",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "tv01.zas.media"
+  },
+  {
+   "id": "retrocartoon.br",
+   "nome": "Retro Cartoon",
+   "grupo": "Clássicos",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.video.brstream.com.br"
+  },
+  {
+   "id": "rittv.br",
+   "nome": "RIT TV",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "acesso.ecast.site"
+  },
+  {
+   "id": "sbtcuiaba.br",
+   "nome": "SBT Cuiaba",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "sbtinterior.br",
+   "nome": "SBT Interior",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "InvalidURL: URL can't contain control characters. '/w/LVW-10801/LVW10801_Xvg4R0u57n/�\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00Sv�\\x08�5\\x0e�R"
+  },
+  {
+   "id": "sbtnews.br",
+   "nome": "SBT News",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "dai.google.com"
+  },
+  {
+   "id": "sbtnovamutum.br",
+   "nome": "SBT Nova Mutum",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "sbtrondonopolis.br",
+   "nome": "SBT Rondonopolis",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "sictv.br",
+   "nome": "SIC TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "parecisfmlive.brasilstream.com.br"
+  },
+  {
+   "id": "smithsonianchannelplutotv.us",
+   "nome": "Smithsonian Channel Pluto TV",
+   "grupo": "Documentários",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "soutv.br",
+   "nome": "SOU TV",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+   "id": "southparkcolecaocartman.us",
+   "nome": "South Park: Colecao Cartman",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "southparkcolecaokenny.us",
+   "nome": "South Park: Colecao Kenny",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "southparkcolecaokyle.us",
+   "nome": "South Park: Colecao Kyle",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "southparkcolecaostan.us",
+   "nome": "South Park: Colecao Stan",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "startrek.us",
+   "nome": "Star Trek",
+   "grupo": "Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "stztv.br",
+   "nome": "STZ TV",
+   "grupo": "Cultura",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "não é HLS"
+  },
+  {
+   "id": "tastemadebrasil.us",
+   "nome": "Tastemade Brasil",
+   "grupo": "Culinária",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "tcm10hd.br",
+   "nome": "TCM 10 HD",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "live.tcm10.com.br"
+  },
+  {
+   "id": "tele6.bo",
+   "nome": "TELE 6",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 416: Requested Range Not Satisfiable"
+  },
+  {
+   "id": "terraviva.br",
+   "nome": "Terra Viva",
+   "grupo": "Campo e natureza",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "thepetcollective.us",
+   "nome": "The Pet Collective Brazil",
+   "grupo": "Família",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "tiktokradiobrasil.br",
+   "nome": "TikTok Radio Brasil",
+   "grupo": "Música",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "d1bl6tskrpq9ze.cloudfront.net"
+  },
+  {
+   "id": "tokusato.us",
+   "nome": "Tokusato",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "tracebrazuca.fr",
+   "nome": "Trace Brazuca HD",
+   "grupo": "Música",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn-uw2-prod.tsv2.amagi.tv"
+  },
+  {
+   "id": "turmadamonica.us",
+   "nome": "Turma da Monica",
+   "grupo": "Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "tv3curitiba.br",
+   "nome": "TV 3 Curitiba",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvacritica.br",
+   "nome": "TV A Critica",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "InvalidURL: URL can't contain control characters. '/w/LVW-20715/LVW20715_50E3x2MCm2/�\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00�ѽ' (found at l"
+  },
+  {
+   "id": "tvafolha.br",
+   "nome": "TV A Folha",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video01.logicahost.com.br"
+  },
+  {
+   "id": "tvaldeia.br",
+   "nome": "TV Aldeia",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.samcast.com.br"
+  },
+  {
+   "id": "tvalternativa.br",
+   "nome": "TV Alternativa",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv5.samcast.com.br"
+  },
+  {
+   "id": "tvaparecida.br",
+   "nome": "TV Aparecida",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [
+    "?",
+    "?"
+   ],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvarapuan.br",
+   "nome": "TV Arapuan",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5b7f3c45ab7c2.streamlock.net"
+  },
+  {
+   "id": "tvassembleiapiaui.br",
+   "nome": "TV Assembleia Piaui",
+   "grupo": "Governo",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvbahia.br",
+   "nome": "TV Bahia (1080i)",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "hls1.sua.tv"
+  },
+  {
+   "id": "tvbrasil.br",
+   "nome": "TV Brasil",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvbrasiloeste.br",
+   "nome": "TV Brasil Oeste",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvbricsportuguese.br",
+   "nome": "TV BRICS Portuguese",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "porbrics.mediacdn.ru"
+  },
+  {
+   "id": "tvbrusque.br",
+   "nome": "TV Brusque",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5ad482a77183d.streamlock.net"
+  },
+  {
+   "id": "tvcancaonova.br",
+   "nome": "TV Cancao Nova",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvcidadeverdecuiaba.br",
+   "nome": "TV Cidade Verde Cuiaba",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "televisaocidadeverde.brasilstream.com.br"
+  },
+  {
+   "id": "tvclube.br",
+   "nome": "TV Clube",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5c483b9d1019c.streamlock.net"
+  },
+  {
+   "id": "tvcomunitaria.br",
+   "nome": "TV Comunitaria",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5b7f3c45ab7c2.streamlock.net"
+  },
+  {
+   "id": "tvcuruca.br",
+   "nome": "TV Curuca",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "tvdiariomacapa.br",
+   "nome": "TV Diario Macapa",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvdifusao.br",
+   "nome": "TV Difusao",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "tvdsoultv.acessaradios.com.br"
+  },
+  {
+   "id": "tvencontrodasaguas.br",
+   "nome": "TV Encontro das Aguas",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvevangelizar.br",
+   "nome": "TV Evangelizar",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvfronteira.br",
+   "nome": "TV Fronteira (480i)",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "tvfronteira.brasilstream.com.br"
+  },
+  {
+   "id": "tvgazeta.br",
+   "nome": "TV Gazeta",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+   "id": "tvglobosaopaulo.br",
+   "nome": "TV Globo Sao Paulo",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvgrandenatalhdtvbrasil.br",
+   "nome": "TV GRANDE NATAL HDTV BRASIL",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "tvgrandenatalhd.duckdns.org"
+  },
+  {
+   "id": "tvguarapari.br",
+   "nome": "TV Guarapari",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video.welltecnologia.com.br"
+  },
+  {
+   "id": "tvjustica.br",
+   "nome": "TV Justica",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvlifeamerica.br",
+   "nome": "TV Life America",
+   "grupo": "Cultura",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "streaming.cloudecast.com"
+  },
+  {
+   "id": "tvlitoralrn.br",
+   "nome": "TV Litoral RN",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5ad482a77183d.streamlock.net"
+  },
+  {
+   "id": "tvmaismarica.br",
+   "nome": "TV Mais Marica",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5cf4a2c2512a2.streamlock.net"
+  },
+  {
+   "id": "tvmanabrasil.pt",
+   "nome": "TV Mana Brasil",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "w1.manasat.com"
+  },
+  {
+   "id": "tvmarajoara.br",
+   "nome": "TV Marajoara",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "tv02.zas.media"
+  },
+  {
+   "id": "tvmetropole.br",
+   "nome": "TV Metropole",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn-fundacao-2110.ciclano.io"
+  },
+  {
+   "id": "tvnatal.br",
+   "nome": "TV Natal",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "185.228.163.146"
+  },
+  {
+   "id": "tvpadrecicero.br",
+   "nome": "TV Padre Cicero",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video01.logicahost.com.br"
+  },
+  {
+   "id": "tvpaieterno.br",
+   "nome": "TV Pai Eterno",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvpantanalms.br",
+   "nome": "TV Pantanal MS",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5a2b083e9f360.streamlock.net"
+  },
+  {
+   "id": "tvparaense.br",
+   "nome": "TV Paraense",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video09.logicahost.com.br"
+  },
+  {
+   "id": "tvparanaturismo.br",
+   "nome": "TV Parana Turismo",
+   "grupo": "Viagem",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "200.189.113.201"
+  },
+  {
+   "id": "tvpassofundo.br",
+   "nome": "TV Passo Fundo",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5a57bda70564a.streamlock.net"
+  },
+  {
+   "id": "tvpetropolis.br",
+   "nome": "TV Petropolis",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video02.logicahost.com.br"
+  },
+  {
+   "id": "tvprofissao.br",
+   "nome": "TV Profissao",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 403: Forbidden"
+  },
+  {
+   "id": "tvratimbum.br",
+   "nome": "TV Ra Tim Bum",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.177.114.115"
+  },
+  {
+   "id": "tvsaoraimundo.br",
+   "nome": "TV Sao Raimundo",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.voxtvhd.com.br"
+  },
+  {
+   "id": "tvsenado.br",
+   "nome": "TV Senado (Brazil)",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": true,
+   "link": "45.162.64.114"
+  },
+  {
+   "id": "tvseries.br",
+   "nome": "TV Series",
+   "grupo": "Séries",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv1.srvif.com"
+  },
+  {
+   "id": "tvsimcachoeiro.br",
+   "nome": "TV Sim Cachoeiro",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "5cf4a2c2512a2.streamlock.net"
+  },
+  {
+   "id": "tvsulbahia.br",
+   "nome": "TV Sul Bahia",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 404: Not Found"
+  },
+  {
+   "id": "tvterceiroanjo.br",
+   "nome": "TV Terceiro Anjo",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "streamer1.streamhost.org"
+  },
+  {
+   "id": "tvufop.br",
+   "nome": "TV UFOP",
+   "grupo": "Cultura",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "app.tvufop.com.br"
+  },
+  {
+   "id": "tvuniversal.br",
+   "nome": "TV Universal",
+   "grupo": "Religioso",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "644398c.ha.azioncdn.net"
+  },
+  {
+   "id": "tvvicosa.br",
+   "nome": "TV Vicosa",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "wz4.dnip.com.br"
+  },
+  {
+   "id": "tvvilareal.br",
+   "nome": "TV Vila Real",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "tvzoom.br",
+   "nome": "TV Zoom",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "InvalidURL: URL can't contain control characters. '/w/LVW-9730/LVW9730_LmUwslM8jt/�\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00Sv�\\x08�5\\x0e�R\\x"
+  },
+  {
+   "id": "tvpluspet.br",
+   "nome": "TV+Pet",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "stmv5.samcast.com.br"
+  },
+  {
+   "id": "tvcrio.br",
+   "nome": "TVC-Rio",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video05.logicahost.com.br"
+  },
+  {
+   "id": "tvcommaceio.br",
+   "nome": "TVCOM Maceio",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "srv5.zcast.com.br"
+  },
+  {
+   "id": "tvebahia.br",
+   "nome": "TVE Bahia",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "streaming.procergs.com.br"
+  },
+  {
+   "id": "tvideonews.br",
+   "nome": "TVideoNews",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "video01.logicahost.com.br"
+  },
+  {
+   "id": "tvlatinasat.br",
+   "nome": "TVLatinaSat",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "www.latinasat.com.br"
+  },
+  {
+   "id": "tvnbn.br",
+   "nome": "TVNBN",
+   "grupo": "Geral",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "cdn.jmvstream.com"
+  },
+  {
+   "id": "umatv.br",
+   "nome": "UMA TV",
+   "grupo": "Entretenimento",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "umatv.nuvemplay.live"
+  },
+  {
+   "id": "unisultv.br",
+   "nome": "Unisul TV",
+   "grupo": "Cultura",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "sitetv.brasilstream.com.br"
+  },
+  {
+   "id": "vejaplustv.br",
+   "nome": "VEJA+ TV",
+   "grupo": "Notícias",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "gpa-vja.otteravision.com"
+  },
+  {
+   "id": "dorama:dramascoreanos",
+   "nome": "Dramas Coreanos (Pluto TV)",
+   "grupo": "Doramas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "es",
+     "nome": "Spanish"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "dorama:dramascoreanosteen",
+   "nome": "Dramas Coreanos Teen (Pluto TV)",
+   "grupo": "Doramas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "es",
+     "nome": "Spanish"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "dorama:kdramaes",
+   "nome": "K-Drama (Pluto TV Espanha)",
+   "grupo": "Doramas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "en",
+     "nome": "English"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "dorama:knovela",
+   "nome": "K-Novela en Español",
+   "grupo": "Doramas",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "dorama:kstories",
+   "nome": "K-Stories (legendas em inglês)",
+   "grupo": "Doramas",
+   "legendas": [],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f120e94a5714d00074576a1",
+   "nome": "Pluto TV Cine Sucessos",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f120f41b7d403000783a6d6",
+   "nome": "Pluto TV Filmes Ação",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f12111c9e6c2c00078ef3bb",
+   "nome": "Pluto TV Cine Terror",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f171d3442a0500007362f22",
+   "nome": "Filmes Suspense",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5fa15ad6367e170007cdd098",
+   "nome": "Pluto TV Ficção Científica",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6479ff764f5ba5000878dfe2",
+   "nome": "Pluto TV Cine Crime",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6806d62369aec5b19cd628c0",
+   "nome": "Pluto TV Filmes de Luta",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f12101f0b12f00007844c7c",
+   "nome": "Pluto TV Cine Comédia",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62545ed3dab4380007582f7c",
+   "nome": "Pluto TV Cine Comédia Romântica",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f171f988ab9780007fa95ea",
+   "nome": "Pluto TV Cine Romance",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1210d14ae1f80007bafb1d",
+   "nome": "Pluto TV Cine Drama",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:663b9dc7cb3ea10008f1a0ce",
+   "nome": "Pluto TV Bang Bang",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5fa1612a669ba0000702017b",
+   "nome": "Pluto TV Cine Clássicos",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a5520365badf45d3088b8d8",
+   "nome": "Pluto TV Cine Trapalhões",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66aa67493a4ad2000806d91b",
+   "nome": "Pluto TV Terror Trash",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:685daaab9029059b2da9cb9a",
+   "nome": "Pluto TV Zumbis",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a7caf2321d112e4a89fb38b",
+   "nome": "Pluto TV Criaturas Malditas",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a91ac590c9f5239c28ef0b3",
+   "nome": "Sexta-Feira 13",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:61b790b985706b00072cb797",
+   "nome": "Adrenalina Pura TV",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66c79a4262e5510008ff68a5",
+   "nome": "Pluto TV Filmes Aventura",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f171f032cd22e0007f17f3d",
+   "nome": "Pluto TV Cine Família",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5fa991b1f09e020007e78626",
+   "nome": "Pluto TV Cine Inspiração",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f5a545d0dbf7f0007c09408",
+   "nome": "Pluto TV Filmes Nacionais",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:663b9de4f999220008230fa8",
+   "nome": "Pluto TV Netmovies",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62c5d32e2c48f9000715b6e9",
+   "nome": "Runtime",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:633dcebd80386500074a2461",
+   "nome": "Filmelier TV",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a281c0302b6c1c00a1fe570",
+   "nome": "MovieSphere by Lionsgate",
+   "grupo": "Pluto TV · Filmes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6474ab5cdc7a760008745008",
+   "nome": "Pluto TV Séries Criminais",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63eb9c5351f5d000085e8d7e",
+   "nome": "CSI: Miami",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69fcc8cfb83300b380051794",
+   "nome": "Blue Bloods",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63eb9fdda995710008991c54",
+   "nome": "NCIS",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67f960c5441853fe50e7afc1",
+   "nome": "Numbers",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6474ab1da51cb80008bfb5f4",
+   "nome": "Pluto TV Séries Ação",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64ff2d8c6625510008c5a512",
+   "nome": "Rookie Blue",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:678aa104680721c77c506746",
+   "nome": "The Walking Dead by AMC",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63d2ba2f60bc8f0008981a0e",
+   "nome": "Pluto TV Séries Sci-Fi",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66b3af48d2d50d00083d6936",
+   "nome": "Z Nation",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67e59a6557487a8b7fe73e23",
+   "nome": "A Caçadora de Relíquias",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65f060d84e01740008d7421f",
+   "nome": "Pluto TV Séries Drama",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:691627e4a29a6123e400b3e0",
+   "nome": "Pluto TV Séries Novelescas",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67f9602ee173fa5664fafae8",
+   "nome": "Charmed: Jovens Bruxas",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:655e5bc94261ca000810cb17",
+   "nome": "Pluto TV Séries Comédia",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a5520691a435d3dfcda8340",
+   "nome": "O Rei do Bairro",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69c71615a8ef5d7f33e7322e",
+   "nome": "Pluto TV Séries Família",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5ff768b6a4c8b80008498610",
+   "nome": "BET Pluto TV",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64e501eec630a900088ed0f8",
+   "nome": "Clube do Terror",
+   "grupo": "Pluto TV · Séries",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f99ac4fded33000078f29ab",
+   "nome": "Pluto TV Star Trek",
+   "grupo": "Pluto TV · Jornada nas Estrelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69162ad79505d0f3b1ebf07d",
+   "nome": "Jornada nas Estrelas - A Nova Geração",
+   "grupo": "Pluto TV · Jornada nas Estrelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69162af591700f4c4c135c95",
+   "nome": "Jornada nas Estrelas - Deep Space Nine",
+   "grupo": "Pluto TV · Jornada nas Estrelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69162b1ef189e235142b17ab",
+   "nome": "Jornada nas Estrelas - Voyager",
+   "grupo": "Pluto TV · Jornada nas Estrelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1212ad1728050007a523b8",
+   "nome": "Pluto TV Retrô",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:631fa8dd7f25240007099a40",
+   "nome": "A Feiticeira",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:61f1d27a189ed10007b7393e",
+   "nome": "Diff’rent Strokes Arnold",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63eb9dc84e83e70008abea92",
+   "nome": "MacGyver",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62052d3b4eeb740007fbe125",
+   "nome": "O Homem que veio do Céu",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5ff609de50ab210008025c1b",
+   "nome": "Tokusato",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:655e5c4d2c46f3000877a54b",
+   "nome": "Pluto TV Desenhos Clássicos",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:68b88ae1943f6fb1fb2ad749",
+   "nome": "Os Smurfs",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69162648d03565d6c8c8df97",
+   "nome": "Inspetor Bugiganga",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:677d93f37bffa600080795e7",
+   "nome": "Popeye",
+   "grupo": "Pluto TV · Retrô",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f512365abe1f50007d3ff56",
+   "nome": "Pluto TV Novelas",
+   "grupo": "Pluto TV · Novelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a281d2bd1e6d3ba6b553c7c",
+   "nome": "Novelíssima",
+   "grupo": "Pluto TV · Novelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a565d9022790c74de2e98f6",
+   "nome": "Amor de Aluguel by Noverama TV",
+   "grupo": "Pluto TV · Novelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "ipv4.pluto.tv"
+  },
+  {
+   "id": "pluto:69c716efeac9a2720ebcaaff",
+   "nome": "Grachi",
+   "grupo": "Pluto TV · Novelas",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6077045b6031bd00078de127",
+   "nome": "MasterChef",
+   "grupo": "Pluto TV · Reality",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:681110afc188aa63faa147e0",
+   "nome": "MasterChef Brasil Profissionais",
+   "grupo": "Pluto TV · Reality",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:681111be5e0764e297fb200e",
+   "nome": "Mais MasterChef Brasil",
+   "grupo": "Pluto TV · Reality",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6647c0b91050b60008390de4",
+   "nome": "Sony One Shark Tank Brasil",
+   "grupo": "Pluto TV · Reality",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69fca82395df3283d2b60ef9",
+   "nome": "Topa ou Não Topa EUA",
+   "grupo": "Pluto TV · Reality",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1212fb81e85c00077ae9ef",
+   "nome": "MTV Pluto TV",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6851bdfc9ac48fde5e07f5ae",
+   "nome": "MTV Reality",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6851bb3426beced4f2f67ee6",
+   "nome": "MTV Ink Master",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:645111f1d8436e00081bb2bd",
+   "nome": "MTV Drag",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:625463563b8ddc0007134aeb",
+   "nome": "MTV Shore",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:61a528267e1b8b0007357920",
+   "nome": "MTV Com o Ex",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:620fdc7d8a36fc000710e3ba",
+   "nome": "MTV Jovens e Mães",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:626c2a3502d84a0007cec817",
+   "nome": "MTV Catfish",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f6108d8cc331900075e98e4",
+   "nome": "MTV Are you the One?",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66a01e07d2d50d0008100d6a",
+   "nome": "MTV Rocks",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66a01dcb8561260008b0a41d",
+   "nome": "MTV Classic",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6047fbdbbb776a0007e7f2ff",
+   "nome": "MTV Biggest Pop",
+   "grupo": "Pluto TV · MTV",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63dac32bda711800088a2ba3",
+   "nome": "TikTok Radio Brasil",
+   "grupo": "Pluto TV · Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:604b91e0692f770007d9f33f",
+   "nome": "Pluto TV Shows por Stingray",
+   "grupo": "Pluto TV · Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a74c036a311e7c50e8c1ba6",
+   "nome": "Stingray Hits Brasileiros",
+   "grupo": "Pluto TV · Música",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1213ba0ecebc00070e170f",
+   "nome": "Pluto TV Natureza",
+   "grupo": "Pluto TV · Natureza",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:681ba2ad93d3d19bcab47433",
+   "nome": "NatureTime",
+   "grupo": "Pluto TV · Natureza",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:604a8dedbca75b0007b1c753",
+   "nome": "Pluto TV Paisagens por Stingray",
+   "grupo": "Pluto TV · Natureza",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6474aa984cfc2c0008883a92",
+   "nome": "Pluto TV Animais",
+   "grupo": "Pluto TV · Natureza",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a74c028c1842722eafad356",
+   "nome": "Stingray Cityscapes",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f32d4d9ec194100070c7449",
+   "nome": "Pluto TV Vida Real",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:656e2a4b4261ca00083aa99e",
+   "nome": "Acumuladores Obsessivos",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69fca7fadf0b6d462c0a0ac3",
+   "nome": "Sobrevivi",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:61bb72a7bf8c520007a8fd27",
+   "nome": "Pronto-socorro: Histórias De Emergência",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64ad7394798def00087b2bfe",
+   "nome": "Pluto TV Negócio Fechado",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6014761dfb91870008ea6463",
+   "nome": "Pluto TV Turbo",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6298bd10d88ef000073f16b7",
+   "nome": "Smithsonian Channel Pluto TV",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1ef1a8cec6be00072a7ac9",
+   "nome": "Pluto TV História",
+   "grupo": "Pluto TV · Curiosidades",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5fac52f142044f00078e2a51",
+   "nome": "Pluto TV Mistérios",
+   "grupo": "Pluto TV · Mistérios e Sobrenatural",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6806d65e84f24b70109485fa",
+   "nome": "Pluto TV Aliens",
+   "grupo": "Pluto TV · Mistérios e Sobrenatural",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:620d1512c7986a0007220213",
+   "nome": "Assombrações",
+   "grupo": "Pluto TV · Mistérios e Sobrenatural",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:656e2a81954b020008ed17a4",
+   "nome": "Estado Paranormal",
+   "grupo": "Pluto TV · Mistérios e Sobrenatural",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:656e2a10954b020008ed167c",
+   "nome": "Caçadores de Óvnis",
+   "grupo": "Pluto TV · Mistérios e Sobrenatural",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f32cf37c9ff2b00082adbc8",
+   "nome": "Pluto TV Investigação",
+   "grupo": "Pluto TV · Investigação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:678fdf9e3de7c8cf948e8824",
+   "nome": "Pluto TV Policial",
+   "grupo": "Pluto TV · Investigação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:620d12a82e8ac50007c269c3",
+   "nome": "Os Arquivos do FBI",
+   "grupo": "Pluto TV · Investigação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:638df93ae2f2a3000737c168",
+   "nome": "Detetives Médicos",
+   "grupo": "Pluto TV · Investigação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62b5c5a064163d0007b2efe6",
+   "nome": "Mistérios sem Solução",
+   "grupo": "Pluto TV · Investigação",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:679a973a97782f0008ff4bb6",
+   "nome": "Times Brasil | CNBC",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62310f66d5888f0007534342",
+   "nome": "CBS News 24/7",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "en",
+     "nome": "English"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:666c9c60a7efd40008f552f0",
+   "nome": "BM&C News",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:619e6614c9d9650007a2b171",
+   "nome": "Euronews Português",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6102e04e9ab1db0007a980a1",
+   "nome": "Pluto TV Record News",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6317ba014d4d040007227f72",
+   "nome": "Jovem Pan NEWS",
+   "grupo": "Pluto TV · Notícias",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62e010e6cd663f0007e57dc8",
+   "nome": "TV Cultura",
+   "grupo": "Pluto TV · TV Brasileira",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64b9370b409629000802d32b",
+   "nome": "Pluto TV Canal UOL",
+   "grupo": "Pluto TV · TV Brasileira",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:698392af0cca0cc3458666ab",
+   "nome": "AdoroCinema",
+   "grupo": "Pluto TV · TV Brasileira",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f32d2db0af67400077f29c4",
+   "nome": "Pluto TV Esportes",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "pt"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6888ee858f4a4aa11feb9430",
+   "nome": "Top Barça",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66997e8d3a4ad20008e50be9",
+   "nome": "FIFA+",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67813f3162bf016db944c9ab",
+   "nome": "Red Bull TV",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65a6818c7bdc8d0008457b21",
+   "nome": "RACER Brasil",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69a20556814d27f4ae630a92",
+   "nome": "UFC",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6660b636cb3ea10008429c6a",
+   "nome": "SFT Combat",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64f6180130ab3300083d896b",
+   "nome": "PFL MMA",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6a68dc0a75fd5e3828f10b10",
+   "nome": "NFL Channel",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63eba66da8b2270008436b10",
+   "nome": "World Poker Tour",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65df71008b24c80008f04281",
+   "nome": "South Park: Coleção Cartman",
+   "grupo": "Pluto TV · South Park",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65df704366eec8000898e32f",
+   "nome": "South Park: Coleção Kenny",
+   "grupo": "Pluto TV · South Park",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65df713dec9fda0008b7a81d",
+   "nome": "South Park: Coleção Kyle",
+   "grupo": "Pluto TV · South Park",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65df70b0f7f0af0008c3b316",
+   "nome": "South Park: Coleção Stan",
+   "grupo": "Pluto TV · South Park",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:609ae66b359b270007869ff1",
+   "nome": "Comedy Central South Park",
+   "grupo": "Pluto TV · South Park",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69fca7dd2387729708faa32c",
+   "nome": "Mr. Bean",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f357e91b18f0b00073583d2",
+   "nome": "Comedy Central Pluto TV",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69440d0611f6c6384ab78306",
+   "nome": "PORTATV",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67802a22a5d8215f99dcee30",
+   "nome": "Pegadinhas - Just for Laughs",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f5141c1605ddf000748eb1b",
+   "nome": "FailArmy",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f515ebac01c0f00080e8439",
+   "nome": "The Pet Collective",
+   "grupo": "Pluto TV · Comédia",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66a7d0e0cd0d310008448610",
+   "nome": "Salon Line",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f32d432d612e50007e56133",
+   "nome": "Pluto TV Viagens",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:67603668f433320008760af1",
+   "nome": "Homeful",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1ef23020a5ac0007e5e8ea",
+   "nome": "Pluto TV Cozinha",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:633ee9ba83c08f00076b60a6",
+   "nome": "Pluto TV KFOOD",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5fd1419a3b4f4b000773ba85",
+   "nome": "Tastemade",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:68b88821e542386ab0bf5bef",
+   "nome": "Tastemade Casa",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:68b8875777201ec428d9eaa5",
+   "nome": "Tastemade Viagem",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:61099df8cee03b00074b2ecf",
+   "nome": "O Encantador de Cães",
+   "grupo": "Pluto TV · Estilo de Vida",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f12136385bccc00070142ed",
+   "nome": "Pluto TV Anime",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:604b79c558393100078faeef",
+   "nome": "Pluto TV Anime Ação",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:687007a8ee4155e89a8f6d67",
+   "nome": "Pokémon",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f6df5a173d7340007c559f7",
+   "nome": "Naruto",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:64c92f965580090008084968",
+   "nome": "Naruto Shippuden",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:656f389c3944b60008e5bdab",
+   "nome": "Boruto: Naruto Next Generations",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:65d9167818036500080e8780",
+   "nome": "Hunter x Hunter",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": false,
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:625464a945b6a200079257d1",
+   "nome": "Death Note",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66c7982f6838ee00085f0d24",
+   "nome": "JoJo’s Bizarre Adventure",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63988c2750108d00072e2686",
+   "nome": "Super Onze",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63988a50be012600070f5db3",
+   "nome": "Yu-Gi-Oh",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:633dc392e0282400071b0d39",
+   "nome": "Beyblade",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66b26681d2d50d00083abe8b",
+   "nome": "Inuyasha",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:624b1c8d4321e200073ee421",
+   "nome": "One Piece",
+   "grupo": "Pluto TV · Anime",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f12141b146d760007934ea7",
+   "nome": "Pluto TV Junior",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f1214a637c6fd00079c652f",
+   "nome": "Pluto TV Kids",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:66c8cae7fed35b0008580ec0",
+   "nome": "Pluto TV Kids Club",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f997e44949bc70007a6941e",
+   "nome": "Turma da Mônica",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5f5c216df68f920007888315",
+   "nome": "O Reino Infantil",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63221bafdc6e110007b50270",
+   "nome": "Oggy e as Baratas Tontas",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63eba189c111bc0008ff59c5",
+   "nome": "Moranguinho",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62d969fd8451a30007f0fd94",
+   "nome": "Cocoricó",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63da6bcd60bc8f0008a5d364",
+   "nome": "Baby Shark TV",
+   "grupo": "Pluto TV · Infantil",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:645951c0e94c38000802d2cb",
+   "nome": "Nickelodeon Toons",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6824ce10c5d53e1351ceb8d1",
+   "nome": "Nickelodeon Clássico",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:62545c0b002f4b0007688b61",
+   "nome": "Bob Esponja Calça Quadrada",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63221e41af69b500076f84e7",
+   "nome": "Os Padrinhos Mágicos",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:63dd5c904e83e700088fb68a",
+   "nome": "As Tartarugas Ninja",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6759eeb1bd523200083b4f29",
+   "nome": "Avatar: A lenda de Aang",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:6824ce95f09106f4b18f4114",
+   "nome": "Nick Jr. Club",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:60f5fabf0721880007cd50e3",
+   "nome": "Nickelodeon Teen",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [
+    "en"
+   ],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:620ff46e0a576e0007dc2f89",
+   "nome": "Nickelodeon iCarly",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:5ffcc5130fd98c0007f2e216",
+   "nome": "Kenan & Kel",
+   "grupo": "Pluto TV · Nickelodeon",
+   "legendas": [
+    {
+     "tipo": "SUBTITLES",
+     "idioma": "pt",
+     "nome": "Portuguese"
+    }
+   ],
+   "audio": [],
+   "cc608": null,
+   "obs": "vídeo criptografado, não deu para olhar dentro",
+   "link": "jmp2.uk"
+  },
+  {
+   "id": "pluto:69440d7d56acdcad6af9c8f3",
+   "nome": "Pluto TV Esportes 2",
+   "grupo": "Pluto TV · Esportes",
+   "legendas": [],
+   "audio": [],
+   "cc608": null,
+   "erro": "HTTPError: HTTP Error 404: Not Found"
+  }
+ ]
+}
