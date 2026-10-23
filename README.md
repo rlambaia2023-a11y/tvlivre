@@ -143,4 +143,14 @@ O código do Railway é só o `server.ts`. Ao ligar, ele baixa o `index.html` do
 - Menu lateral (☰): Início, Todos os canais, Favoritos, Recentes, as categorias com ícone e contagem, Meus vídeos, Testar canais e Ajustes. No controle, ← na borda esquerda, Voltar no Início ou a tecla M abrem o menu. → ou Voltar fecham.
 - Início: destaque "Continuar assistindo" (ou boas-vindas), blocos coloridos de categorias e uma fileira deslizante por categoria, com "Ver tudo".
 - Página de categoria: título, "Só os que funcionam", "Testar canais" e a grade completa.
-- Backups: a tag `bkp-2026-10-23-antes-do-menu` guarda a versão anterior. Para voltar, troque a variável `TL_HTML_REF` do Railway pelo commit dessa tag (a página que estava no ar era `08fc5dc5bdbc421eefe3801539a4b08db3d7f959`).
+- Backup: o branch `bkp-2026-10-23-antes-do-menu` guarda a versão anterior. Para voltar, troque a variável `TL_HTML_REF` do Railway pelo commit desse branch (a página que estava no ar era `08fc5dc5bdbc421eefe3801539a4b08db3d7f959`).
+
+## Explorar: rádios, TV de outros países e webcams (out/2026)
+
+Ideias tiradas do Famelack (famelack.com), somadas ao que já existia, sem mexer no servidor. Aparecem no menu (seção **Explorar**) e numa fileira nova na tela inicial.
+
+- **Rádios**: catálogo aberto do Radio Browser (radio-browser.info). Filtros por país (Brasil primeiro) e por gênero, mais busca por nome. Só entram rádios com link `https`, que tocam direto do aparelho (rádio comum não passa pelo servidor, porque a transmissão não tem fim e o servidor corta em 20 s; rádio em HLS pode passar).
+- **TV de outros países**: as listas por país do iptv-org (a mesma base do Famelack), com nome do país em português e bandeira. Os canais abrem no mesmo player, com o mesmo socorro pelo servidor. Canais marcados como bloqueio regional vão para o fim da lista com o aviso "só no país". Conteúdo adulto fica de fora.
+- **Webcams ao vivo**: câmeras públicas transmitidas no YouTube, separadas em Brasil, Praias do mundo, Cidades do mundo, Natureza e animais, Céu e espaço, e Aeroportos, trens e portos. Como o endereço dessas transmissões muda quando a câmera reinicia, a automação `.github/workflows/atualizar-webcams.yml` roda `ferramentas/webcams.py` a cada 3 horas e grava `listas/webcams.json` (se achar menos de 10 câmeras, mantém a lista anterior). No controle: ↑/↓ troca de câmera, Voltar sai, OK dá o play se o aparelho não começar sozinho.
+- **Canal surpresa**: sorteia um canal que não está parado, como o dado do Famelack.
+- Backup: o branch `bkp-2026-10-23-antes-radio` guarda a versão anterior (a página no ar era `c63466cab8591cb91a0993c3a4f326f6579af77c`). Para voltar, troque a variável `TL_HTML_REF` do Railway por esse commit.

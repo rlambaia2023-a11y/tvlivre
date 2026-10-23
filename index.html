@@ -315,6 +315,31 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
   .vtools{margin-left:0}
 }
 
+/* ---------- EXPLORAR: rádios, TV de outros países e webcams ---------- */
+.xfil{gap:8px;margin:0 0 12px}
+.xmsg{margin:4px 0 14px;color:var(--fg-dim);min-height:1.2em}
+.xfonte{color:var(--muted);font-size:.8em;margin:28px 0 8px;max-width:70ch;line-height:1.5}
+.xsec{font-size:1.02em;font-weight:700;margin:8px 0 12px;color:var(--fg-dim)}
+.card.thumb .art{background:#000}
+.card.thumb .art img{max-width:none;max-height:none;width:100%;height:100%;object-fit:cover;filter:none}
+.card .live-dot{position:absolute;top:8px;left:8px;z-index:1;font-size:.66em;font-weight:800;letter-spacing:.06em;padding:.25em .6em;border-radius:999px;background:var(--live);color:#fff}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(140px,11vw,210px),1fr));gap:clamp(10px,1vw,16px);margin-bottom:24px}
+.ptiles .ctile{min-height:clamp(78px,6.4vw,104px);gap:.5em}
+.ctile .flag{font-size:1.9em;line-height:1}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;background:#000}
+.rart{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6em;text-align:center;padding:24px;background:radial-gradient(120% 90% at 50% 30%,#2a1f3d,#0b0f14 70%)}
+.rart .rlogo{width:clamp(120px,22vmin,240px);height:clamp(120px,22vmin,240px);border-radius:28px;background:#18212d;display:grid;place-items:center;overflow:hidden;box-shadow:0 24px 60px -24px rgba(0,0,0,.8);margin-bottom:.4em}
+.rart .rlogo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.rart .rlogo .ini{font-family:var(--font-display);font-size:3.2em;font-weight:800;color:#c792ff}
+.rart b{font-size:clamp(22px,2.6vw,40px);line-height:1.15;max-width:22ch}
+.rart span{color:var(--fg-dim)}
+.eq{display:flex;gap:6px;align-items:flex-end;height:36px;margin-top:12px}
+.eq i{width:8px;height:40%;background:#c792ff;border-radius:3px;animation:eq .9s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:-.25s}.eq i:nth-child(3){animation-delay:-.5s}.eq i:nth-child(4){animation-delay:-.7s}.eq i:nth-child(5){animation-delay:-.15s}
+.rart.pausa .eq i{animation-play-state:paused}
+@keyframes eq{from{height:18%}to{height:100%}}
+@media (prefers-reduced-motion:reduce){.eq i{animation:none}}
+@media (max-width:760px){.xfil{flex-wrap:nowrap;overflow-x:auto;padding:0 4px 4px;margin-left:-4px;margin-right:-4px}.xfil .chip{flex:none}}
 @media (prefers-reduced-motion:reduce){.card,.osd,.ctile,.drawer,.scrim{transition:none;animation:none}.card:focus,.ctile:focus{transform:none}.loading i{animation-duration:3s}.rrow{scroll-behavior:auto}}
 
 /* ---------- acabamento: barras de rolagem discretas ---------- */
@@ -464,11 +489,40 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
       </div>
     </div>
   </section>
+
+  <!-- RÁDIOS -->
+  <section id="tab-radio" hidden>
+    <div class="vhead" style="--c:#c792ff"><span class="vic" id="radio-ic"></span><h2 class="vtitle">Rádios ao vivo<small id="radio-sub"></small></h2>
+      <div class="vtools"><input class="search f" id="rq" type="search" placeholder="Buscar rádio…" aria-label="Buscar rádio"></div></div>
+    <div class="row xfil" id="radio-paises"></div>
+    <div class="row xfil" id="radio-generos"></div>
+    <div class="xmsg" id="radio-msg"></div>
+    <div class="grid" id="radios"></div>
+    <p class="xfonte">Rádios do catálogo aberto e gratuito Radio Browser (radio-browser.info). Só entram as que têm link seguro e que o catálogo conferiu como no ar.</p>
+  </section>
+
+  <!-- TV DE OUTROS PAÍSES -->
+  <section id="tab-mundo" hidden>
+    <div class="vhead" style="--c:#4fc3f7"><button class="btn ghost f" id="mundo-voltar" hidden>‹ Países</button><span class="vic" id="mundo-ic"></span><h2 class="vtitle" id="mundo-title"></h2></div>
+    <div class="xmsg" id="mundo-msg"></div>
+    <div id="mundo-corpo"></div>
+    <p class="xfonte">Canais públicos de cada país, da lista aberta iptv-org (a mesma que o Famelack usa). Alguns só abrem dentro do próprio país.</p>
+  </section>
+
+  <!-- WEBCAMS -->
+  <section id="tab-cams" hidden>
+    <div class="vhead" style="--c:#7ee2a8"><span class="vic" id="cams-ic"></span><h2 class="vtitle">Webcams ao vivo<small id="cams-sub"></small></h2></div>
+    <div class="xmsg" id="cams-msg"></div>
+    <div id="cams-corpo"></div>
+    <p class="xfonte">Câmeras públicas transmitidas ao vivo no YouTube. A lista se renova sozinha a cada 3 horas, porque as transmissões mudam de endereço quando reiniciam.</p>
+  </section>
 </main>
 
 <!-- PLAYER -->
 <div class="player" id="player" hidden>
   <video id="video" playsinline autoplay></video>
+  <iframe id="ytf" title="Câmera ao vivo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1" hidden></iframe>
+  <div class="rart" id="rart" hidden><div class="rlogo" id="rart-logo"></div><b id="rart-name"></b><span id="rart-sub"></span><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div>
   <button class="closebtn" id="pclose">Voltar</button>
   <div class="perr" id="perr" hidden><div><strong id="perr-title">Este canal não abriu agora</strong><p id="perr-why">Tentei o link direto, pelo servidor e os links reserva.</p><p id="perr-next"></p></div></div>
   <div class="loading" id="loading" hidden><i></i><span id="loading-txt">Carregando…</span></div>
@@ -725,6 +779,10 @@ function renderHome(){
     return '<button class="ctile f" data-g="'+c[0]+'" style="--c:'+c[2]+'">'+ico(c[0])+'<span><b>'+esc(c[1])+'</b><small>'+cont[c[0]]+' canais</small></span></button>';
   }).join("");
   if(tiles)h+='<section class="rail" style="--c:#ffb547"><div class="rhead"><span class="ricon">'+ico("diversos")+'</span><h3>Categorias</h3></div><div class="ctiles">'+tiles+'</div></section>';
+  h+='<section class="rail" style="--c:#4fc3f7"><div class="rhead"><span class="ricon">'+ico("mundo")+'</span><h3>Explorar</h3></div><div class="ctiles">'+
+    [["radio","radio","Rádios","Brasil e mundo","#c792ff"],["mundo","mundo","TV de outros países","canais abertos","#4fc3f7"],["cams","cam","Webcams ao vivo","praias, cidades, natureza","#7ee2a8"]].map(function(x){
+      return '<button class="ctile f" data-tab="'+x[0]+'" style="--c:'+x[4]+'">'+ico(x[1])+'<span><b>'+x[2]+'</b><small>'+x[3]+'</small></span></button>'}).join("")+
+    '<button class="ctile f" data-act="sorte" style="--c:#ffb547">'+ico("dado")+'<span><b>Canal surpresa</b><small>sorteia um canal no ar</small></span></button></div></section>';
   var favs=S.channels.filter(ehFav).filter(visivel);
   if(favs.length)h+=railHtml(G_FAV,"Favoritos",CAT_COR[G_FAV],"fav",favs);
   var rec=arr("recentes").map(byId).filter(Boolean).filter(visivel);
@@ -768,6 +826,11 @@ function renderMenu(){
   var nr=arr("recentes").map(byId).filter(Boolean).length;if(nr)h+=item('data-g="recentes"',"recentes","Recentes",nr,CAT_COR[G_REC],aqui(G_REC));
   h+='<div class="dsec">Categorias</div>';
   CATS.forEach(function(c){if(cont[c[0]])h+=item('data-g="'+c[0]+'"',c[0],c[1],cont[c[0]],c[2],aqui(c[0]))});
+  h+='<div class="dsec">Explorar</div>'+
+    item('data-tab="radio"',"radio","Rádios",null,"#c792ff",tab==="radio")+
+    item('data-tab="mundo"',"mundo","TV de outros países",null,"#4fc3f7",tab==="mundo")+
+    item('data-tab="cams"',"cam","Webcams ao vivo",null,"#7ee2a8",tab==="cams")+
+    item('data-act="sorte"',"dado","Canal surpresa",null,"#ffb547",false);
   h+='<div class="dsec">Mais</div>'+
     item('data-tab="videos"',"videos","Meus vídeos",allVideos().length||null,"#9fb3cc",tab==="videos")+
     item('data-act="test"',"testar","Testar canais",null,"#7ee2a8",false)+
@@ -779,6 +842,9 @@ function renderCrumb(){
   var nome,cor;
   if(tab==="videos"){nome="Meus vídeos";cor="#9fb3cc"}
   else if(tab==="settings"){nome="Ajustes";cor="#9fb3cc"}
+  else if(tab==="radio"){nome="Rádios";cor="#c792ff"}
+  else if(tab==="mundo"){nome=MUNDO.pais?MUNDO.pais.nome:"TV de outros países";cor="#4fc3f7"}
+  else if(tab==="cams"){nome="Webcams ao vivo";cor="#7ee2a8"}
   else if(query){nome="Busca";cor="#ffb547"}
   else{nome=CAT_NOME[group]||group;cor=CAT_COR[group]||"#ffb547"}
   $("crumb").innerHTML='<span class="dot" style="--c:'+cor+'"></span>'+esc(nome);
@@ -824,8 +890,9 @@ $("dmenu").addEventListener("click",function(e){
   var b=e.target.closest(".ditem");if(!b)return;
   fecharMenu(true);
   if(b.dataset.g){abrirGrupo(b.dataset.g);return}
-  if(b.dataset.tab){setTab(b.dataset.tab);window.scrollTo(0,0);var f=$("tab-"+b.dataset.tab).querySelector(".f");if(f)f.focus({preventScroll:true});return}
+  if(b.dataset.tab){abrirAba(b.dataset.tab);return}
   if(b.dataset.act==="test"){abrirGrupo("todos");testAll()}
+  if(b.dataset.act==="sorte")canalSurpresa();
 });
 function allVideos(){return localVideos.concat(S.videos)}
 function renderVideos(){
@@ -838,11 +905,232 @@ function renderSources(){
 }
 function renderAll(){renderBrand();renderLive();renderVideos();renderSources()}
 
+/* ---------- EXPLORAR: rádios, TV de outros países e webcams ao vivo ----------
+   Tudo aqui é somado ao que já existia: usa o mesmo player, o mesmo servidor de apoio e o mesmo controle remoto.
+   Fontes abertas e gratuitas: Radio Browser (rádios), iptv-org (países) e câmeras públicas do YouTube. */
+ICONES.radio="M3.24 6.15C2.51 6.43 2 7.17 2 8v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8c0-1.11-.89-2-2-2H8.3l8.26-3.34L15.88 1 3.24 6.15zM7 20c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm13-8h-2v-2h-2v2H4V8h16v4z";
+ICONES.mundo="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z";
+ICONES.cam="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z";
+ICONES.dado="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z";
+var RB=["https://de1.api.radio-browser.info","https://all.api.radio-browser.info"];
+var URL_IPTV="https://iptv-org.github.io";
+var URL_CAMS="https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/main/listas/webcams.json";
+var RADIO={lista:[],pais:"BR",genero:"",busca:"",carregando:false,cache:{},erro:""};
+var MUNDO={paises:null,pais:null,lista:[],cache:{}};
+var CAMS={grupos:null,lista:[],ts:0,atualizado:null};
+var RADIO_PAISES=[["BR","Brasil"],["PT","Portugal"],["US","EUA"],["AR","Argentina"],["ES","Espanha"],["IT","Itália"],["FR","França"],["GB","Reino Unido"],["DE","Alemanha"],["MX","México"],["JP","Japão"],["","Mundo todo"]];
+var RADIO_GENEROS=[["","Todas"],["news","Notícias"],["sports","Esportes"],["sertanejo","Sertanejo"],["gospel","Gospel"],["pop","Pop"],["rock","Rock"],["mpb","MPB"],["samba","Samba e pagode"],["flashback","Flashback"],["jazz","Jazz"],["classical","Clássica"],["electronic","Eletrônica"]];
+var PAISES_TOP=["BR","PT","US","AR","MX","ES","IT","FR","UK","DE","CA","CL","CO","UY","PY","PE","JP","KR","AO","MZ"];
+var GRUPO_PT={general:"Geral",news:"Notícias",sports:"Esportes",music:"Música",kids:"Infantil",movies:"Filmes",entertainment:"Entretenimento",religious:"Religioso",documentary:"Documentários",culture:"Cultura",education:"Educação",series:"Séries",business:"Negócios",lifestyle:"Estilo de vida",undefined:"Outros",legislative:"Legislativo",cooking:"Culinária",comedy:"Comédia",weather:"Tempo",travel:"Viagem",outdoor:"Ar livre",animation:"Animação",family:"Família",classic:"Clássicos",science:"Ciência",shop:"Compras",auto:"Automóveis",relax:"Relaxar",public:"Pública",interactive:"Interativo"};
+
+/* Busca direto na fonte (todas liberam acesso pelo navegador); se falhar, pede pelo servidor da TV. */
+function pegar(u,json){
+  function get(x){return fetch(x).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return json?r.json():r.text()})}
+  return get(u).catch(function(e){if(!HAS_SERVER)throw e;return get("/list?u="+encodeURIComponent(u))});
+}
+function acha(lista,id){for(var i=0;i<lista.length;i++)if(lista[i].id===id)return lista[i];return null}
+function focarPrimeiro(id){var f=$(id)&&$(id).querySelector(".f:not(input)");if(f){f.focus({preventScroll:true});return true}return false}
+function abrirAba(t){fecharMenu(true);setTab(t);window.scrollTo(0,0);focarPrimeiro("tab-"+t)}
+/* Cartão simples para rádio, canal de outro país e webcam (mesmo visual dos canais). */
+function cardX(item,sub,cor,thumb){
+  var ini=esc(initials(item.name)).replace(/'/g,"");
+  var art=thumb?'<img src="'+esc(thumb)+'" alt="" loading="lazy" onerror="this.remove()">':
+    item.logo?'<img src="'+esc(item.logo)+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<span class=ini>'+ini+'</span>\'">':'<span class="ini">'+ini+'</span>';
+  return '<button class="card f'+(thumb?' thumb':'')+'" data-id="'+esc(item.id)+'" style="--c:'+cor+'">'+(thumb?'<span class="live-dot">AO VIVO</span>':'')+
+    '<div class="art">'+art+'</div>'+(sub?'<span class="grp">'+esc(sub)+'</span>':'')+'<div class="meta"><span class="name">'+esc(item.name)+'</span></div></button>';
+}
+function chipsHtml(attr,lista,atual){return lista.map(function(c){return '<button class="chip f" '+attr+'="'+c[0]+'" aria-pressed="'+(c[0]===atual)+'">'+esc(c[1])+'</button>'}).join("")}
+/* Canal surpresa (o "dado" do Famelack): sorteia um canal que não está parado. */
+function canalSurpresa(){
+  var l=S.channels.filter(function(c){return !parado(c)&&liberado(c)&&!(current&&current.item===c)});
+  if(!l.length)return;fecharMenu(true);play(l[Math.floor(Math.random()*l.length)],"live");
+}
+
+/* ----- Rádios ----- */
+function urlRadios(){
+  var p="hidebroken=true&is_https=true&order=clickcount&reverse=true&limit=150";
+  if(RADIO.busca)p+="&name="+encodeURIComponent(RADIO.busca);
+  if(RADIO.pais)p+="&countrycode="+RADIO.pais;
+  if(RADIO.genero)p+="&tag="+encodeURIComponent(RADIO.genero);
+  return "/json/stations/search?"+p;
+}
+function carregarRadios(){
+  var chave=urlRadios();
+  if(RADIO.cache[chave]){RADIO.lista=RADIO.cache[chave];RADIO.erro="";renderRadio();return}
+  RADIO.carregando=true;renderRadio();
+  var i=0;
+  function tenta(){return pegar(RB[i]+chave,true).catch(function(e){if(++i<RB.length)return tenta();throw e})}
+  tenta().then(function(l){
+    var vistos={};
+    var lista=(l||[]).filter(function(s){var u=s.url_resolved||s.url||"";if(!/^https:/i.test(u)||vistos[u]||ADULTO.test(s.name+" "+s.tags))return false;vistos[u]=1;return true}).map(function(s){
+      var tags=(s.tags||"").split(",").map(function(x){return x.trim()}).filter(Boolean).slice(0,2).join(" · ");
+      return {id:"r-"+s.stationuuid,name:(s.name||"Rádio").trim(),logo:/^https:/i.test(s.favicon||"")?s.favicon:"",group:tags||s.country||"Rádio",url:s.url_resolved||s.url,hls:!!s.hls,src:"radio",onde:s.state||s.country||""};
+    });
+    if(chave===urlRadios()){RADIO.lista=lista;RADIO.erro=""}
+    RADIO.cache[chave]=lista;
+  }).catch(function(){if(chave===urlRadios()){RADIO.lista=[];RADIO.erro="Não consegui falar com o catálogo de rádios agora. Tente de novo em alguns minutos."}})
+  .then(function(){RADIO.carregando=false;renderRadio()});
+}
+function renderRadio(){
+  if(!$("radio-paises").firstChild){$("radio-paises").innerHTML=chipsHtml("data-rp",RADIO_PAISES,RADIO.pais);$("radio-generos").innerHTML=chipsHtml("data-rg",RADIO_GENEROS,RADIO.genero)}
+  Array.prototype.forEach.call($("radio-paises").children,function(b){b.setAttribute("aria-pressed",String(b.dataset.rp===RADIO.pais))});
+  Array.prototype.forEach.call($("radio-generos").children,function(b){b.setAttribute("aria-pressed",String(b.dataset.rg===RADIO.genero))});
+  $("radio-sub").textContent=RADIO.carregando?"procurando…":RADIO.lista.length+" rádios";
+  $("radio-msg").textContent=RADIO.carregando?"Procurando rádios…":RADIO.erro||(RADIO.lista.length?"":"Nenhuma rádio com esse filtro. Tente outro gênero ou “Mundo todo”.");
+  $("radios").innerHTML=RADIO.lista.map(function(r){return cardX(r,r.group,"#c792ff")}).join("");
+}
+function mostrarRadio(item){
+  var ini=esc(initials(item.name));
+  $("rart-logo").innerHTML=item.logo?'<img src="'+esc(item.logo)+'" alt="" onerror="this.parentNode.innerHTML=\'<span class=ini>'+ini.replace(/'/g,"")+'</span>\'">':'<span class="ini">'+ini+'</span>';
+  $("rart-name").textContent=item.name;$("rart-sub").textContent=[item.group,item.onde].filter(Boolean).join(" · ");
+  $("rart").hidden=false;
+}
+var radioBuscaTimer=null;
+$("rq").addEventListener("input",function(){var v=this.value.trim();clearTimeout(radioBuscaTimer);radioBuscaTimer=setTimeout(function(){RADIO.busca=v;carregarRadios()},700)});
+$("tab-radio").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  if(b.dataset.rp!=null){RADIO.pais=b.dataset.rp;carregarRadios();return}
+  if(b.dataset.rg!=null){RADIO.genero=b.dataset.rg;carregarRadios();return}
+  if(b.dataset.id){var it=acha(RADIO.lista,b.dataset.id);if(it)play(it,"radio")}
+});
+$("video").addEventListener("pause",function(){$("rart").classList.add("pausa")});
+$("video").addEventListener("playing",function(){$("rart").classList.remove("pausa")});
+
+/* ----- TV de outros países ----- */
+function nomePais(code,en){
+  try{if(!nomePais.dn&&window.Intl&&Intl.DisplayNames)nomePais.dn=new Intl.DisplayNames(["pt-BR"],{type:"region"});
+    var n=nomePais.dn&&nomePais.dn.of(code==="UK"?"GB":code);if(n&&n!==code&&n!=="GB")return n}catch(e){}
+  return en;
+}
+function carregarPaises(){
+  if(MUNDO.paises){renderMundo();return}
+  renderMundo();$("mundo-msg").textContent="Carregando países…";
+  pegar(URL_IPTV+"/api/countries.json",true).then(function(l){
+    MUNDO.paises=(l||[]).filter(function(c){return c.code&&c.code.length===2}).map(function(c){return {id:c.code,code:c.code,nome:nomePais(c.code,c.name),flag:c.flag||""}})
+      .sort(function(a,b){return a.nome.localeCompare(b.nome,"pt-BR")});
+    $("mundo-msg").textContent="";renderMundo();
+    if(tab==="mundo"&&!document.activeElement.closest("#tab-mundo"))focarPrimeiro("mundo-corpo");
+  }).catch(function(){$("mundo-msg").textContent="Não consegui baixar a lista de países agora. Tente de novo daqui a pouco."});
+}
+function tilePais(p){return '<button class="ctile f" data-pais="'+p.code+'" style="--c:#4fc3f7"><span class="flag">'+esc(p.flag)+'</span><span><b>'+esc(p.nome)+'</b><small>'+esc(p.code)+'</small></span></button>'}
+function renderMundo(){
+  var p=MUNDO.pais;
+  $("mundo-voltar").hidden=!p;$("mundo-ic").innerHTML=p?'<span class="flag" style="font-size:1.4em">'+esc(p.flag)+'</span>':ico("mundo");
+  $("mundo-title").innerHTML=p?esc(p.nome)+'<small>'+MUNDO.lista.length+' canais</small>':'TV de outros países<small>'+(MUNDO.paises?MUNDO.paises.length+' países':'')+'</small>';
+  if(!p){
+    if(!MUNDO.paises){$("mundo-corpo").innerHTML="";return}
+    var top=PAISES_TOP.map(function(c){return acha(MUNDO.paises,c)}).filter(Boolean);
+    $("mundo-corpo").innerHTML='<h3 class="xsec">Mais procurados</h3><div class="ptiles">'+top.map(tilePais).join("")+'</div>'+
+      '<h3 class="xsec">Todos os países</h3><div class="ptiles">'+MUNDO.paises.map(tilePais).join("")+'</div>';
+    return;
+  }
+  $("mundo-corpo").innerHTML='<div class="grid" id="mundo-grid">'+MUNDO.lista.map(function(c){return cardX(c,c.sub,"#4fc3f7")}).join("")+'</div>';
+}
+function abrirPais(code){
+  if(!MUNDO.paises)return;var p=acha(MUNDO.paises,code);if(!p)return;
+  MUNDO.pais=p;MUNDO.lista=MUNDO.cache[code]||[];renderMundo();renderCrumb();window.scrollTo(0,0);
+  if(MUNDO.cache[code]){$("mundo-msg").textContent=MUNDO.lista.length?"":"Este país ainda não tem canais na lista pública.";if(!focarPrimeiro("mundo-grid"))$("mundo-voltar").focus();return}
+  $("mundo-msg").textContent="Carregando os canais de "+p.nome+"…";$("mundo-voltar").focus({preventScroll:true});
+  pegar(URL_IPTV+"/iptv/countries/"+code.toLowerCase()+".m3u",false).then(function(t){
+    var l=parseM3U(t||"","mundo").filter(function(c){return !ADULTO.test(c.group||"")&&!ADULTO.test(c.name||"")});
+    l.forEach(function(c,i){
+      c.id="m-"+code+"-"+i;c.geo=/\[geo-blocked\]/i.test(c.name);
+      c.name=c.name.replace(/\s*\[[^\]]*\]/g,"").replace(/\s*\(\d{3,4}[pi]\)/g,"").trim()||c.name;
+      var g=(c.group||"").split(";")[0].trim();c.group=GRUPO_PT[g.toLowerCase()]||g||"Geral";
+      c.sub=c.group+(c.geo?" · só no país":"");
+    });
+    l.sort(function(a,b){return (a.geo?1:0)-(b.geo?1:0)});
+    MUNDO.cache[code]=l;
+    if(MUNDO.pais===p){MUNDO.lista=l;$("mundo-msg").textContent=l.length?"":"Este país ainda não tem canais na lista pública.";renderMundo();
+      if(document.activeElement===$("mundo-voltar"))focarPrimeiro("mundo-grid")}
+  }).catch(function(){if(MUNDO.pais===p)$("mundo-msg").textContent="Não consegui baixar os canais de "+p.nome+" agora. Tente de novo daqui a pouco."});
+}
+function voltarPaises(){
+  var era=MUNDO.pais&&MUNDO.pais.code;MUNDO.pais=null;MUNDO.lista=[];$("mundo-msg").textContent="";renderMundo();renderCrumb();
+  var t=era&&$("mundo-corpo").querySelector('[data-pais="'+era+'"]');if(t){t.focus({preventScroll:true});t.scrollIntoView({block:"center"})}else focarPrimeiro("mundo-corpo");
+}
+$("mundo-voltar").onclick=voltarPaises;
+$("tab-mundo").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b||b.id==="mundo-voltar")return;
+  if(b.dataset.pais){abrirPais(b.dataset.pais);return}
+  if(b.dataset.id){var it=acha(MUNDO.lista,b.dataset.id);if(it)play(it,"mundo")}
+});
+
+/* ----- Webcams ao vivo ----- */
+function carregarCams(){
+  if(CAMS.grupos&&Date.now()-CAMS.ts<30*60*1000){renderCams();return}
+  if(!CAMS.grupos)$("cams-msg").textContent="Procurando câmeras ao vivo…";
+  pegar(URL_CAMS+"?t="+Math.floor(Date.now()/600000),true).then(function(j){
+    CAMS.grupos=(j&&j.grupos)||[];CAMS.ts=Date.now();CAMS.atualizado=j&&j.atualizado;CAMS.lista=[];
+    CAMS.grupos.forEach(function(g){g.itens=(g.cams||[]).map(function(c){
+      var it={id:"c-"+c.v,yt:c.v,name:c.t,ch:c.ch||"",group:g.nome,url:"https://www.youtube.com/watch?v="+c.v,src:"cam"};CAMS.lista.push(it);return it})});
+    $("cams-msg").textContent=CAMS.lista.length?"":"Nenhuma câmera no ar agora. A lista se renova sozinha.";
+    var foco=document.activeElement&&document.activeElement.closest("#tab-cams");
+    renderCams();if(tab==="cams"&&!foco)focarPrimeiro("cams-corpo");
+  }).catch(function(){if(!CAMS.grupos)$("cams-msg").textContent="Não consegui baixar a lista de câmeras agora. Tente de novo daqui a pouco."});
+}
+function renderCams(){
+  $("cams-sub").textContent=CAMS.lista.length?CAMS.lista.length+" câmeras"+(CAMS.atualizado?" · lista das "+hm(Date.parse(CAMS.atualizado)):""):"";
+  $("cams-corpo").innerHTML=(CAMS.grupos||[]).filter(function(g){return g.itens&&g.itens.length}).map(function(g){
+    return '<section class="rail" style="--c:#7ee2a8"><div class="rhead"><span class="ricon">'+ico("cam")+'</span><h3>'+esc(g.nome)+'</h3><span class="rcount">'+g.itens.length+'</span></div>'+
+      '<div class="rrow">'+g.itens.map(function(c){return cardX(c,"","#7ee2a8","https://i.ytimg.com/vi/"+encodeURIComponent(c.yt)+"/mqdefault.jpg")}).join("")+'</div></section>';
+  }).join("");
+}
+$("tab-cams").addEventListener("click",function(e){var b=e.target.closest("button");if(b&&b.dataset.id){var it=acha(CAMS.lista,b.dataset.id);if(it)play(it,"cam")}});
+/* A câmera passa num quadro do YouTube por cima do player. O quadro não recebe o foco,
+   então o controle remoto continua mandando na TV (↑/↓ troca de câmera, Voltar sai). */
+var camTocou=false,camTimer=null;
+function camComando(func,args){try{$("ytf").contentWindow.postMessage(JSON.stringify({event:"command",func:func,args:args||[],id:"tl",channel:"widget"}),"*")}catch(e){}}
+function camOuvir(){
+  try{var w=$("ytf").contentWindow;w.postMessage(JSON.stringify({event:"listening",id:"tl",channel:"widget"}),"*");
+    camComando("addEventListener",["onStateChange"]);camComando("addEventListener",["onError"])}catch(e){}
+}
+function pararCam(){
+  clearInterval(camTimer);var f=$("ytf");
+  if(f&&!f.hidden){f.src="about:blank";f.hidden=true}
+  $("player").classList.remove("cam");
+}
+function playCam(item){
+  stop();clearTimeout(skipTimer);$("perr-next").textContent="";
+  current={item:item,kind:"cam",relay:false,alt:0};$("perr").hidden=true;$("player").hidden=false;$("player").classList.add("cam");
+  camTocou=false;carregando(true,"Abrindo "+item.name+"…");
+  var f=$("ytf");f.hidden=false;
+  f.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(item.yt)+"?autoplay=1&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1&origin="+encodeURIComponent(location.origin);
+  var n=0;clearInterval(camTimer);
+  camTimer=setInterval(function(){if(!current||current.item!==item||camTocou||++n>15){clearInterval(camTimer);if(current&&current.item===item)carregando(false);return}camOuvir()},1000);
+  var l=CAMS.lista,i=l.indexOf(item);
+  $("o-num").textContent="";$("o-title").textContent=item.name;$("o-group").textContent=item.group+(item.ch?" · "+item.ch:"")+(i>-1?" · "+(i+1)+" de "+l.length:"");
+  $("o-live").hidden=false;$("o-fav").hidden=true;$("o-epg").hidden=true;
+  if(!$("plist").hidden)fecharPaineis();
+  showOsd();
+}
+function camErro(){
+  if(!current||current.kind!=="cam")return;
+  pararCam();carregando(false);
+  $("perr-title").textContent=current.item.name;
+  $("perr-why").textContent="Esta câmera saiu do ar ou não deixa assistir fora do YouTube agora. A lista se renova sozinha a cada 3 horas.";
+  $("perr-next").textContent="Use ↑ ou ↓ para ir para outra câmera.";$("perr").hidden=false;
+}
+$("ytf").addEventListener("load",camOuvir);
+window.addEventListener("message",function(e){
+  if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com$/.test(e.origin||""))return;
+  if(!current||current.kind!=="cam")return;
+  var d;try{d=typeof e.data==="string"?JSON.parse(e.data):e.data}catch(x){return}
+  if(!d||!d.event)return;
+  if(d.event==="onError"){camErro();return}
+  var st=d.event==="onStateChange"?d.info:d.info&&d.info.playerState;
+  if(st===1){camTocou=true;carregando(false)}
+});
+$("radio-ic").innerHTML=ico("radio");$("cams-ic").innerHTML=ico("cam");
+
 /* ---------- abas ---------- */
 function setTab(t){
   tab=t;
-  ["live","videos","settings"].forEach(function(k){$("tab-"+k).hidden=k!==t});
+  ["live","videos","settings","radio","mundo","cams"].forEach(function(k){$("tab-"+k).hidden=k!==t});
   renderCrumb();
+  if(t==="radio"&&!RADIO.lista.length&&!RADIO.carregando)carregarRadios();
+  if(t==="mundo")carregarPaises();
+  if(t==="cams")carregarCams();
 }
 $("q").addEventListener("input",function(){query=this.value.trim().toLowerCase();if(tab!=="live")setTab("live");renderLive()});
 /* Um só ouvinte para a tela inicial e para as páginas de categoria. */
@@ -850,6 +1138,8 @@ $("tab-live").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
   if(b.id==="resume"){openById(S.ultimo,"live");return}
   if(b.dataset.act==="menu"){abrirMenu();return}
+  if(b.dataset.act==="sorte"){canalSurpresa();return}
+  if(b.dataset.tab){abrirAba(b.dataset.tab);return}
   if(b.dataset.id){openById(b.dataset.id,"live");return}
   if(b.dataset.g){abrirGrupo(b.dataset.g)}
 });
@@ -921,9 +1211,9 @@ document.querySelectorAll("label.btn").forEach(function(l){l.addEventListener("k
 
 /* ---------- player ---------- */
 var video=$("video");
-function listFor(kind){return kind==="live"?S.channels:allVideos()}
+function listFor(kind){return kind==="live"?S.channels:kind==="radio"?RADIO.lista:kind==="mundo"?MUNDO.lista:kind==="cam"?CAMS.lista:allVideos()}
 function openById(id,kind){var l=listFor(kind);for(var i=0;i<l.length;i++)if(l[i].id===id){play(l[i],kind);return}}
-function stop(){carregando(false);if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
+function stop(){carregando(false);pararCam();$("rart").hidden=true;if(hls){hls.destroy();hls=null}video.removeAttribute("src");video.load()}
 function needsRelay(item){return !!S.relay||!!(item.ref||item.ua)||(location.protocol==="https:"&&/^http:/i.test(item.url))}
 var skipTimer=null,lastStep=1;
 function ehPluto(item){return /^a-pluto:/.test(item.id||"")||/pluto\.tv|jmp2\.uk\/plu-/i.test(item.url||"")}
@@ -956,7 +1246,7 @@ function motivoAmigavel(m,item){
 function fail(){
   var c=current;if(!c)return;
   // 1) tenta pelo servidor; 2) passa para o próximo link reserva do mesmo canal; 3) desiste e explica
-  if(!c.relay&&HAS_SERVER&&c.item.src!=="local"){play(c.item,c.kind,true,c.alt);return}
+  if(!c.relay&&HAS_SERVER&&c.item.src!=="local"&&!(c.kind==="radio"&&!c.item.hls)){play(c.item,c.kind,true,c.alt);return}
   if(c.alt<(c.item.alts||[]).length){play(c.item,c.kind,false,c.alt+1);return}
   if(ehPluto(c.item)&&HAS_SERVER&&Date.now()-(renovadoEm[c.item.id]||0)>2*60*1000){renovarPluto(c);return}
   giveUp(c);
@@ -985,6 +1275,7 @@ function skipNext(c){
   for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!parado(x)&&liberado(x)){play(x,"live");return}}
 }
 function play(item,kind,forceRelay,alt){
+  if(kind==="cam"){playCam(item);return}
   if(recarregar&&kind==="live"){try{sessionStorage.setItem("tl.retomar",item.id)}catch(e){}location.reload();return}
   if(kind==="live"&&!liberado(item)){
     pedirPin(item.name+" está bloqueado","Digite a senha de 4 números para assistir.",function(){desbloqueados[item.id]=1;play(item,kind,forceRelay,alt)});
@@ -999,7 +1290,8 @@ function play(item,kind,forceRelay,alt){
   alt=alt||0;var src=alt?item.alts[alt-1]:item;
   var relay=HAS_SERVER&&item.src!=="local"&&(forceRelay||needsRelay(src));
   current={item:item,kind:kind,relay:relay,alt:alt};$("perr").hidden=true;$("player").hidden=false;
-  var isHls=/\.m3u8?(\?|$)/i.test(src.url)||kind==="live"&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url);
+  var isHls=/\.m3u8?(\?|$)/i.test(src.url)||(kind==="live"||kind==="mundo")&&!/\.(mp4|webm|mkv|mov|mp3|aac)(\?|$)/i.test(src.url)||kind==="radio"&&!!item.hls;
+  if(kind==="radio")mostrarRadio(item);
   var u=relay?relayUrl(src):src.url;
   jaTocou=false;ultimoTempo=-1;paradoDesde=Date.now();socorros=0;midiaTent=0;redeTent=0;andandoDesde=0;
   carregando(true,"Abrindo "+item.name+"…");
@@ -1023,8 +1315,8 @@ function play(item,kind,forceRelay,alt){
   var l=listFor(kind),n=l.indexOf(item)+1;
   $("o-num").textContent=kind==="live"?String(n).padStart(3,"0"):"";
   $("o-title").textContent=item.name;
-  $("o-group").textContent=kind==="live"?item.group:"";
-  $("o-live").hidden=kind!=="live";
+  $("o-group").textContent=kind==="live"||kind==="mundo"||kind==="radio"?item.group:"";
+  $("o-live").hidden=kind==="videos";
   $("o-fav").hidden=!(kind==="live"&&ehFav(item));
   renderEpgOsd();
   if(!$("plist").hidden)renderPlist(true);
@@ -1045,7 +1337,7 @@ function pularBuraco(){
   return false;
 }
 setInterval(function(){
-  if(!current||$("player").hidden||video.paused&&jaTocou)return;
+  if(!current||current.kind==="cam"||$("player").hidden||video.paused&&jaTocou)return;
   var t=video.currentTime;
   if(t!==ultimoTempo){ultimoTempo=t;paradoDesde=Date.now();socorros=0;
     if(!andandoDesde)andandoDesde=Date.now();else if(Date.now()-andandoDesde>60000){midiaTent=0;redeTent=0}
@@ -1136,7 +1428,8 @@ function closePlayer(){
   stop();clearTimeout(skipTimer);fecharPaineis();$("player").hidden=true;
   var id=current&&current.item.id;current=null;
   renderLive(); // atualiza "Continuar", "Recentes" e favoritos antes de devolver o foco
-  var back=(id&&$("tab-live").querySelector('.card[data-id="'+CSS.escape(id)+'"]'))||$("resume");
+  var raiz=$("tab-"+tab)||$("tab-live");
+  var back=(id&&raiz.querySelector('.card[data-id="'+CSS.escape(id)+'"]'))||(tab==="live"?$("resume"):raiz.querySelector(".f"));
   if(back)back.focus();
 }
 $("pclose").onclick=closePlayer;
@@ -1355,7 +1648,7 @@ document.addEventListener("keydown",function(e){
     if(k===39||cor==="opcoes"){e.preventDefault();abrirOpcoes();return}
     if(cor==="ant"){e.preventDefault();var ant=S.anterior&&byId(S.anterior);if(ant&&current&&ant.id!==current.item.id)play(ant,"live");return}
     if(cor==="fav"&&current&&current.kind==="live"){e.preventDefault();var on=alternar("favs",current.item.id);$("o-fav").hidden=!on;showOsd();return}
-    if(k===13||k===32){e.preventDefault();showOsd();return}
+    if(k===13||k===32){e.preventDefault();if(current&&current.kind==="cam")camComando("playVideo");showOsd();return}
     if(k>=48&&k<=57){digit(String(k-48));return}
     if(k>=96&&k<=105){digit(String(k-96));return}
     return;
@@ -1369,7 +1662,7 @@ document.addEventListener("keydown",function(e){
   if(cor==="fav"){var cd=ae&&ae.closest&&ae.closest("#tab-live .card[data-id]");if(cd){e.preventDefault();alternar("favs",cd.dataset.id);renderLive()}return}
   if(cor==="ant"&&S.ultimo){e.preventDefault();openById(S.ultimo,"live");return}
   /* Voltar: de qualquer página vai para o Início; no Início, abre o menu. */
-  if(BACK.indexOf(k)>-1){e.preventDefault();if(tab!=="live"||group!=="inicio"||query)abrirGrupo("inicio");else abrirMenu();return}
+  if(BACK.indexOf(k)>-1){e.preventDefault();if(tab==="mundo"&&MUNDO.pais){voltarPaises();return}if(tab!=="live"||group!=="inicio"||query)abrirGrupo("inicio");else abrirMenu();return}
   if(k===77||k===10133){e.preventDefault();abrirMenu();return} // M ou tecla Menu abre o menu
   if(k>=48&&k<=57){digit(String(k-48))}else if(k>=96&&k<=105){digit(String(k-96))}
 });
