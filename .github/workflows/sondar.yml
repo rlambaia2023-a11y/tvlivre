@@ -1,0 +1,29 @@
+name: Sondagem (temporário)
+on: workflow_dispatch
+jobs:
+  sondar:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - run: |
+          mkdir out; cd out
+          H="-H Origin:https://tela-livre-production.up.railway.app"
+          curl -sS -m 30 -D rb.h $H "https://de1.api.radio-browser.info/json/stations/search?countrycode=BR&hidebroken=true&order=clickcount&reverse=true&limit=40&is_https=true" -o rb.json || true
+          curl -sS -m 30 -D rb2.h $H "https://all.api.radio-browser.info/json/servers" -o rbservers.json || true
+          curl -sS -m 30 "https://de1.api.radio-browser.info/json/countries?hidebroken=true&order=stationcount&reverse=true&limit=30" -o rbcountries.json || true
+          curl -sS -m 30 "https://de1.api.radio-browser.info/json/tags?order=stationcount&reverse=true&limit=40&hidebroken=true" -o rbtags.json || true
+          curl -sS -m 30 -D ic.h $H "https://iptv-org.github.io/api/countries.json" -o countries.json || true
+          curl -sS -m 30 -D pt.h $H "https://iptv-org.github.io/iptv/countries/pt.m3u" -o pt.m3u || true
+          curl -sS -m 30 "https://iptv-org.github.io/api/categories.json" -o categories.json || true
+          curl -sS -m 60 "https://iptv-org.github.io/iptv/index.m3u" -o index.m3u || true
+          grep -i -B1 -E "webcam|live ?cam|camera|earthcam|skyline|\bcam\b|cams\b" index.m3u > cams.txt || true
+          curl -sS -m 60 "https://iptv-org.github.io/iptv/categories/outdoor.m3u" -o outdoor.m3u || true
+          curl -sS -m 60 "https://iptv-org.github.io/iptv/categories/relax.m3u" -o relax.m3u || true
+          rm index.m3u
+          wc -c * > tamanhos.txt
+      - run: |
+          cd out
+          git init -q; git checkout -q -b sondagem
+          git config user.name bot; git config user.email bot@users.noreply.github.com
+          git add -A; git commit -qm sondagem
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem
