@@ -154,3 +154,15 @@ Ideias tiradas do Famelack (famelack.com), somadas ao que já existia, sem mexer
 - **Webcams ao vivo**: câmeras públicas transmitidas no YouTube, separadas em Brasil, Praias do mundo, Cidades do mundo, Natureza e animais, Céu e espaço, e Aeroportos, trens e portos. Como o endereço dessas transmissões muda quando a câmera reinicia, a automação `.github/workflows/atualizar-webcams.yml` roda `ferramentas/webcams.py` a cada 3 horas e grava `listas/webcams.json` (se achar menos de 10 câmeras, mantém a lista anterior). No controle: ↑/↓ troca de câmera, Voltar sai, OK dá o play se o aparelho não começar sozinho.
 - **Canal surpresa**: sorteia um canal que não está parado, como o dado do Famelack.
 - Backup: o branch `bkp-2026-10-23-antes-radio` guarda a versão anterior (a página no ar era `c63466cab8591cb91a0993c3a4f326f6579af77c`). Para voltar, troque a variável `TL_HTML_REF` do Railway por esse commit.
+
+## Módulos extras (pasta `extras/`)
+
+Recursos que ficam fora da página principal. O servidor baixa cada módulo do mesmo commit da página (`HTML_REF`), guarda uma cópia no bucket e coloca a tag `<script>` na página na hora de entregar, logo depois do hls.js. O `index.html` não muda. Para ligar ou desligar um módulo, edite a lista `EXTRAS` no topo do `server.ts`.
+
+### `controles.js`: pausar, voltar e avançar
+
+- Vale para canais ao vivo, rádios, TV de outros países e "Meus vídeos". Os filmes e séries do Pluto continuam com os comandos da própria página e ganham a mesma barra.
+- Controle: OK (ou ⏯) pausa e continua; ⏪/⏩ voltam e avançam 10 s (apertos seguidos aceleram); em "Meus vídeos", ← volta 10 s e → avança 30 s; no ao vivo, ←/→ só voltam e avançam enquanto está pausado (tocando, seguem abrindo a lista e as opções).
+- Pausado, o vídeo continua carregando: o limite do hls.js sobe para até 10 min (ou ~120 MB) à frente e volta ao normal no play. A barra mostra quanto já carregou.
+- No ao vivo, pausar vira assistir atrasado: o canal continua de onde parou, e o botão "Voltar ao vivo" leva ao momento atual.
+- Guarda 90 s já assistidos para voltar sem baixar de novo.
