@@ -168,3 +168,10 @@ Recursos que ficam fora da página principal. O servidor baixa cada módulo do m
 - Pausado, o vídeo continua carregando: o limite do hls.js sobe para até 10 min (ou ~120 MB) à frente e volta ao normal no play. A barra mostra quanto já carregou.
 - No ao vivo, pausar vira assistir atrasado: o canal continua de onde parou, e o botão "Voltar ao vivo" leva ao momento atual.
 - Guarda 90 s já assistidos para voltar sem baixar de novo.
+
+### `minhalista.js`: Minha lista e download em "Meus vídeos"
+
+- **Minha lista** (Filmes e séries): o botão amarelo do controle (ou F) num filme ou série põe ou tira da lista, e o cartão ganha uma estrela. Na página da série aparece o botão "＋ Minha lista". A fileira "Minha lista" fica logo depois de "Continuar assistindo" e respeita o filtro Filmes/Séries. A lista fica só nesta TV (chave `telalivre.minhalista`) e não baixa vídeo nenhum.
+- **Continuar assistindo** já existia na página: mostra o que ficou pela metade, com a barra de progresso.
+- **Download em "Meus vídeos"**: para vídeos cadastrados por link, aparece "Baixar para outro aparelho" com um link por vídeo. Transmissões em partes (.m3u8) não viram arquivo único e ficam com um aviso. O download vai direto do endereço do vídeo, sem passar pelo servidor.
+- Os filmes e séries do Pluto TV não têm download: o Pluto só licencia esses títulos para assistir online.
