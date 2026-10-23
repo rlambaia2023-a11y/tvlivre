@@ -1,0 +1,32 @@
+name: Levantar legendas dos canais
+
+# Roda quando pedido: confere quais canais já trazem legenda (anunciada na lista ou embutida
+# no vídeo) e grava listas/legendas.json. Só leitura dos canais; não mexe no servidor.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  levantar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir legendas
+        run: python3 ferramentas/legendas.py listas/canais.json listas/legendas.json
+
+      - name: Salvar no repositório
+        run: |
+          git config user.name "tvlivre-bot"
+          git config user.email "tvlivre-bot@users.noreply.github.com"
+          git add listas/legendas.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Levantamento de legendas em $(date -u +'%Y-%m-%d %H:%M') UTC"
+          for i in 1 2 3; do
+            git pull --rebase -q && git push && exit 0
+            sleep 10
+          done
+          exit 1
