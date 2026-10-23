@@ -1,5 +1,7 @@
 name: Sondagem (temporário)
-on: workflow_dispatch
+on:
+  push:
+    branches: [tmp-sonda]
 jobs:
   sondar:
     runs-on: ubuntu-latest
@@ -26,4 +28,4 @@ jobs:
           git init -q; git checkout -q -b sondagem
           git config user.name bot; git config user.email bot@users.noreply.github.com
           git add -A; git commit -qm sondagem
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem
+          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem
