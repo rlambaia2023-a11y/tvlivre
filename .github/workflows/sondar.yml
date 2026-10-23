@@ -9,23 +9,43 @@ jobs:
     steps:
       - run: |
           mkdir out; cd out
-          H="-H Origin:https://tela-livre-production.up.railway.app"
-          curl -sS -m 30 -D rb.h $H "https://de1.api.radio-browser.info/json/stations/search?countrycode=BR&hidebroken=true&order=clickcount&reverse=true&limit=40&is_https=true" -o rb.json || true
-          curl -sS -m 30 -D rb2.h $H "https://all.api.radio-browser.info/json/servers" -o rbservers.json || true
-          curl -sS -m 30 "https://de1.api.radio-browser.info/json/countries?hidebroken=true&order=stationcount&reverse=true&limit=30" -o rbcountries.json || true
-          curl -sS -m 30 "https://de1.api.radio-browser.info/json/tags?order=stationcount&reverse=true&limit=40&hidebroken=true" -o rbtags.json || true
-          curl -sS -m 30 -D ic.h $H "https://iptv-org.github.io/api/countries.json" -o countries.json || true
-          curl -sS -m 30 -D pt.h $H "https://iptv-org.github.io/iptv/countries/pt.m3u" -o pt.m3u || true
-          curl -sS -m 30 "https://iptv-org.github.io/api/categories.json" -o categories.json || true
-          curl -sS -m 60 "https://iptv-org.github.io/iptv/index.m3u" -o index.m3u || true
-          grep -i -B1 -E "webcam|live ?cam|camera|earthcam|skyline|\bcam\b|cams\b" index.m3u > cams.txt || true
-          curl -sS -m 60 "https://iptv-org.github.io/iptv/categories/outdoor.m3u" -o outdoor.m3u || true
-          curl -sS -m 60 "https://iptv-org.github.io/iptv/categories/relax.m3u" -o relax.m3u || true
-          rm index.m3u
-          wc -c * > tamanhos.txt
+          cat > yt.py <<'PY'
+          import json, re, sys, urllib.request, urllib.parse
+          UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+          def get(u):
+              r = urllib.request.Request(u, headers={"user-agent": UA, "accept-language": "pt-BR,pt;q=0.9", "cookie": "CONSENT=YES+1; SOCS=CAI"})
+              return urllib.request.urlopen(r, timeout=30).read().decode("utf-8", "replace")
+          def walk(o, out):
+              if isinstance(o, dict):
+                  if "videoRenderer" in o:
+                      v = o["videoRenderer"]
+                      badges = json.dumps(v.get("badges", [])) + json.dumps(v.get("thumbnailOverlays", []))
+                      live = "LIVE" in badges or "BADGE_STYLE_TYPE_LIVE_NOW" in badges
+                      t = "".join(x.get("text", "") for x in v.get("title", {}).get("runs", []))
+                      ch = v.get("ownerText", {}).get("runs", [{}])[0]
+                      cid = ch.get("navigationEndpoint", {}).get("browseEndpoint", {}).get("browseId", "")
+                      vc = json.dumps(v.get("viewCountText", {}), ensure_ascii=False)
+                      out.append({"v": v.get("videoId"), "t": t, "ch": ch.get("text", ""), "cid": cid, "live": live, "vc": vc[:80]})
+                  for x in o.values(): walk(x, out)
+              elif isinstance(o, list):
+                  for x in o: walk(x, out)
+          res = {}
+          for q in sys.argv[1:]:
+              try:
+                  h = get("https://www.youtube.com/results?search_query=" + urllib.parse.quote(q) + "&sp=EgJAAQ%253D%253D")
+                  m = re.search(r"var ytInitialData = (\{.*?\});</script>", h)
+                  out = []
+                  if m: walk(json.loads(m.group(1)), out)
+                  res[q] = out[:25]
+              except Exception as e:
+                  res[q] = str(e)
+          json.dump(res, open("yt.json", "w"), ensure_ascii=False, indent=1)
+          PY
+          python3 yt.py "webcam ao vivo" "câmera ao vivo praia" "live cam 24/7" "earthcam live" "explore.org live cam" "times square live" "shibuya live camera" "iss live earth" "aquarium live cam" "rio de janeiro ao vivo câmera" "aeroporto ao vivo" "skylinewebcams live" "africam live" "northern lights live" "volcano live cam" "jackson hole live" "venice live cam" "paris live cam" "new york live cam" "tokyo live camera" "balneario camboriu ao vivo" "são paulo ao vivo câmera" "florianópolis ao vivo" "cataratas ao vivo" "trem ao vivo câmera" "porto ao vivo navios" "zoo live cam" "panda live cam" "beach live cam hawaii" "alps live webcam"
+          rm yt.py
       - run: |
           cd out
-          git init -q; git checkout -q -b sondagem
+          git init -q; git checkout -q -b sondagem2
           git config user.name bot; git config user.email bot@users.noreply.github.com
           git add -A; git commit -qm sondagem
-          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem
+          git push "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" sondagem2
