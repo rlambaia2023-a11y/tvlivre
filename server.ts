@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
-const HTML_REF = Bun.env.TL_HTML_REF || "d5495f5f9f560508f94ae2b68adc54986a1fa09b";
+const HTML_REF = Bun.env.TL_HTML_REF || "58d888f3b8e408c7614641db4f529a73361aa59c";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
@@ -464,9 +464,12 @@ function lerM3U(texto: string): Fonte[] {
 // Só canais abertos e gratuitos: retransmissões de canais de TV paga (links não oficiais) ficam de fora.
 // Os canais do Pluto (jmp2.uk / pluto.tv) são gratuitos e nunca passam por este filtro.
 const PAGOS = /\b(a&e|adult swim|amc|axn|arte 1|cartoon network|cinemax|combate|discovery|disney|espn|film ?& ?arts|fox|globonews|gloob|gnt|hbo|history|lifetime|megapix|multishow|music box brazil|national geographic|nat ?geo|nickelodeon|paramount|premiere|sony (channel|movies)|space|sportv|studio universal|syfy|telecine|tlc|tnt|travel box brazil|universal tv|canal viva|warner|woohoo|box kids)\b/i;
+// A Globo só transmite pela internet no Globoplay (a página tem o cartão "Globo ao vivo"); os links
+// "Rede Globo" / "TV Globo ..." das listas públicas são retransmissões não oficiais que vivem caindo.
+const GLOBO = /\b(rede globo|tv globo)\b/i;
 function naoPago(f: Fonte): boolean {
   if (/jmp2\.uk|pluto\.tv/i.test(f.url)) return true;
-  return !PAGOS.test(f.nome);
+  return !PAGOS.test(f.nome) && !GLOBO.test(f.nome);
 }
 // Lê o JSON do Famelack e devolve só os links de vídeo direto (os de YouTube não tocam no player).
 async function famelack(): Promise<Fonte[]> {
