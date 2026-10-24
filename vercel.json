@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/canais", "destination": "/listas/canais.json" },
+    { "source": "/lista.m3u", "destination": "/listas/tvlivre.m3u" }
+  ]
+}
