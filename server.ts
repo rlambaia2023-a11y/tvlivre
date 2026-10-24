@@ -333,6 +333,7 @@ async function ler(nome: string): Promise<string | null> {
 async function salvarLista(): Promise<void> {
   await guardar("canais.json", JSON.stringify({ atualizado: estado.atualizado, canais: estado.canais }), "application/json");
   await guardar("lista.m3u", textoM3U(), "audio/x-mpegurl");
+  await guardar("caidos.json", JSON.stringify(caidos), "application/json");
 }
 
 // ---------- Lista automática: baixa, testa e guarda só o que funciona ----------
@@ -448,6 +449,9 @@ function talvezFunciona(chave: string, motivo: string): boolean {
 type Fonte = { nome: string; logo: string; grupo: string; chave: string; url: string; ref: string; ua: string };
 type Canal = { id: string; name: string; logo: string; group: string; url: string; ref: string; ua: string; alts: { url: string; ref: string; ua: string }[] };
 const estado: { canais: Canal[]; atualizado: number; atualizando: boolean; ultimaTentativa: number; plutoTs: number; plutoRodando: boolean } = { canais: [], atualizado: 0, atualizando: false, ultimaTentativa: 0, plutoTs: 0, plutoRodando: false };
+// Canais que caíram (nenhum link respondeu). A rotina de recuperação reconfere de 20 em 20 minutos e
+// devolve o canal à lista assim que um link voltar; a lista fica guardada no bucket para sobreviver a reinícios.
+let caidos: Canal[] = [];
 
 function grupoPt(g: string): string {
   const k = (g || "").split(";")[0].trim();
@@ -556,6 +560,7 @@ async function atualizar(): Promise<void> {
     const grupos = new Map<string, Fonte[]>();
     for (const f of fontes) { const g = grupos.get(f.chave) || []; if (!g.some((x) => x.url === f.url)) g.push(f); grupos.set(f.chave, g); }
     const canais: Canal[] = [];
+    const novosCaidos: Canal[] = [];
     for (const [chave, lista] of grupos) {
       // 403 fica como reserva: pode ser bloqueio de região que só libera para quem está no Brasil.
       const bons = lista.filter((f) => status.get(f.url)?.ok);
@@ -563,7 +568,15 @@ async function atualizar(): Promise<void> {
       // recebe recusa de acesso, mas a TV na sua casa abre. Só descarta se o link sumiu de vez.
       const talvez = lista.filter((f) => talvezFunciona(chave, status.get(f.url)?.motivo || ""));
       const usar = [...bons, ...talvez];
-      if (!usar.length) continue;
+      if (!usar.length) {
+        // Nenhum link respondeu agora: o canal vai para a lista de caídos e volta quando a recuperação o achar no ar.
+        const q = lista[0];
+        novosCaidos.push({
+          id: chave, name: limparNome(q.nome), logo: (lista.find((f) => f.logo) || q).logo, group: grupoPt(q.grupo),
+          url: q.url, ref: q.ref, ua: q.ua, alts: lista.slice(1).map((f) => ({ url: f.url, ref: f.ref, ua: f.ua })),
+        });
+        continue;
+      }
       const p = usar[0];
       canais.push({
         id: chave, name: limparNome(p.nome), logo: (lista.find((f) => f.logo) || p).logo, group: grupoPt(p.grupo),
@@ -573,6 +586,7 @@ async function atualizar(): Promise<void> {
     // Se o teste das outras fontes deu errado de vez (internet do servidor, por exemplo), mantém os canais antigos.
     const abertos = canais.length ? canais : estado.canais.filter((c) => !c.id.startsWith("pluto:"));
     const todos = [...abertos, ...canaisPluto];
+    if (canais.length) caidos = novosCaidos;
     if (todos.length) { estado.canais = todos; estado.atualizado = Date.now(); estado.plutoTs = Date.now(); await salvarLista(); }
     console.log(JSON.stringify({ evt: "lista_atualizada", pluto: canaisPluto.length, plutoDaFonte: fontesPluto.length > 0, fontes: fontes.length, famelack: fame.status === "fulfilled" ? fame.value.length : 0, links: urls.length, canais: todos.length, ms: Date.now() - inicio }));
   } catch (e) {
@@ -845,9 +859,46 @@ async function falhou(q: URLSearchParams): Promise<Response> {
   console.log(JSON.stringify({ evt: "falha_relatada", id, links: links.length, bons: bons.length, motivos: testes.map((t) => t.r.motivo) }));
   const j = estado.canais.findIndex((x) => x.id === id);
   if (j < 0) return resp(false);
-  if (!bons.length) { estado.canais.splice(j, 1); await salvarLista(); return resp(true); }
+  if (!bons.length) { estado.canais.splice(j, 1); caidos = [...caidos.filter((x) => x.id !== id), c]; await salvarLista(); return resp(true); }
   estado.canais[j] = { ...c, url: bons[0].url, ref: bons[0].ref, ua: bons[0].ua, alts: bons.slice(1) };
   return resp(false);
+}
+
+// Rotina de recuperação: reconfere os canais caídos e devolve à lista os que voltaram a responder,
+// sem esperar a próxima atualização completa (que roda de 6 em 6 horas).
+let recuperando = false;
+async function recuperar(): Promise<void> {
+  if (recuperando || estado.atualizando || !caidos.length) return;
+  recuperando = true;
+  const inicio = Date.now();
+  try {
+    const voltaram: Canal[] = [];
+    await emLotes(caidos, 12, async (c) => {
+      const links = [{ url: c.url, ref: c.ref, ua: c.ua }, ...c.alts];
+      for (let i = 0; i < links.length; i++) {
+        const r = await verificar(links[i].url, links[i].ref || null, links[i].ua || null);
+        if (r.ok || talvezFunciona(c.id, r.motivo)) {
+          voltaram.push({ ...c, url: links[i].url, ref: links[i].ref, ua: links[i].ua, alts: links.filter((_, k) => k !== i) });
+          return;
+        }
+      }
+    });
+    // Se a atualização completa começou no meio do caminho, ela mesma cuida da lista.
+    if (estado.atualizando || !voltaram.length) return;
+    const ids = new Set(voltaram.map((c) => c.id));
+    caidos = caidos.filter((c) => !ids.has(c.id));
+    const jaTem = new Set(estado.canais.map((c) => c.id));
+    const novos = voltaram.filter((c) => !jaTem.has(c.id));
+    // Volta junto dos canais abertos, antes dos canais do Pluto.
+    const pos = estado.canais.findIndex((c) => c.id.startsWith("pluto:"));
+    estado.canais.splice(pos < 0 ? estado.canais.length : pos, 0, ...novos);
+    await salvarLista();
+    console.log(JSON.stringify({ evt: "canais_voltaram", canais: novos.map((c) => c.name), restantes: caidos.length, ms: Date.now() - inicio }));
+  } catch (e) {
+    console.log(JSON.stringify({ evt: "recuperar_erro", erro: String(e) }));
+  } finally {
+    recuperando = false;
+  }
 }
 
 // Estatísticas de uso: quantos aparelhos abriram a TV e quais canais foram assistidos, por dia
@@ -978,6 +1029,7 @@ Bun.serve({
       if (Array.isArray(j.canais) && j.canais.length) { estado.canais = j.canais.filter((c: Canal) => c.id.startsWith("pluto:") || naoPago({ nome: c.name, url: c.url } as Fonte)); estado.atualizado = j.atualizado || 0; }
     } catch {}
   }
+  try { const c = JSON.parse((await ler("caidos.json")) || "[]"); if (Array.isArray(c)) caidos = c.filter((x: Canal) => x && x.id && x.url && naoPago({ nome: x.name, url: x.url } as Fonte)); } catch {}
   console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponível" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
 }
 console.log("Tela Livre no ar");
@@ -985,6 +1037,9 @@ console.log("Tela Livre no ar");
 conferirDia();
 setInterval(conferirDia, 10 * 60 * 1000);
 if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
+// Recuperação de canais caídos: primeira rodada 5 minutos depois de ligar, depois a cada 20 minutos.
+setTimeout(recuperar, 5 * 60 * 1000);
+setInterval(recuperar, 20 * 60 * 1000);
 // Confere a cada 30 minutos se a lista passou de 6 horas e, se passou, refaz os testes sozinho,
 // mesmo que ninguém esteja assistindo.
 setInterval(() => { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); }, 30 * 60 * 1000);
