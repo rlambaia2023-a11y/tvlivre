@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
-const HTML_REF = Bun.env.TL_HTML_REF || "58d888f3b8e408c7614641db4f529a73361aa59c";
+const HTML_REF = Bun.env.TL_HTML_REF || "cfaa7220c54c4024f47d1831526712ca4846e12c";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
@@ -343,6 +343,17 @@ const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/Ow
 const FONTE_PLUTO2 = Bun.env.FONTE_PLUTO2 || "https://raw.githubusercontent.com/BuddyChewChew/pluto/main/pluto_br.m3u";
 // Famelack (antigo TV.Garden): base pública em JSON, montada a partir do iptv-org e de outras transmissões abertas.
 const FONTE_FAMELACK = Bun.env.FONTE_FAMELACK || "https://raw.githubusercontent.com/famelack/famelack-data/main/tv/raw/countries/br.json";
+// Canais em português de fora da lista do Brasil (iptv-org por idioma): Portugal, África lusófona,
+// regionais brasileiras e canais FAST gratuitos. Só entram os IDs desta lista, conferidos um a um;
+// o resto da fonte fica de fora porque mistura retransmissões de canais pagos.
+const FONTE_PORTUGUES = Bun.env.FONTE_PORTUGUES || "https://iptv-org.github.io/iptv/languages/por.m3u";
+const LUSOFONOS = new Set([
+  "adbtv.pt", "artv.pt", "babyfirst.us", "blitstv.br", "catve2.br", "catvefm.br", "catvemastertv.br", "cindietv.br",
+  "ebs.be", "ebsplus.be", "impdtvworldwide.br", "kktv.ao", "kuriakoscine.pt", "kuriakosmusic.pt", "kuriakostv.pt",
+  "manaigrejaonline.pt", "muzangalatv.ao", "onfm.pt", "portocanal.pt", "reinoinfantil.mz", "rfptv.pt", "sbntvglobal.us",
+  "tracetoca.fr", "traceurban.fr", "tvcidade.cv", "tvmana1.pt", "tvmana2.pt", "tvmanamocambique.mz", "tvshowfortaleza.br",
+  "tvzimbo.ao", "xitenuevolatino.us", "xitesiemprelatino.us",
+]);
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
 // Doramas: canais FAST oficiais e gratuitos (Pluto TV América Latina/Espanha e Samsung TV Plus),
 // abertos pelo jmp2.uk. O Pluto Brasil não tem canal de dorama, por isso eles vêm de outros países.
@@ -507,11 +518,12 @@ async function atualizar(): Promise<void> {
   estado.ultimaTentativa = Date.now();
   const inicio = Date.now();
   try {
-    const [free, iptv, pluto, fame] = await Promise.allSettled([
+    const [free, iptv, pluto, fame, por] = await Promise.allSettled([
       freeTv().then((r) => (r.ok ? r.text() : "")),
       fetch(FONTE_IPTV, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
       textoPluto(),
       famelack(),
+      fetch(FONTE_PORTUGUES, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
     ]);
     if (fame.status === "rejected") console.log(JSON.stringify({ evt: "famelack_erro", erro: String(fame.reason) }));
     // Free-TV primeiro: são as emissoras abertas oficiais, entram no topo da numeração.
@@ -519,6 +531,7 @@ async function atualizar(): Promise<void> {
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
       ...doramaFontes(),
+      ...lerM3U(por.status === "fulfilled" ? por.value : "").filter((f) => LUSOFONOS.has(f.chave)),
     ];
     // Famelack por último: só dá links reserva aos canais que já existem, sem trazer canais novos.
     const fontes = [...principais, ...juntarPorNome(principais, fame.status === "fulfilled" ? fame.value : [])].filter(naoPago);
