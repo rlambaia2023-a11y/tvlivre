@@ -1353,6 +1353,7 @@ function loadAuto(force){
       var own=S.channels.filter(function(c){return c.src!=="auto"});
       var playing=current&&current.item.src==="auto"?current.item.id:null;
       var auto=j.canais.map(function(c){return {id:"a-"+c.id,name:c.name,logo:c.logo,group:c.group,url:c.url,ref:c.ref,ua:c.ua,alts:c.alts||[],src:"auto"}});
+      auto.push(GLOBOPLAY);
       S.channels=auto.concat(own);S.autoTs=j.atualizado;
       S.sources=S.sources.filter(function(s){return !/iptv-org|Free-TV|Canais abertos/.test(s.label)});
       save();
@@ -1373,7 +1374,7 @@ function relayUrl(item,path){var q=(path||"/p")+"?u="+encodeURIComponent(item.ur
 function testAll(){
   if(testing||!S.channels.length)return;
   if(!HAS_SERVER){status("test-status","O teste precisa do servidor (abra pelo endereço do Railway).");return}
-  testing=true;var list=S.channels.filter(function(c){return !ehPluto(c)}),i=0,done=0,ok=0;
+  testing=true;var list=S.channels.filter(function(c){return !ehPluto(c)&&!c.link}),i=0,done=0,ok=0;
   status("test-status","Testando 0 de "+list.length+"…");
   function next(){
     if(i>=list.length)return;var c=list[i++];
@@ -1469,9 +1470,18 @@ function giveUp(c){
 }
 function skipNext(c){
   var l=listFor("live"),i=l.indexOf(c.item);
-  for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!parado(x)&&liberado(x)){play(x,"live");return}}
+  for(var k=1;k<=l.length;k++){var x=l[((i+lastStep*k)%l.length+l.length)%l.length];if(!x.link&&!parado(x)&&liberado(x)){play(x,"live");return}}
+}
+/* Globo ao vivo: a Globo só transmite pela internet no Globoplay (grátis com cadastro, mostra a afiliada
+   da região). O cartão abre o site oficial em vez de tocar aqui, e fica fora do zapping e do teste. */
+var GLOBOPLAY={id:"a-globoplay",name:"Globo ao vivo (Globoplay)",logo:"",group:"TV aberta",url:"https://globoplay.globo.com/agora-na-globo/",src:"auto",link:true,alts:[]};
+function abrirLink(item){
+  contarCanal(item,"live");
+  var w=null;try{w=window.open(item.url,"_blank")}catch(e){}
+  if(!w)location.href=item.url;
 }
 function play(item,kind,forceRelay,alt){
+  if(item&&item.link){abrirLink(item);return}
   if(kind==="cam"){playCam(item);return}
   if(kind==="vod"&&!alt&&!forceRelay&&!(item.url&&Date.now()-(item.urlTs||0)<2*60*60*1000)){if(!(current&&current.item===item))contarCanal(item,kind);linkVod(item);return}
   if(recarregar&&kind==="live"){try{sessionStorage.setItem("tl.retomar",item.id)}catch(e){}location.reload();return}
@@ -1629,7 +1639,7 @@ $("speed-test").onclick=function(){
 $("speed-apply").onclick=function(){if(!recomendado)return;S.modo=recomendado.m;S.qual=recomendado.q;save();aplicarQualidade();renderStreams();this.hidden=true;status("speed-status","Pronto: modo "+NOME_MODO[S.modo]+(S.qual?" com até "+S.qual+"p":" com qualidade automática")+".")};
 
 function showOsd(){var o=$("osd");o.classList.remove("hide");clearTimeout(osdTimer);osdTimer=setTimeout(function(){o.classList.add("hide")},4000)}
-function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=(l.indexOf(current.item)+step+l.length)%l.length;play(l[i],current.kind)}
+function zap(step){if(!current)return;lastStep=step;var l=listFor(current.kind);if(!l.length)return;var i=l.indexOf(current.item);for(var k=0;k<l.length;k++){i=(i+step+l.length)%l.length;if(!l[i].link)break}play(l[i],current.kind)}
 function closePlayer(){
   if(recarregar){location.reload();return}
   stop();clearTimeout(skipTimer);fecharPaineis();$("player").hidden=true;
