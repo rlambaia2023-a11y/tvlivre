@@ -354,6 +354,9 @@ const LUSOFONOS = new Set([
   "tracetoca.fr", "traceurban.fr", "tvcidade.cv", "tvmana1.pt", "tvmana2.pt", "tvmanamocambique.mz", "tvshowfortaleza.br",
   "tvzimbo.ao", "xitenuevolatino.us", "xitesiemprelatino.us",
 ]);
+// Canais que recusam conexões de fora do Brasil (o servidor fica nos EUA), mas abrem na TV daqui:
+// ficam na lista mesmo quando o teste do servidor dá erro de conexão ou falta de resposta.
+const SO_DO_BRASIL = new Set(["blitstv.br", "catve2.br", "catvefm.br", "catvemastertv.br"]);
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
 // Doramas: canais FAST oficiais e gratuitos (Pluto TV América Latina/Espanha e Samsung TV Plus),
 // abertos pelo jmp2.uk. O Pluto Brasil não tem canal de dorama, por isso eles vêm de outros países.
@@ -438,6 +441,7 @@ const GRUPOS: Record<string, string> = {
 // Recusas que podem ser só do servidor (fora do Brasil): o canal fica como reserva em vez de sair.
 function talvezFunciona(chave: string, motivo: string): boolean {
   if (motivo === "HTTP 403") return true;
+  if (SO_DO_BRASIL.has(chave) && (motivo === "erro de conexão" || motivo === "sem resposta")) return true;
   return chave.startsWith("pluto:") && /HTTP 4(00|01|03|10|51)|variante HTTP 4|não é transmissão/.test(motivo);
 }
 
