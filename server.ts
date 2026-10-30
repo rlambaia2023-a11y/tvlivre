@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
-const HTML_REF = Bun.env.TL_HTML_REF || "84192a62837eb3b44dbfa4622c9cebb201394ea7";
+const HTML_REF = Bun.env.TL_HTML_REF || "18a2e967fd359de56540e4355ba5979f411dc167";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
