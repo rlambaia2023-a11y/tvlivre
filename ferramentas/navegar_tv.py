@@ -131,7 +131,7 @@ def main():
         if not txt(pg, "#m3u-status").endswith("canais carregados."):
             pg.evaluate("()=>document.getElementById('m3u-load').click()")
         try:
-            pg.wait_for_function("()=>/canais carregados/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
+            pg.wait_for_function("()=>/canais carregados|canais salvos/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
             ok("Carregar lista", True, txt(pg, "#m3u-status") + " | " + txt(pg, "#sources"))
         except Exception:  # noqa: BLE001
             ok("Carregar lista", False, txt(pg, "#m3u-status") or "sem resposta em 2 min")
@@ -159,7 +159,7 @@ def main():
         # 5. Reabrir
         pg.reload(wait_until="domcontentloaded")
         try:
-            pg.wait_for_function("()=>/canais carregados/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
+            pg.wait_for_function("()=>/canais carregados|canais salvos/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
             time.sleep(2)
             ok("Ao reabrir, a Lista IPTV volta sozinha", True, txt(pg, "#m3u-status"))
         except Exception:  # noqa: BLE001
@@ -181,12 +181,21 @@ def main():
                 pg.wait_for_function("()=>/canais no ar/.test(document.getElementById('test-status').textContent)", timeout=3 * 3600 * 1000, polling=5000)
                 ok("Testar canais até o fim", True, txt(pg, "#test-status"))
                 foto(pg, "05-depois-do-teste")
+            # Fecha e abre de novo no meio do teste: a lista tem que abrir da cópia guardada na TV
+            # (sem baixar) e o que já foi testado tem que continuar salvo.
+            time.sleep(25)
+            pg.reload(wait_until="domcontentloaded")
+            pg.wait_for_function("()=>/canais carregados|canais salvos/.test(document.getElementById('m3u-status').textContent)", timeout=60000)
+            st = txt(pg, "#m3u-status")
+            ok("Reabrir usa a lista salva na TV (sem baixar de novo)", "salvos nesta TV" in st, st)
+            testados = pg.evaluate("()=>{try{return Object.keys(JSON.parse(localStorage.getItem('telalivre.v1')).teste||{}).length}catch(e){return 0}}")
+            ok("Resultado do teste fica salvo na TV", testados >= 300, "%d canais com resultado guardado" % testados)
         except Exception as e:  # noqa: BLE001
             ok("Testar canais", False, (txt(pg, "#test-status") or "") + " " + str(e)[:80])
 
         # 7. Abrir canais (com o teste rodando a TV continua usável; recarrega para soltar o servidor)
         pg.reload(wait_until="domcontentloaded")
-        pg.wait_for_function("()=>/canais carregados/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
+        pg.wait_for_function("()=>/canais carregados|canais salvos/.test(document.getElementById('m3u-status').textContent)", timeout=120000)
         aba(pg, "live")
         todos(pg)
         for _ in range(8):  # desenha uns 2.700 cartões para sortear da lista inteira

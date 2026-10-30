@@ -730,9 +730,24 @@ function parseM3U(text,src){
   }
   return out;
 }
-function addList(text,label,statusId){
-  var items=parseM3U(text,label);
+/* Lista IPTV guardada no banco do navegador (IndexedDB): cabe uma lista de milhares de canais, que não cabe
+   no armazenamento comum. Cada TV baixa e testa uma vez; depois abre direto do que ficou guardado nela. */
+var IDB=null;
+function idb(cb){
+  if(IDB)return cb(IDB);
+  try{var r=indexedDB.open("telalivre",1);
+    r.onupgradeneeded=function(){r.result.createObjectStore("listas")};
+    r.onsuccess=function(){IDB=r.result;cb(IDB)};
+    r.onerror=function(){cb(null)};
+  }catch(e){cb(null)}
+}
+function guardarLista(url,items){idb(function(db){if(!db)return;try{db.transaction("listas","readwrite").objectStore("listas").put({ts:Date.now(),items:items},url)}catch(e){}})}
+function lerLista(url,cb){idb(function(db){if(!db)return cb(null);try{var r=db.transaction("listas").objectStore("listas").get(url);r.onsuccess=function(){cb(r.result||null)};r.onerror=function(){cb(null)}}catch(e){cb(null)}})}
+function dataHora(ts){var d=new Date(ts);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+" às "+hm(ts)}
+function addList(text,label,statusId,prontos){
+  var items=prontos||parseM3U(text,label);
   if(!items.length){status(statusId,"Não encontrei canais nesse arquivo. Confira se é mesmo uma lista M3U.");return}
+  if(!prontos&&label===S.m3uUrl)guardarLista(label,items);
   var keep=S.channels.filter(function(c){return c.src!==label}),seen={};
   keep.forEach(function(c){seen[c.url]=1});
   items=items.filter(function(c){if(seen[c.url])return false;seen[c.url]=1;return true});
@@ -1375,7 +1390,9 @@ function loadAuto(force){
     if(j.atualizando)setTimeout(function(){loadAuto(false)},20000);
   }).catch(function(){status("auto-status","Não consegui falar com o servidor agora. Os canais salvos continuam aqui.")});
 }
-$("auto-refresh").onclick=function(){status("auto-status","Pedindo ao servidor para conferir os links…");loadAuto(true)};
+$("auto-refresh").onclick=function(){status("auto-status","Pedindo ao servidor para conferir os links…");loadAuto(true);
+  /* Atualizar também baixa a Lista IPTV de novo (os testes já feitos continuam valendo para os mesmos links). */
+  if(S.m3uAuto&&S.m3uUrl)fetchList(S.m3uUrl,S.m3uUrl,"m3u-status")};
 $("onlyok").onclick=function(){S.onlyOk=!S.onlyOk;this.setAttribute("aria-pressed",!!S.onlyOk);save();renderLive()};
 $("test").onclick=testAll;
 function relayUrl(item,path){var q=(path||"/p")+"?u="+encodeURIComponent(item.url);if(item.ref)q+="&r="+encodeURIComponent(item.ref);if(item.ua)q+="&a="+encodeURIComponent(item.ua);return q}
@@ -1407,8 +1424,12 @@ function testAll(){
   var todos=S.channels.filter(function(c){return !ehPluto(c)});
   if(!todos.length){status("test-status","Nenhum canal para testar ainda.");return}
   testing=true;
-  status("test-status","Conferindo os canais já testados…");
-  puxarTestados(todos,function(list){
+  /* Cada TV testa uma vez: o que ela já testou fica salvo e é pulado. Só quando tudo já tem resultado
+     o botão refaz o teste inteiro (para quem quer conferir de novo). */
+  var res=resultado(),semTeste=todos.filter(function(c){return res[c.id]===undefined});
+  var refazer=!semTeste.length;
+  status("test-status",refazer?"Todos já foram testados nesta TV; conferindo de novo…":"Conferindo os canais já testados…");
+  puxarTestados(refazer?todos:semTeste,function(list){
   var i=0,done=0,ok=0,prontos=todos.length-list.length;
   var falta={};list.forEach(function(c){falta[c.id]=1});
   todos.forEach(function(c){if(!falta[c.id]&&!parado(c))ok++});
@@ -1418,6 +1439,7 @@ function testAll(){
     if(i>=list.length)return;var c=list[i++];
     fetch(relayUrl(c,"/check")).then(function(r){return r.json()}).then(function(j){marcar(c,!!j.ok);if(j.ok)ok++}).catch(function(){marcar(c,false)})
     .then(function(){done++;status("test-status","Testando "+done+" de "+list.length+"… "+ok+" no ar");
+      if(done%300===0)save(); /* guarda o andamento: fechar a TV no meio não perde o que já foi testado */
       if(done===list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+todos.length+" canais no ar"+(prontos?" ("+prontos+" já vinham testados)":"")+" · Pluto TV fica de fora: o teste é feito fora do Brasil")}else next()});
   }
   for(var k=0,par=list.length>2000?16:8;k<par;k++)next();
@@ -1952,7 +1974,14 @@ renderAll();infoPin();renderStreams();
 loadAuto(false);
 setTimeout(function(){if(!testing)puxarTestados(S.channels.filter(function(c){return !ehPluto(c)}),function(){})},8000);
 /* A Lista IPTV salva em Ajustes é baixada de novo toda vez que a TV abre (os links das listas mudam com o tempo). */
-if(S.m3uAuto&&S.m3uUrl)fetchList(S.m3uUrl,S.m3uUrl,"m3u-status");
+if(S.m3uAuto&&S.m3uUrl){
+  /* Abre com a lista guardada nesta TV, sem baixar de novo. Só baixa se ainda não houver cópia
+     (primeira vez, navegador sem IndexedDB ou dados apagados). */
+  lerLista(S.m3uUrl,function(g){
+    if(g&&g.items&&g.items.length){addList("",S.m3uUrl,"m3u-status",g.items);status("m3u-status",g.items.length+" canais salvos nesta TV · baixados em "+dataHora(g.ts)+". Para buscar a versão nova, toque em Carregar lista ou em Atualizar agora.")}
+    else fetchList(S.m3uUrl,S.m3uUrl,"m3u-status");
+  });
+}
 /* Conta este aparelho ao abrir a TV e, se ela ficar ligada, de novo a cada hora (para entrar no dia seguinte). */
 contarUso("&abriu=1");setInterval(function(){contarUso("&ativo=1")},60*60*1000);
 loadGuia();setInterval(loadGuia,10*60*1000);
