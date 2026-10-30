@@ -20,13 +20,19 @@ jobs:
     timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Preparar o navegador
-        run: pip install --quiet playwright==1.48.0
+        run: |
+          pip install --quiet playwright
+          # Chrome de verdade (toca H.264/AAC como a TV); se o runner não tiver, o Playwright instala.
+          command -v google-chrome || python -m playwright install --with-deps chrome
       - name: Navegar pela TV
         env:
           TV: https://tela-livre-production.up.railway.app
           TESTE_COMPLETO: ${{ inputs.completo && '1' || '0' }}
-        run: python3 ferramentas/navegar_tv.py
+        run: python ferramentas/navegar_tv.py
       - name: Guardar fotos e relatório
         if: always()
         uses: actions/upload-artifact@v4
