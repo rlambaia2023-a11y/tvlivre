@@ -1,0 +1,38 @@
+name: Navegação da TV
+
+# Abre a TV publicada num Chrome de verdade e faz o caminho de quem usa: passa pelas telas,
+# carrega a Lista IPTV, aperta "Atualizar agora" e "Testar canais", reabre a TV e abre canais
+# até o vídeo tocar. Fotos de cada tela e de cada canal ficam no artefato "fotos-navegacao".
+# Roda a cada 4 horas (teste rápido) e pode ser disparado com o teste de canais completo.
+on:
+  schedule:
+    - cron: "27 */4 * * *"
+  workflow_dispatch:
+    inputs:
+      completo:
+        description: "Esperar o Testar canais terminar (demora)"
+        type: boolean
+        default: false
+
+jobs:
+  navegar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar o navegador
+        run: pip install --quiet playwright==1.48.0
+      - name: Navegar pela TV
+        env:
+          TV: https://tela-livre-production.up.railway.app
+          TESTE_COMPLETO: ${{ inputs.completo && '1' || '0' }}
+        run: python3 ferramentas/navegar_tv.py
+      - name: Guardar fotos e relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fotos-navegacao
+          path: |
+            fotos/
+            relatorio-navegacao.json
+          if-no-files-found: ignore
