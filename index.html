@@ -588,7 +588,7 @@ var NOME="Tela Livre: HRC & DV";
 var DEFAULT={name:NOME,channels:[],videos:[],sources:[]};
 var S=load();
 var localVideos=[]; // arquivos abertos do aparelho, só nesta sessão
-var tab="live", group="inicio", query="";
+var tab="live", group="inicio", query="", limiteGrade=300;
 var current=null, hls=null, osdTimer=null, digitBuf="", digitTimer=null, testing=false;
 var HAS_SERVER=/^https?:$/.test(location.protocol);
 var GUIA={}, desbloqueados={};
@@ -698,7 +698,7 @@ function loadGuia(){
 }
 
 function load(){try{var d=JSON.parse(localStorage.getItem(KEY));if(d&&d.channels){if(!d.name||d.name==="Tela Livre")d.name=NOME;return d}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){status("sys-status","O navegador da TV não deixou salvar. O que você adicionou some ao fechar.")}}
+function save(){try{var d=S;if(S.m3uUrl&&S.channels.some(function(c){return c.src===S.m3uUrl})){d={};for(var k in S)d[k]=S[k];d.channels=S.channels.filter(function(c){return c.src!==S.m3uUrl})}localStorage.setItem(KEY,JSON.stringify(d))}catch(e){status("sys-status","O navegador da TV não deixou salvar. O que você adicionou some ao fechar.")}}
 function $(id){return document.getElementById(id)}
 function uid(){return Math.random().toString(36).slice(2,10)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -711,6 +711,10 @@ tick();setInterval(tick,15000);
 function renderBrand(){var n=S.name||NOME;var c=n.indexOf(":");if(c>-1){$("brand").innerHTML=esc(n.slice(0,c+1))+" <b>"+esc(n.slice(c+1).trim())+"</b>"}else{var parts=n.split(" ");var last=parts.length>1?parts.pop():"";$("brand").innerHTML=esc(parts.join(" "))+(last?" <b>"+esc(last)+"</b>":"")}document.title=n;$("sys-name").value=n;if($("brand2"))$("brand2").innerHTML=$("brand").innerHTML}
 
 /* ---------- M3U ---------- */
+function hashTxt(t){var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(36)}
+/* Número do canal sem procurar na lista inteira a cada cartão (com listas de milhares de canais isso travava a TV). */
+var numCache=null,numLista=null,numTam=-1;
+function numDe(c){if(numLista!==S.channels||numTam!==S.channels.length){numCache=new Map();S.channels.forEach(function(x,i){numCache.set(x,i+1)});numLista=S.channels;numTam=S.channels.length}return numCache.get(c)||0}
 function parseM3U(text,src){
   var out=[],cur=null,lines=text.split(/\r?\n/);
   for(var i=0;i<lines.length;i++){
@@ -722,7 +726,7 @@ function parseM3U(text,src){
       cur={id:uid(),name:(ci>-1?l.slice(ci+1):"").trim()||attrs["tvg-name"]||"Sem nome",logo:attrs["tvg-logo"]||"",group:attrs["group-title"]||"Outros",src:src,ref:attrs["http-referrer"]||"",ua:attrs["http-user-agent"]||""};
     }else if(cur&&/^#EXTVLCOPT:http-referr?er=/i.test(l)){cur.ref=l.slice(l.indexOf("=")+1).trim()}
     else if(cur&&/^#EXTVLCOPT:http-user-agent=/i.test(l)){cur.ua=l.slice(l.indexOf("=")+1).trim()}
-    else if(l[0]!=="#"&&cur){cur.url=l;out.push(cur);cur=null}
+    else if(l[0]!=="#"&&cur){cur.url=l;cur.id="m"+hashTxt(l);out.push(cur);cur=null}
   }
   return out;
 }
@@ -738,12 +742,12 @@ function addList(text,label,statusId){
   save();renderAll();
   status(statusId,items.length+" canais carregados.");
 }
-function fetchList(url,label,statusId){
+function fetchList(url,label,statusId,pronto){
   status(statusId,"Baixando lista…");
   function get(u){return fetch(u).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text()})}
   (url[0]==="/"?get(url):HAS_SERVER?get("/list?u="+encodeURIComponent(url)).catch(function(){return get(url)}):get(url))
-  .then(function(t){addList(t,label,statusId)})
-  .catch(function(){status(statusId,"Não consegui baixar. O servidor da lista pode bloquear acesso pelo navegador; tente baixar o arquivo e usar “Abrir arquivo .m3u”.")});
+  .then(function(t){addList(t,label,statusId);if(pronto)pronto(true)})
+  .catch(function(){if(pronto)pronto(false);status(statusId,"Não consegui baixar. O servidor da lista pode bloquear acesso pelo navegador; tente baixar o arquivo e usar “Abrir arquivo .m3u”.")});
 }
 
 /* ---------- render ---------- */
@@ -794,7 +798,7 @@ function railHtml(key,titulo,cor,icone,lista){
   var LIM=24,mostra=lista.slice(0,LIM),sobra=lista.length-mostra.length;
   return '<section class="rail" style="--c:'+cor+'"><div class="rhead"><span class="ricon">'+ico(icone)+'</span><h3>'+esc(titulo)+'</h3><span class="rcount">'+lista.length+'</span>'+
     (key!==G_REC?'<button class="rmore f" data-g="'+key+'">Ver tudo ›</button>':'')+'</div>'+
-    '<div class="rrow">'+mostra.map(function(c){return card(c,S.channels.indexOf(c)+1,false)}).join("")+
+    '<div class="rrow">'+mostra.map(function(c){return card(c,numDe(c),false)}).join("")+
     (sobra>0?'<button class="card more f" data-g="'+key+'" style="--c:'+cor+'">'+ico("mais")+'<span>Ver os '+lista.length+'</span><small>+'+sobra+' canais</small></button>':'')+'</div></section>';
 }
 function renderHome(){
@@ -826,7 +830,7 @@ function renderGrade(){
   $("vtitle").innerHTML=esc(titulo)+'<small>'+(query?"“"+esc(query)+"” · ":"")+list.length+' canais</small>';
   $("onlyok").setAttribute("aria-pressed",!!S.onlyOk);
   var mostraGrupo=!!query||group===G_FAV||group===G_REC||group==="todos";
-  var html=function(l){return l.map(function(c){return card(c,S.channels.indexOf(c)+1,mostraGrupo)}).join("")};
+  var html=function(l){var m=l.length>limiteGrade?l.slice(0,limiteGrade):l;return m.map(function(c){return card(c,numDe(c),mostraGrupo)}).join("")+(l.length>m.length?'<button class="card more f" data-mais="1" style="--c:'+cor+'">'+ico("mais")+'<span>Mostrar mais</span><small>faltam '+(l.length-m.length)+' canais</small></button>':"")};
   var out="";
   if(!query&&S.testeTs&&group!==G_REC){
     /* Depois do teste: primeiro os canais que abriram, depois os parados. */
@@ -891,7 +895,7 @@ function renderLive(){
 }
 /* Abre uma categoria (ou a tela inicial) e põe o foco no primeiro canal. */
 function abrirGrupo(g){
-  setTab("live");group=g;query="";$("q").value="";renderLive();window.scrollTo(0,0);
+  setTab("live");group=g;query="";limiteGrade=300;$("q").value="";renderLive();window.scrollTo(0,0);
   var f=g==="inicio"?($("resume")||$("home").querySelector(".f")):$("channels").querySelector(".card")||$("onlyok");
   if(f)f.focus({preventScroll:true});
 }
@@ -1336,6 +1340,7 @@ $("tab-live").addEventListener("click",function(e){
   if(b.dataset.act==="menu"){abrirMenu();return}
   if(b.dataset.act==="sorte"){canalSurpresa();return}
   if(b.dataset.tab){abrirAba(b.dataset.tab);return}
+  if(b.dataset.mais){var n=limiteGrade;limiteGrade+=300;renderLive();var cs=$("channels").querySelectorAll(".card[data-id]");if(cs[n])cs[n].focus();return}
   if(b.dataset.id){openById(b.dataset.id,"live");return}
   if(b.dataset.g){abrirGrupo(b.dataset.g)}
 });
@@ -1346,7 +1351,7 @@ $("videos").addEventListener("click",function(e){var b=e.target.closest(".card")
 var M3U_PADRAO="https://iptv-org.github.io/iptv/index.m3u";
 $("m3u-url").value=S.m3uUrl||M3U_PADRAO;
 $("m3u-url").addEventListener("change",function(){var u=this.value.trim();S.m3uUrl=u||M3U_PADRAO;if(!u)this.value=M3U_PADRAO;save()});
-$("m3u-load").onclick=function(){var u=$("m3u-url").value.trim();if(!/^https?:\/\//i.test(u)){status("m3u-status","Cole um link começando com http:// ou https://");return}S.m3uUrl=u;save();fetchList(u,u,"m3u-status")};
+$("m3u-load").onclick=function(){var u=$("m3u-url").value.trim();if(!/^https?:\/\//i.test(u)){status("m3u-status","Cole um link começando com http:// ou https://");return}S.m3uUrl=u;S.m3uAuto=true;save();fetchList(u,u,"m3u-status")};
 $("m3u-file").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){addList(String(r.result),f.name,"m3u-status")};r.readAsText(f);this.value=""};
 /* ---------- canais abertos automáticos ---------- */
 function hhmm(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
@@ -1375,9 +1380,17 @@ $("onlyok").onclick=function(){S.onlyOk=!S.onlyOk;this.setAttribute("aria-presse
 $("test").onclick=testAll;
 function relayUrl(item,path){var q=(path||"/p")+"?u="+encodeURIComponent(item.url);if(item.ref)q+="&r="+encodeURIComponent(item.ref);if(item.ua)q+="&a="+encodeURIComponent(item.ua);return q}
 function testAll(){
-  if(testing||!S.channels.length)return;
+  if(testing)return;
   if(!HAS_SERVER){status("test-status","O teste precisa do servidor (abra pelo endereço do Railway).");return}
-  testing=true;var list=S.channels.filter(function(c){return !ehPluto(c)}),i=0,done=0,ok=0;
+  /* O teste sempre inclui a Lista IPTV salva em Ajustes: se ela ainda não está carregada, baixa antes. */
+  var m3u=S.m3uUrl||M3U_PADRAO;
+  if(!S.channels.some(function(c){return c.src===m3u})&&!testAll.baixando){
+    testAll.baixando=true;S.m3uUrl=m3u;S.m3uAuto=true;save();status("test-status","Baixando a Lista IPTV para incluir no teste…");
+    fetchList(m3u,m3u,"m3u-status",function(){testAll.baixando=false;testAll()});return;
+  }
+  var list=S.channels.filter(function(c){return !ehPluto(c)}),i=0,done=0,ok=0;
+  if(!list.length){status("test-status","Nenhum canal para testar ainda.");return}
+  testing=true;
   status("test-status","Testando 0 de "+list.length+"…");
   function next(){
     if(i>=list.length)return;var c=list[i++];
@@ -1385,7 +1398,7 @@ function testAll(){
     .then(function(){done++;status("test-status","Testando "+done+" de "+list.length+"… "+ok+" no ar");
       if(done===list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+list.length+" canais no ar (Pluto TV fica de fora: o teste é feito fora do Brasil)")}else next()});
   }
-  for(var k=0;k<8;k++)next();
+  for(var k=0,par=list.length>2000?16:8;k<par;k++)next();
 }
 function manual(kind){
   var n=$("m-name").value.trim(),u=$("m-url").value.trim(),g=$("m-group").value.trim()||"Meus canais";
@@ -1672,7 +1685,7 @@ function renderPlist(focar){
   $("plist-title").textContent=l===S.channels||group==="todos"||group==="inicio"?"Canais":(CAT_NOME[group]||group);
   $("plist-items").innerHTML=l.map(function(c){
     var g=trancado(c)?null:guiaDe(c),sub=g&&g.cur?"Agora: "+g.cur.t:(c.group||"");
-    return '<button class="prow f" data-id="'+esc(c.id)+'" aria-current="'+(c.id===cid)+'"><span class="num">'+String(S.channels.indexOf(c)+1).padStart(3,"0")+'</span>'+
+    return '<button class="prow f" data-id="'+esc(c.id)+'" aria-current="'+(c.id===cid)+'"><span class="num">'+String(numDe(c)).padStart(3,"0")+'</span>'+
       '<span class="txt"><span class="nm">'+(ehFav(c)?'<span class="favstar">★</span> ':'')+(trancado(c)?'🔒 ':'')+esc(c.name)+'</span><span class="sm">'+esc(sub)+'</span></span></button>';
   }).join("");
   if(focar){var a=$("plist-items").querySelector('[aria-current="true"]')||$("plist-items").querySelector(".prow");if(a){a.focus();a.scrollIntoView({block:"center"})}}
@@ -1914,6 +1927,8 @@ try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","ColorF0Red
 
 renderAll();infoPin();renderStreams();
 loadAuto(false);
+/* A Lista IPTV salva em Ajustes é baixada de novo toda vez que a TV abre (os links das listas mudam com o tempo). */
+if(S.m3uAuto&&S.m3uUrl)fetchList(S.m3uUrl,S.m3uUrl,"m3u-status");
 /* Conta este aparelho ao abrir a TV e, se ela ficar ligada, de novo a cada hora (para entrar no dia seguinte). */
 contarUso("&abriu=1");setInterval(function(){contarUso("&ativo=1")},60*60*1000);
 loadGuia();setInterval(loadGuia,10*60*1000);
