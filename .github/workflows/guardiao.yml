@@ -63,3 +63,22 @@ jobs:
             echo "OK $nome: $pedacos pedaços"
           done
           if [ "$falhas" -gt 1 ]; then echo "$falhas filmes não abriram"; exit 1; fi
+
+      # Lista IPTV dos Ajustes (iptv-org index.m3u): baixa pelo servidor da TV, conta as opções
+      # do VLC e testa uma amostra como o botão "Testar canais", depois abre cada canal aprovado
+      # pelo relay até chegar um pedaço de vídeo. O resumo aparece na página da execução.
+      - name: Baixar o código (teste da Lista IPTV)
+        if: always()
+        uses: actions/checkout@v4
+      - name: Conferir a Lista IPTV
+        if: always()
+        env:
+          TV: https://tela-livre-production.up.railway.app
+        run: python3 ferramentas/testar_iptv.py 80
+      - name: Guardar o resultado da Lista IPTV
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultado-iptv
+          path: resultado-iptv.json
+          if-no-files-found: ignore
