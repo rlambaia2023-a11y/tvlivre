@@ -13,7 +13,7 @@ Sai com erro se a lista não baixar, vier pequena demais ou quase nada abrir.
 
 Uso: TV=https://... python3 testar_iptv.py [quantidade]
 """
-import json, os, random, re, sys, time, urllib.parse, urllib.request
+import http.client, json, os, random, re, sys, time, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 TV = os.environ.get("TV", "https://tela-livre-production.up.railway.app").rstrip("/")
@@ -75,8 +75,13 @@ def abrir(c):
         ped = next((l for l in linhas if l and not l.startswith("#")), "")
         if not ped.startswith("/p?"):
             return False, "sem pedaços de vídeo"
-        dados = pegar(ped, 25, 200000)
+        try:
+            dados = pegar(ped, 25, 200000)
+        except http.client.IncompleteRead as e:  # transmissão contínua: o vídeo chegou, a conexão só fechou no meio
+            dados = e.partial
         return len(dados) > 1000, "pedaço com %d bytes" % len(dados)
+    except http.client.IncompleteRead as e:
+        return len(e.partial) > 1000, "transmissão direta, %d bytes" % len(e.partial)
     except Exception as e:  # noqa: BLE001 — o motivo vai para o relatório
         return False, type(e).__name__ + ": " + str(e)[:80]
 
