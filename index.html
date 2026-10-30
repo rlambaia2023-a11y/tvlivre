@@ -746,7 +746,7 @@ function fetchList(url,label,statusId,pronto){
   status(statusId,"Baixando lista…");
   function get(u){return fetch(u).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text()})}
   (url[0]==="/"?get(url):HAS_SERVER?get("/list?u="+encodeURIComponent(url)).catch(function(){return get(url)}):get(url))
-  .then(function(t){addList(t,label,statusId);if(pronto)pronto(true)})
+  .then(function(t){addList(t,label,statusId);puxarTestados(S.channels.filter(function(c){return !ehPluto(c)}),function(){});if(pronto)pronto(true)})
   .catch(function(){if(pronto)pronto(false);status(statusId,"Não consegui baixar. O servidor da lista pode bloquear acesso pelo navegador; tente baixar o arquivo e usar “Abrir arquivo .m3u”.")});
 }
 
@@ -1379,6 +1379,22 @@ $("auto-refresh").onclick=function(){status("auto-status","Pedindo ao servidor p
 $("onlyok").onclick=function(){S.onlyOk=!S.onlyOk;this.setAttribute("aria-pressed",!!S.onlyOk);save();renderLive()};
 $("test").onclick=testAll;
 function relayUrl(item,path){var q=(path||"/p")+"?u="+encodeURIComponent(item.url);if(item.ref)q+="&r="+encodeURIComponent(item.ref);if(item.ua)q+="&a="+encodeURIComponent(item.ua);return q}
+/* Resultados guardados no servidor, valendo para todas as TVs: canal testado nas últimas 6 horas
+   (por qualquer aparelho ou pela rodada automática) já chega marcado e não é testado de novo. */
+function puxarTestados(list,cb){
+  if(!HAS_SERVER||!list.length){cb(list);return}
+  var falta=[],i=0,mudou=false;
+  function lote(){
+    if(i>=list.length){if(mudou){save();renderLive()}cb(falta);return}
+    var parte=list.slice(i,i+2000);i+=2000;
+    fetch("/testados",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(parte.map(function(c){return {u:c.url,r:c.ref||"",a:c.ua||""}}))})
+    .then(function(r){return r.json()}).then(function(j){
+      var t=j.testados||{};
+      parte.forEach(function(c){var x=t[c.url];if(x){if(resultado()[c.id]!==x.ok)mudou=true;marcar(c,!!x.ok)}else falta.push(c)});
+    }).catch(function(){falta=falta.concat(parte)}).then(lote);
+  }
+  lote();
+}
 function testAll(){
   if(testing)return;
   if(!HAS_SERVER){status("test-status","O teste precisa do servidor (abra pelo endereço do Railway).");return}
@@ -1388,17 +1404,24 @@ function testAll(){
     testAll.baixando=true;S.m3uUrl=m3u;S.m3uAuto=true;save();status("test-status","Baixando a Lista IPTV para incluir no teste…");
     fetchList(m3u,m3u,"m3u-status",function(){testAll.baixando=false;testAll()});return;
   }
-  var list=S.channels.filter(function(c){return !ehPluto(c)}),i=0,done=0,ok=0;
-  if(!list.length){status("test-status","Nenhum canal para testar ainda.");return}
+  var todos=S.channels.filter(function(c){return !ehPluto(c)});
+  if(!todos.length){status("test-status","Nenhum canal para testar ainda.");return}
   testing=true;
-  status("test-status","Testando 0 de "+list.length+"…");
+  status("test-status","Conferindo os canais já testados…");
+  puxarTestados(todos,function(list){
+  var i=0,done=0,ok=0,prontos=todos.length-list.length;
+  var falta={};list.forEach(function(c){falta[c.id]=1});
+  todos.forEach(function(c){if(!falta[c.id]&&!parado(c))ok++});
+  if(!list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+todos.length+" canais no ar (todos já tinham sido testados nas últimas 6 horas)");return}
+  status("test-status","Testando 0 de "+list.length+"… ("+prontos+" já testados antes)");
   function next(){
     if(i>=list.length)return;var c=list[i++];
     fetch(relayUrl(c,"/check")).then(function(r){return r.json()}).then(function(j){marcar(c,!!j.ok);if(j.ok)ok++}).catch(function(){marcar(c,false)})
     .then(function(){done++;status("test-status","Testando "+done+" de "+list.length+"… "+ok+" no ar");
-      if(done===list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+list.length+" canais no ar (Pluto TV fica de fora: o teste é feito fora do Brasil)")}else next()});
+      if(done===list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+todos.length+" canais no ar"+(prontos?" ("+prontos+" já vinham testados)":"")+" · Pluto TV fica de fora: o teste é feito fora do Brasil")}else next()});
   }
   for(var k=0,par=list.length>2000?16:8;k<par;k++)next();
+  });
 }
 function manual(kind){
   var n=$("m-name").value.trim(),u=$("m-url").value.trim(),g=$("m-group").value.trim()||"Meus canais";
@@ -1927,6 +1950,7 @@ try{if(window.tizen&&tizen.tvinputdevice){["ChannelUp","ChannelDown","ColorF0Red
 
 renderAll();infoPin();renderStreams();
 loadAuto(false);
+setTimeout(function(){if(!testing)puxarTestados(S.channels.filter(function(c){return !ehPluto(c)}),function(){})},8000);
 /* A Lista IPTV salva em Ajustes é baixada de novo toda vez que a TV abre (os links das listas mudam com o tempo). */
 if(S.m3uAuto&&S.m3uUrl)fetchList(S.m3uUrl,S.m3uUrl,"m3u-status");
 /* Conta este aparelho ao abrir a TV e, se ela ficar ligada, de novo a cada hora (para entrar no dia seguinte). */
