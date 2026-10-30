@@ -450,7 +450,7 @@ main{padding-left:max(var(--gut), env(safe-area-inset-left,0px));padding-right:m
       <div class="box">
         <h2>Lista IPTV</h2>
         <p>Cole o endereço da lista M3U que você assina. Os canais entram na aba Ao vivo, separados pelos grupos da própria lista.</p>
-        <div class="field"><label for="m3u-url">Link da lista (.m3u / .m3u8)</label><input class="f" id="m3u-url" type="url" placeholder="https://…/lista.m3u"></div>
+        <div class="field"><label for="m3u-url">Link da lista (.m3u / .m3u8)</label><input class="f" id="m3u-url" type="url" placeholder="https://…/lista.m3u" value="https://iptv-org.github.io/iptv/index.m3u"></div>
         <div class="row">
           <button class="btn f" id="m3u-load">Carregar lista</button>
           <label class="btn ghost f" for="m3u-file" tabindex="0">Abrir arquivo .m3u</label>
@@ -1342,7 +1342,11 @@ $("tab-live").addEventListener("click",function(e){
 $("videos").addEventListener("click",function(e){var b=e.target.closest(".card");if(b)openById(b.dataset.id,"videos")});
 
 /* ---------- ajustes ---------- */
-$("m3u-load").onclick=function(){var u=$("m3u-url").value.trim();if(!/^https?:\/\//i.test(u)){status("m3u-status","Cole um link começando com http:// ou https://");return}fetchList(u,u,"m3u-status")};
+/* Link da Lista IPTV: fica salvo na TV. Padrão: lista pública do iptv-org. */
+var M3U_PADRAO="https://iptv-org.github.io/iptv/index.m3u";
+$("m3u-url").value=S.m3uUrl||M3U_PADRAO;
+$("m3u-url").addEventListener("change",function(){var u=this.value.trim();S.m3uUrl=u||M3U_PADRAO;if(!u)this.value=M3U_PADRAO;save()});
+$("m3u-load").onclick=function(){var u=$("m3u-url").value.trim();if(!/^https?:\/\//i.test(u)){status("m3u-status","Cole um link começando com http:// ou https://");return}S.m3uUrl=u;save();fetchList(u,u,"m3u-status")};
 $("m3u-file").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){addList(String(r.result),f.name,"m3u-status")};r.readAsText(f);this.value=""};
 /* ---------- canais abertos automáticos ---------- */
 function hhmm(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
