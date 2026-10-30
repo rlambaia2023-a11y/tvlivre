@@ -50,7 +50,9 @@ def foto(pg, nome):
 
 
 def aba(pg, t):
-    pg.evaluate("t=>{var b=document.querySelector('button[data-tab=\"'+t+'\"]');if(b)b.click()}", t)
+    # "Ao vivo" não tem botão próprio no menu: volta-se a ela pelas categorias (Início, Todos...).
+    sel = '[data-g="inicio"]' if t == "live" else 'button[data-tab="' + t + '"]'
+    pg.evaluate("s=>{var b=document.querySelector(s);if(b)b.click()}", sel)
     time.sleep(1.5)
 
 
