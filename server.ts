@@ -2,7 +2,7 @@
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
 // 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
 // fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
-const HTML_REF = Bun.env.TL_HTML_REF || "b5179c8be0a437026606ea3cd0d4e0ae1a946fb2";
+const HTML_REF = Bun.env.TL_HTML_REF || "84192a62837eb3b44dbfa4622c9cebb201394ea7";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
 const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
@@ -70,6 +70,9 @@ const PERFIS: { ua: string; refDoProprio: boolean }[] = [
 ];
 const perfilPorHost = new Map<string, number>();
 
+const prazos = new WeakMap<Response, ReturnType<typeof setTimeout>>();
+function soltarPrazo(r: Response) { clearTimeout(prazos.get(r)); prazos.delete(r); }
+
 async function buscar(u: URL, ref: string | null, ua: string | null, range: string | null, ms: number): Promise<Response> {
   // Pluto TV usa chave própria no link; trocar o perfil não muda nada, então vai direto.
   const tentativas = /pluto\.tv$/i.test(u.hostname) ? 1 : PERFIS.length;
@@ -77,10 +80,15 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
   for (let k = 0; k < tentativas; k++) {
     const i = (inicio + k) % PERFIS.length;
     const p = PERFIS[i];
+    // O prazo corre até o fim da leitura, como antes; o relay solta o prazo (soltarPrazo) quando
+    // repassa o vídeo direto, para transmissão contínua (TS/MP4) não ser cortada no meio.
+    const ctl = new AbortController();
+    const prazo = setTimeout(() => ctl.abort(new DOMException("The operation timed out.", "TimeoutError")), ms);
     const r = await fetch(u.href, {
       headers: { ...cabecalhos(ref || (p.refDoProprio ? u.origin + "/" : null), (i === 0 ? ua : null) || p.ua || null, range), ...(/pluto\.tv$|plutotv\.net$|jmp2\.uk$/i.test(u.hostname) ? { "x-forwarded-for": IP_BR } : {}) },
-      redirect: "follow", signal: AbortSignal.timeout(ms),
-    });
+      redirect: "follow", signal: ctl.signal,
+    }).catch((e) => { clearTimeout(prazo); throw e; });
+    prazos.set(r, prazo);
     if (r.status !== 403 && r.status !== 401) {
       if (i !== 0 || perfilPorHost.has(u.host)) perfilPorHost.set(u.host, i);
       return r;
@@ -159,6 +167,7 @@ async function relay(req: Request, q: URLSearchParams): Promise<Response> {
     const v = res.headers.get(k);
     if (v) h[k] = v;
   }
+  soltarPrazo(res);
   return new Response(res.body, { status: res.status, headers: h });
 }
 
@@ -236,10 +245,60 @@ async function diagnostico(q: URLSearchParams): Promise<Response> {
   return new Response(JSON.stringify({ etapas }, null, 1), { headers: { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
 
+// Resultados de teste guardados por link, valendo para todas as TVs: um canal testado por qualquer
+// aparelho (ou pela rodada automática do servidor) não é testado de novo por 6 horas.
+// A memória fica guardada no bucket (testes.json) e sobrevive a reinícios.
+type Testado = { ok: boolean; motivo: string; ts: number };
+const testados = new Map<string, Testado>();
+let testadosMudou = false;
+const chaveTeste = (u: string, ref?: string | null, ua?: string | null) => u + "|" + (ref || "") + "|" + (ua || "");
+function lembrarTeste(u: string, ref: string | null, ua: string | null, r: { ok: boolean; motivo: string }) {
+  const k = chaveTeste(u, ref, ua);
+  testados.delete(k);
+  testados.set(k, { ok: r.ok, motivo: r.motivo, ts: Date.now() });
+  if (testados.size > 30000) testados.delete(testados.keys().next().value!);
+  testadosMudou = true;
+}
+function testeGuardado(u: string, ref?: string | null, ua?: string | null): Testado | null {
+  const t = testados.get(chaveTeste(u, ref, ua));
+  return t && Date.now() - t.ts < SEIS_HORAS ? t : null;
+}
+async function salvarTestados(): Promise<void> {
+  if (!testadosMudou) return;
+  testadosMudou = false;
+  const agora = Date.now();
+  const vivos = [...testados].filter(([, t]) => agora - t.ts < SEIS_HORAS);
+  await guardar("testes.json", JSON.stringify(vivos), "application/json");
+}
+async function carregarTestados(): Promise<void> {
+  try {
+    const l = JSON.parse((await ler("testes.json")) || "[]");
+    if (Array.isArray(l)) for (const [k, t] of l) if (typeof k === "string" && t && typeof t.ts === "number") testados.set(k, t);
+  } catch {}
+}
+
 async function testar(q: URLSearchParams): Promise<Response> {
-  const r = await verificar(q.get("u"), q.get("r"), q.get("a"));
-  console.log(JSON.stringify({ evt: "check", host: (alvo(q.get("u"))?.hostname) || "?", ok: r.ok, motivo: r.motivo }));
-  return new Response(JSON.stringify(r), { headers: { ...CORS, "content-type": "application/json" } });
+  const u = q.get("u"), ref = q.get("r"), ua = q.get("a");
+  const guardado = q.get("novo") === "1" ? null : testeGuardado(u || "", ref, ua);
+  const r = guardado ? { ok: guardado.ok, motivo: guardado.motivo } : await verificar(u, ref, ua);
+  if (!guardado) {
+    if (alvo(u)) lembrarTeste(u!, ref, ua, r);
+    console.log(JSON.stringify({ evt: "check", host: (alvo(u)?.hostname) || "?", ok: r.ok, motivo: r.motivo }));
+  }
+  return new Response(JSON.stringify(guardado ? { ...r, guardado: true, ts: guardado.ts } : r), { headers: { ...CORS, "content-type": "application/json" } });
+}
+// A TV manda os links da lista dela (até 5000 por vez) e recebe o resultado dos que já foram testados.
+async function testadosRota(req: Request): Promise<Response> {
+  const out: Record<string, { ok: boolean; ts: number }> = {};
+  try {
+    const l = req.method === "POST" ? await req.json() : [];
+    if (Array.isArray(l)) for (const x of l.slice(0, 5000)) {
+      const u = typeof x === "string" ? x : String(x?.u || "");
+      const t = testeGuardado(u, typeof x === "string" ? "" : x?.r, typeof x === "string" ? "" : x?.a);
+      if (t) out[u] = { ok: t.ok, ts: t.ts };
+    }
+  } catch {}
+  return new Response(JSON.stringify({ testados: out }), { headers: { ...CORS, "content-type": "application/json", "cache-control": "no-store" } });
 }
 
 async function verificar(url: string | null, ref: string | null, ua: string | null): Promise<{ ok: boolean; motivo: string }> {
@@ -553,7 +612,9 @@ async function atualizar(): Promise<void> {
     for (const f of fontes) if (!porUrl.has(f.url)) porUrl.set(f.url, f);
     const resultados = await emLotes(urls, 24, async (u) => {
       const f = porUrl.get(u)!;
-      return { u, r: await verificar(u, f.ref || null, f.ua || null) };
+      const r = await verificar(u, f.ref || null, f.ua || null);
+      lembrarTeste(u, f.ref || null, f.ua || null, r);
+      return { u, r };
     });
     const status = new Map(resultados.map((x) => [x.u, x.r]));
     // Agrupa links do mesmo canal: o primeiro que funciona vira o principal, os outros viram reserva.
@@ -993,7 +1054,7 @@ Bun.serve({
   async fetch(req) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") {
-      return new Response(null, { headers: { ...CORS, "access-control-allow-headers": "range, content-type", "access-control-allow-methods": "GET, OPTIONS" } });
+      return new Response(null, { headers: { ...CORS, "access-control-allow-headers": "range, content-type", "access-control-allow-methods": "GET, POST, OPTIONS" } });
     }
     if (url.pathname === "/health") return new Response("ok");
     if (url.pathname === "/v") return new Response(String(Bun.hash(HTML)));
@@ -1013,6 +1074,7 @@ Bun.serve({
     if (url.pathname === "/vod/hls") return vodHls(req, url.searchParams);
     if (url.pathname === "/velocidade") return new Response(AMOSTRA, { headers: { ...CORS, "content-type": "application/octet-stream", "cache-control": "no-store", "content-length": String(AMOSTRA.length) } });
     if (url.pathname === "/check") return testar(url.searchParams);
+    if (url.pathname === "/testados") return testadosRota(req);
     if (url.pathname === "/diagnostico") return diagnostico(url.searchParams);
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
   },
@@ -1022,6 +1084,7 @@ Bun.serve({
   await conectarBucket();
   await carregarPagina();
   await carregarEstat();
+  await carregarTestados();
   const salvo = await ler("canais.json");
   if (salvo) {
     try {
@@ -1036,6 +1099,7 @@ console.log("Tela Livre no ar");
 // Estatísticas: guarda a cada 10 minutos e fecha o dia logo depois da meia-noite de Brasília.
 conferirDia();
 setInterval(conferirDia, 10 * 60 * 1000);
+setInterval(salvarTestados, 10 * 60 * 1000);
 if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
 // Recuperação de canais caídos: primeira rodada 5 minutos depois de ligar, depois a cada 20 minutos.
 setTimeout(recuperar, 5 * 60 * 1000);
