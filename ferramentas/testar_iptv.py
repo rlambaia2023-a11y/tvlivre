@@ -145,6 +145,11 @@ def main():
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
             f.write("\n".join(resumo) + "\n")
+    if os.environ.get("GITHUB_ACTIONS"):
+        # Aviso na execução: dá para ler pela API (check-runs/annotations) sem baixar o log.
+        print("::notice title=Lista IPTV::" + "%0A".join(resumo).replace("|", "¦"))
+        falhas = [f"{c['nome']} | {'VLC' if (c['ref'] or c['ua']) else '-'} | {c['motivo'] if not c['check'] else c['detalhe']}" for c in res if not c["abriu"]]
+        print("::notice title=Lista IPTV - nao abriram::" + "%0A".join(falhas)[:60000])
     with open("resultado-iptv.json", "w", encoding="utf-8") as f:
         json.dump({"lista": LISTA, "canais": len(canais), "vlc": len(vlc), "testados": res}, f, ensure_ascii=False, indent=1)
     ab, n = taxa(res, "abriu")
