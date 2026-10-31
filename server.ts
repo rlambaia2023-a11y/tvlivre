@@ -1,13 +1,13 @@
-﻿// A pÃ¡gina da TV fica em index.html no repositÃ³rio tvlivre. O servidor carrega a pÃ¡gina ao ligar:
+// A página da TV fica em index.html no repositório tvlivre. O servidor carrega a página ao ligar:
 // 1) do arquivo ao lado (testes no computador); 2) do GitHub, presa ao commit TL_HTML_REF;
-// 3) da Ãºltima cÃ³pia guardada no bucket, se o GitHub nÃ£o responder. Assim o cÃ³digo do Railway
-// fica pequeno e a pÃ¡gina nÃ£o precisa vir embutida nele. Os mÃ³dulos da pasta extras/ seguem o mesmo caminho.
+// 3) da última cópia guardada no bucket, se o GitHub não responder. Assim o código do Railway
+// fica pequeno e a página não precisa vir embutida nele. Os módulos da pasta extras/ seguem o mesmo caminho.
 const HTML_REF = Bun.env.TL_HTML_REF || "1a0c8da6a98ab29f99b638775a7263d8a0dc01e6";
 const HTML_URL = "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/" + HTML_REF + "/index.html";
-const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TVâ€¦ a pÃ¡gina abre sozinha em instantes.</body>';
+const PAGINA_RESERVA = '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="5"><title>Tela Livre</title><body style="background:#0b0f14;color:#e9edf2;font:24px system-ui;display:grid;place-items:center;height:100vh;margin:0">Ligando a TV… a página abre sozinha em instantes.</body>';
 let HTML = PAGINA_RESERVA;
-// MÃ³dulos extras (pasta extras/ do repositÃ³rio): ficam fora da pÃ¡gina principal e entram nela na hora
-// de entregar, logo depois do hls.js. VÃªm do mesmo commit da pÃ¡gina, com reserva no bucket.
+// Módulos extras (pasta extras/ do repositório): ficam fora da página principal e entram nela na hora
+// de entregar, logo depois do hls.js. Vêm do mesmo commit da página, com reserva no bucket.
 const EXTRAS = ["controles.js", "minhalista.js"];
 const extras: Record<string, string> = {};
 async function baixarDoRepo(caminho: string): Promise<{ texto: string; origem: string } | null> {
@@ -60,8 +60,8 @@ function alvo(s: string | null): URL | null {
   } catch { return null; }
 }
 
-// Perfis usados quando a emissora responde 403/401: muitas sÃ³ aceitam players conhecidos (VLC, Kodi)
-// ou o prÃ³prio site como origem. O servidor lembra qual perfil funcionou para cada emissora.
+// Perfis usados quando a emissora responde 403/401: muitas só aceitam players conhecidos (VLC, Kodi)
+// ou o próprio site como origem. O servidor lembra qual perfil funcionou para cada emissora.
 const PERFIS: { ua: string; refDoProprio: boolean }[] = [
   { ua: "", refDoProprio: false },
   { ua: "VLC/3.0.21 LibVLC/3.0.21", refDoProprio: false },
@@ -74,14 +74,14 @@ const prazos = new WeakMap<Response, ReturnType<typeof setTimeout>>();
 function soltarPrazo(r: Response) { clearTimeout(prazos.get(r)); prazos.delete(r); }
 
 async function buscar(u: URL, ref: string | null, ua: string | null, range: string | null, ms: number): Promise<Response> {
-  // Pluto TV usa chave prÃ³pria no link; trocar o perfil nÃ£o muda nada, entÃ£o vai direto.
+  // Pluto TV usa chave própria no link; trocar o perfil não muda nada, então vai direto.
   const tentativas = /pluto\.tv$/i.test(u.hostname) ? 1 : PERFIS.length;
   const inicio = perfilPorHost.get(u.host) ?? 0;
   for (let k = 0; k < tentativas; k++) {
     const i = (inicio + k) % PERFIS.length;
     const p = PERFIS[i];
-    // O prazo corre atÃ© o fim da leitura, como antes; o relay solta o prazo (soltarPrazo) quando
-    // repassa o vÃ­deo direto, para transmissÃ£o contÃ­nua (TS/MP4) nÃ£o ser cortada no meio.
+    // O prazo corre até o fim da leitura, como antes; o relay solta o prazo (soltarPrazo) quando
+    // repassa o vídeo direto, para transmissão contínua (TS/MP4) não ser cortada no meio.
     const ctl = new AbortController();
     const prazo = setTimeout(() => ctl.abort(new DOMException("The operation timed out.", "TimeoutError")), ms);
     const r = await fetch(u.href, {
@@ -93,7 +93,7 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
       if (i !== 0 || perfilPorHost.has(u.host)) perfilPorHost.set(u.host, i);
       return r;
     }
-    // A Ãºltima resposta volta inteira para quem chamou; sÃ³ as anteriores sÃ£o descartadas.
+    // A última resposta volta inteira para quem chamou; só as anteriores são descartadas.
     if (k === tentativas - 1) return r;
     r.body?.cancel();
   }
@@ -101,8 +101,8 @@ async function buscar(u: URL, ref: string | null, ua: string | null, range: stri
 }
 
 function cabecalhos(ref: string | null, ua: string | null, range?: string | null): Record<string, string> {
-  // identity: alguns servidores (Pluto, por exemplo) marcam a chave do vÃ­deo como gzip sem ela estar
-  // comprimida, e a descompressÃ£o automÃ¡tica quebrava no meio da transmissÃ£o.
+  // identity: alguns servidores (Pluto, por exemplo) marcam a chave do vídeo como gzip sem ela estar
+  // comprimida, e a descompressão automática quebrava no meio da transmissão.
   const h: Record<string, string> = { "user-agent": ua || UA_PADRAO, accept: "*/*", "accept-encoding": "identity" };
   if (ref) {
     h.referer = ref;
@@ -119,7 +119,7 @@ function viaRelay(abs: string, ref: string | null, ua: string | null): string {
   return q;
 }
 
-// Reescreve uma playlist HLS para que cada endereÃ§o passe pelo relay.
+// Reescreve uma playlist HLS para que cada endereço passe pelo relay.
 function reescrever(texto: string, base: string, ref: string | null, ua: string | null): string {
   return texto.split(/\r?\n/).map((linha) => {
     const l = linha.trim();
@@ -139,19 +139,19 @@ function ehPlaylist(url: string, tipo: string): boolean {
 
 async function relay(req: Request, q: URLSearchParams): Promise<Response> {
   const u = alvo(q.get("u"));
-  if (!u) return new Response("EndereÃ§o invÃ¡lido", { status: 400, headers: CORS });
+  if (!u) return new Response("Endereço inválido", { status: 400, headers: CORS });
   const ref = q.get("r"), ua = q.get("a");
   let res: Response;
   try {
     res = await buscar(u, ref, ua, req.headers.get("range"), 20000);
   } catch (e) {
     console.log(JSON.stringify({ evt: "relay_erro", host: u.hostname, erro: String(e) }));
-    return new Response("NÃ£o foi possÃ­vel alcanÃ§ar a transmissÃ£o", { status: 502, headers: CORS });
+    return new Response("Não foi possível alcançar a transmissão", { status: 502, headers: CORS });
   }
   const tipo = res.headers.get("content-type") || "";
   if (res.ok && ehPlaylist(res.url || u.href, tipo)) {
-    // LÃª como bytes: o Pluto manda a chave do vÃ­deo (16 bytes binÃ¡rios) marcada como playlist.
-    // Ler isso como texto estragava a chave e o vÃ­deo nÃ£o abria.
+    // Lê como bytes: o Pluto manda a chave do vídeo (16 bytes binários) marcada como playlist.
+    // Ler isso como texto estragava a chave e o vídeo não abria.
     const bytes = new Uint8Array(await res.arrayBuffer());
     const comeco = new TextDecoder().decode(bytes.subarray(0, 32)).replace(/^\uFEFF/, "").trimStart();
     if (comeco.startsWith("#EXTM3U")) {
@@ -173,17 +173,17 @@ async function relay(req: Request, q: URLSearchParams): Promise<Response> {
 
 async function lista(q: URLSearchParams): Promise<Response> {
   const u = alvo(q.get("u"));
-  if (!u) return new Response("EndereÃ§o invÃ¡lido", { status: 400, headers: CORS });
+  if (!u) return new Response("Endereço inválido", { status: 400, headers: CORS });
   try {
     const res = await fetch(u.href, { headers: cabecalhos(null, null), redirect: "follow", signal: AbortSignal.timeout(30000) });
     const texto = await res.text();
     return new Response(texto, { status: res.status, headers: { ...CORS, "content-type": "text/plain; charset=utf-8" } });
   } catch {
-    return new Response("NÃ£o foi possÃ­vel baixar a lista", { status: 502, headers: CORS });
+    return new Response("Não foi possível baixar a lista", { status: 502, headers: CORS });
   }
 }
 
-// Free-TV: tenta o arquivo do Brasil; se nÃ£o existir, filtra a lista geral pelo grupo Brasil.
+// Free-TV: tenta o arquivo do Brasil; se não existir, filtra a lista geral pelo grupo Brasil.
 async function freeTv(): Promise<Response> {
   const base = Bun.env.FREETV_BASE || "https://raw.githubusercontent.com/Free-TV/IPTV/master/";
   const headers = { ...CORS, "content-type": "text/plain; charset=utf-8" };
@@ -208,18 +208,18 @@ async function freeTv(): Promise<Response> {
     }
     return new Response(out.join("\n"), { headers });
   } catch {
-    return new Response("NÃ£o foi possÃ­vel baixar a lista do Free-TV", { status: 502, headers: CORS });
+    return new Response("Não foi possível baixar a lista do Free-TV", { status: 502, headers: CORS });
   }
 }
 
-// DiagnÃ³stico de um canal: segue a transmissÃ£o como o player faria (lista mestre, variante,
-// chave e primeiro pedaÃ§o do vÃ­deo) e mostra o que cada etapa respondeu.
+// Diagnóstico de um canal: segue a transmissão como o player faria (lista mestre, variante,
+// chave e primeiro pedaço do vídeo) e mostra o que cada etapa respondeu.
 async function diagnostico(q: URLSearchParams): Promise<Response> {
   const etapas: Record<string, unknown>[] = [];
   const ref = q.get("r"), ua = q.get("a");
   async function passo(nome: string, url: string, range: string | null) {
     const u = alvo(url);
-    if (!u) { etapas.push({ nome, url, erro: "endereÃ§o invÃ¡lido" }); return null; }
+    if (!u) { etapas.push({ nome, url, erro: "endereço inválido" }); return null; }
     try {
       const r = await buscar(u, ref, ua, range, 15000);
       const tipo = r.headers.get("content-type") || "";
@@ -246,8 +246,8 @@ async function diagnostico(q: URLSearchParams): Promise<Response> {
 }
 
 // Resultados de teste guardados por link, valendo para todas as TVs: um canal testado por qualquer
-// aparelho (ou pela rodada automÃ¡tica do servidor) nÃ£o Ã© testado de novo por 6 horas.
-// A memÃ³ria fica guardada no bucket (testes.json) e sobrevive a reinÃ­cios.
+// aparelho (ou pela rodada automática do servidor) não é testado de novo por 6 horas.
+// A memória fica guardada no bucket (testes.json) e sobrevive a reinícios.
 type Testado = { ok: boolean; motivo: string; ts: number };
 const testados = new Map<string, Testado>();
 let testadosMudou = false;
@@ -287,7 +287,7 @@ async function testar(q: URLSearchParams): Promise<Response> {
   }
   return new Response(JSON.stringify(guardado ? { ...r, guardado: true, ts: guardado.ts } : r), { headers: { ...CORS, "content-type": "application/json" } });
 }
-// A TV manda os links da lista dela (atÃ© 5000 por vez) e recebe o resultado dos que jÃ¡ foram testados.
+// A TV manda os links da lista dela (até 5000 por vez) e recebe o resultado dos que já foram testados.
 async function testadosRota(req: Request): Promise<Response> {
   const out: Record<string, { ok: boolean; ts: number }> = {};
   try {
@@ -304,20 +304,20 @@ async function testadosRota(req: Request): Promise<Response> {
 async function verificar(url: string | null, ref: string | null, ua: string | null): Promise<{ ok: boolean; motivo: string }> {
   const json = (ok: boolean, motivo: string) => ({ ok, motivo });
   const u = alvo(url);
-  if (!u) return json(false, "endereÃ§o invÃ¡lido");
+  if (!u) return json(false, "endereço inválido");
   try {
     const res = await buscar(u, ref, ua, "bytes=0-65535", 8000);
     if (!res.ok && res.status !== 206) { res.body?.cancel(); return json(false, "HTTP " + res.status); }
     const tipo = res.headers.get("content-type") || "";
     if (!ehPlaylist(res.url || u.href, tipo)) {
       res.body?.cancel();
-      // PÃ¡gina de site (YouTube, portal da emissora) nÃ£o Ã© vÃ­deo que a TV consegue tocar.
-      if (/text\/html|json/i.test(tipo) || /youtube\.com|youtu\.be/i.test(res.url || u.href)) return json(false, "pÃ¡gina, nÃ£o vÃ­deo");
+      // Página de site (YouTube, portal da emissora) não é vídeo que a TV consegue tocar.
+      if (/text\/html|json/i.test(tipo) || /youtube\.com|youtu\.be/i.test(res.url || u.href)) return json(false, "página, não vídeo");
       return json(true, "arquivo");
     }
     const texto = await res.text();
-    if (!texto.trimStart().startsWith("#EXTM3U")) return json(false, "nÃ£o Ã© transmissÃ£o");
-    // Se for playlist mestre, confere a primeira variante tambÃ©m.
+    if (!texto.trimStart().startsWith("#EXTM3U")) return json(false, "não é transmissão");
+    // Se for playlist mestre, confere a primeira variante também.
     if (texto.includes("#EXT-X-STREAM-INF")) {
       const linhas = texto.split(/\r?\n/);
       const i = linhas.findIndex((l) => l.startsWith("#EXT-X-STREAM-INF"));
@@ -330,15 +330,15 @@ async function verificar(url: string | null, ref: string | null, ua: string | nu
     }
     return json(true, "no ar");
   } catch (e) {
-    return json(false, String(e).includes("timeout") ? "sem resposta" : "erro de conexÃ£o");
+    return json(false, String(e).includes("timeout") ? "sem resposta" : "erro de conexão");
   }
 }
 
 // ---------- Armazenamento no Railway Bucket ----------
-// Guarda a Ãºltima lista testada. Quando o servidor reinicia, a TV jÃ¡ recebe os canais na hora,
+// Guarda a última lista testada. Quando o servidor reinicia, a TV já recebe os canais na hora,
 // sem esperar a rodada de testes. Sem bucket configurado (ou se ele falhar), o servidor funciona como antes.
 const TEM_S3 = !!(Bun.env.S3_BUCKET && Bun.env.S3_ACCESS_KEY_ID && Bun.env.S3_SECRET_ACCESS_KEY);
-// O provedor do bucket aceita assinaturas em formatos diferentes; o servidor testa as combinaÃ§Ãµes
+// O provedor do bucket aceita assinaturas em formatos diferentes; o servidor testa as combinações
 // ao ligar e fica com a primeira que funcionar.
 const COMBINACOES = [
   { estilo: "virtual", virtualHostedStyle: true, region: Bun.env.S3_REGION || "auto" },
@@ -370,7 +370,7 @@ async function conectarBucket(): Promise<void> {
   }
   console.log(JSON.stringify({ evt: "bucket_erro", acao: "conectar", tentativas: erros }));
 }
-const PASTA_LOCAL = Bun.env.TL_STORE_DIR || ""; // sÃ³ para testes no computador
+const PASTA_LOCAL = Bun.env.TL_STORE_DIR || ""; // só para testes no computador
 
 async function guardar(nome: string, conteudo: string, tipo: string): Promise<void> {
   try {
@@ -395,17 +395,17 @@ async function salvarLista(): Promise<void> {
   await guardar("caidos.json", JSON.stringify(caidos), "application/json");
 }
 
-// ---------- Lista automÃ¡tica: baixa, testa e guarda sÃ³ o que funciona ----------
+// ---------- Lista automática: baixa, testa e guarda só o que funciona ----------
 const FONTE_IPTV = Bun.env.FONTE_IPTV || "https://iptv-org.github.io/iptv/countries/br.m3u";
-// Pluto TV Brasil (repositÃ³rio OwnerPlugins/pluto-tv-m3u, refeito a cada 6 horas com os links do dia).
+// Pluto TV Brasil (repositório OwnerPlugins/pluto-tv-m3u, refeito a cada 6 horas com os links do dia).
 const FONTE_PLUTO = Bun.env.FONTE_PLUTO || "https://raw.githubusercontent.com/OwnerPlugins/pluto-tv-m3u/main/pluto-live-BR.m3u";
 // Segunda lista pronta do Pluto Brasil (BuddyChewChew/pluto, refeita a cada 6 horas), usada como reserva.
 const FONTE_PLUTO2 = Bun.env.FONTE_PLUTO2 || "https://raw.githubusercontent.com/BuddyChewChew/pluto/main/pluto_br.m3u";
-// Famelack (antigo TV.Garden): base pÃºblica em JSON, montada a partir do iptv-org e de outras transmissÃµes abertas.
+// Famelack (antigo TV.Garden): base pública em JSON, montada a partir do iptv-org e de outras transmissões abertas.
 const FONTE_FAMELACK = Bun.env.FONTE_FAMELACK || "https://raw.githubusercontent.com/famelack/famelack-data/main/tv/raw/countries/br.json";
-// Canais em portuguÃªs de fora da lista do Brasil (iptv-org por idioma): Portugal, Ãfrica lusÃ³fona,
-// regionais brasileiras e canais FAST gratuitos. SÃ³ entram os IDs desta lista, conferidos um a um;
-// o resto da fonte fica de fora porque mistura retransmissÃµes de canais pagos.
+// Canais em português de fora da lista do Brasil (iptv-org por idioma): Portugal, África lusófona,
+// regionais brasileiras e canais FAST gratuitos. Só entram os IDs desta lista, conferidos um a um;
+// o resto da fonte fica de fora porque mistura retransmissões de canais pagos.
 const FONTE_PORTUGUES = Bun.env.FONTE_PORTUGUES || "https://iptv-org.github.io/iptv/languages/por.m3u";
 const LUSOFONOS = new Set([
   "adbtv.pt", "artv.pt", "babyfirst.us", "blitstv.br", "catve2.br", "catvefm.br", "catvemastertv.br", "cindietv.br",
@@ -414,21 +414,21 @@ const LUSOFONOS = new Set([
   "tracetoca.fr", "traceurban.fr", "tvcidade.cv", "tvmana1.pt", "tvmana2.pt", "tvmanamocambique.mz", "tvshowfortaleza.br",
   "tvzimbo.ao", "xitenuevolatino.us", "xitesiemprelatino.us",
 ]);
-// Canais que recusam conexÃµes de fora do Brasil (o servidor fica nos EUA), mas abrem na TV daqui:
-// ficam na lista mesmo quando o teste do servidor dÃ¡ erro de conexÃ£o ou falta de resposta.
+// Canais que recusam conexões de fora do Brasil (o servidor fica nos EUA), mas abrem na TV daqui:
+// ficam na lista mesmo quando o teste do servidor dá erro de conexão ou falta de resposta.
 const SO_DO_BRASIL = new Set(["blitstv.br", "catve2.br", "catvefm.br", "catvemastertv.br"]);
 const SEIS_HORAS = 6 * 60 * 60 * 1000;
-// Doramas: canais FAST oficiais e gratuitos (Pluto TV AmÃ©rica Latina/Espanha e Samsung TV Plus),
-// abertos pelo jmp2.uk. O Pluto Brasil nÃ£o tem canal de dorama, por isso eles vÃªm de outros paÃ­ses.
-// Nada de sites piratas: sÃ³ canais que o prÃ³prio dono distribui de graÃ§a com anÃºncios.
+// Doramas: canais FAST oficiais e gratuitos (Pluto TV América Latina/Espanha e Samsung TV Plus),
+// abertos pelo jmp2.uk. O Pluto Brasil não tem canal de dorama, por isso eles vêm de outros países.
+// Nada de sites piratas: só canais que o próprio dono distribui de graça com anúncios.
 const DORAMAS: { id: string; nome: string; links: string[] }[] = [
   { id: "dorama:dramascoreanos", nome: "Dramas Coreanos (Pluto TV)", links: ["https://jmp2.uk/plu-6185a9a88b2ce30007de5128.m3u8"] },
   { id: "dorama:dramascoreanosteen", nome: "Dramas Coreanos Teen (Pluto TV)", links: ["https://jmp2.uk/plu-6661d5424b10960008599fa3.m3u8"] },
   { id: "dorama:kdramaes", nome: "K-Drama (Pluto TV Espanha)", links: ["https://jmp2.uk/plu-6475bfec536e0c0008858e9f.m3u8"] },
-  { id: "dorama:knovela", nome: "K-Novela en EspaÃ±ol", links: ["https://jmp2.uk/stvp-US1700019P7", "https://jmp2.uk/stvp-ES1700003C6"] },
-  { id: "dorama:kstories", nome: "K-Stories (legendas em inglÃªs)", links: ["https://jmp2.uk/stvp-US17000164B"] },
-  // Arirang TV: canal pÃºblico internacional da Coreia, em inglÃªs e gratuito (links da CDN da prÃ³pria emissora, via iptv-org).
-  { id: "dorama:arirang", nome: "Arirang TV (Coreia, em inglÃªs)", links: [
+  { id: "dorama:knovela", nome: "K-Novela en Español", links: ["https://jmp2.uk/stvp-US1700019P7", "https://jmp2.uk/stvp-ES1700003C6"] },
+  { id: "dorama:kstories", nome: "K-Stories (legendas em inglês)", links: ["https://jmp2.uk/stvp-US17000164B"] },
+  // Arirang TV: canal público internacional da Coreia, em inglês e gratuito (links da CDN da própria emissora, via iptv-org).
+  { id: "dorama:arirang", nome: "Arirang TV (Coreia, em inglês)", links: [
     "https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
     "https://amdlive-ch02-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
     "https://amdlive-ch03-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8",
@@ -438,26 +438,26 @@ function doramaFontes(): Fonte[] {
   return DORAMAS.flatMap((d) => d.links.map((url) => ({ nome: d.nome, logo: "", grupo: "Doramas", chave: d.id, url, ref: "", ua: "" })));
 }
 
-// ---------- Gerador prÃ³prio de links do Pluto TV ----------
-// Mesmo mÃ©todo do projeto NasiLemakk/Pluto-TV-Playlists: o servidor pede uma sessÃ£o nova ao prÃ³prio
-// Pluto (boot.pluto.tv) se apresentando como um aparelho no Brasil (cabeÃ§alho X-Forwarded-For com um
-// IP brasileiro) e monta os links com a chave fresquinha. Assim nÃ£o dependemos sÃ³ de listas de terceiros.
+// ---------- Gerador próprio de links do Pluto TV ----------
+// Mesmo método do projeto NasiLemakk/Pluto-TV-Playlists: o servidor pede uma sessão nova ao próprio
+// Pluto (boot.pluto.tv) se apresentando como um aparelho no Brasil (cabeçalho X-Forwarded-For com um
+// IP brasileiro) e monta os links com a chave fresquinha. Assim não dependemos só de listas de terceiros.
 const IP_BR = Bun.env.PLUTO_IP_BR || "200.160.2.3";
 const CLIENTE_PLUTO = crypto.randomUUID();
 const UA_PLUTO = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15";
 const H_PLUTO: Record<string, string> = { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO, accept: "application/json" };
-// A sessÃ£o do Pluto vale algumas horas; o gerador e o guia de programaÃ§Ã£o usam a mesma.
+// A sessão do Pluto vale algumas horas; o gerador e o guia de programação usam a mesma.
 let sessaoPluto: { boot: any; ts: number } | null = null;
 async function bootPluto(): Promise<any> {
   if (sessaoPluto && Date.now() - sessaoPluto.ts < 2 * 60 * 60 * 1000) return sessaoPluto.boot;
   const hora = encodeURIComponent(new Date().toISOString());
   const boot = await (await fetch("https://boot.pluto.tv/v4/start?appName=web&appVersion=7.9.0-a9cca6b89aea4dc0998b92a51989d2adb9a9025d&deviceVersion=16.2.0&deviceModel=web&deviceMake=Chrome&deviceType=web&clientID=" + CLIENTE_PLUTO + "&clientModelNumber=1.0.0&channelID=5a4d3a00ad95e4718ae8d8db&serverSideAds=true&constraints=&drmCapabilities=&blockingMode=&clientTime=" + hora, { headers: H_PLUTO, signal: AbortSignal.timeout(20000) })).json() as any;
-  if (!boot?.sessionToken || !boot?.servers?.stitcher) throw new Error("boot sem sessÃ£o");
+  if (!boot?.sessionToken || !boot?.servers?.stitcher) throw new Error("boot sem sessão");
   sessaoPluto = { boot, ts: Date.now() };
   return boot;
 }
 async function gerarPlutoBR(): Promise<string> {
-  sessaoPluto = null; // links novos pedem sessÃ£o nova
+  sessaoPluto = null; // links novos pedem sessão nova
   const h = H_PLUTO;
   const boot = await bootPluto();
   const auth = { ...h, authorization: "Bearer " + boot.sessionToken };
@@ -470,7 +470,7 @@ async function gerarPlutoBR(): Promise<string> {
   for (const c of (canais?.data || []) as any[]) {
     if (!c?.id || !c?.stitched?.path) continue;
     const url = boot.servers.stitcher + "/v2" + c.stitched.path + "?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&masterJWTPassthrough=true";
-    // EndereÃ§o alternativo do Pluto (mÃ©todo do BuddyChewChew/pluto): sÃ³ IPv4 e qualidade fixa em 720p,
+    // Endereço alternativo do Pluto (método do BuddyChewChew/pluto): só IPv4 e qualidade fixa em 720p,
     // que trava menos em TV com internet mais fraca.
     const url720 = "https://ipv4.pluto.tv/api/tn/video/playout/v2/stitch/hls/channel/" + c.id + "/master.m3u8?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&quality=720p&includeExtendedEvents=true&masterJWTPassthrough=true";
     const grupo = (c.categoryIDs && nomeCat.get(c.categoryIDs[0])) || "";
@@ -482,7 +482,7 @@ async function gerarPlutoBR(): Promise<string> {
   console.log(JSON.stringify({ evt: "pluto_gerado", canais: (linhas.length - 1) / 4, pais }));
   return linhas.join("\n");
 }
-// Junta o gerador prÃ³prio com as listas do OwnerPlugins e do BuddyChewChew. Se uma falhar, as outras seguram.
+// Junta o gerador próprio com as listas do OwnerPlugins e do BuddyChewChew. Se uma falhar, as outras seguram.
 async function textoPluto(): Promise<string> {
   const baixar = (u: string) => fetch(u, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : ""));
   const [gerado, owner, buddy] = await Promise.allSettled([gerarPlutoBR(), baixar(FONTE_PLUTO), baixar(FONTE_PLUTO2)]);
@@ -491,25 +491,25 @@ async function textoPluto(): Promise<string> {
   return txt(gerado) + "\n" + txt(owner) + "\n" + txt(buddy);
 }
 const GRUPOS: Record<string, string> = {
-  news: "NotÃ­cias", entertainment: "Entretenimento", kids: "Infantil", animation: "Infantil", sports: "Esportes",
-  religious: "Religioso", music: "MÃºsica", movies: "Filmes", series: "SÃ©ries", education: "EducaÃ§Ã£o", general: "Geral",
-  shop: "Compras", documentary: "DocumentÃ¡rios", business: "NegÃ³cios", culture: "Cultura", lifestyle: "Estilo de vida",
-  legislative: "Governo", outdoor: "Campo e natureza", comedy: "ComÃ©dia", cooking: "CulinÃ¡ria", travel: "Viagem",
-  auto: "AutomÃ³veis", classic: "ClÃ¡ssicos", family: "FamÃ­lia", undefined: "Geral", science: "CiÃªncia", weather: "Clima",
+  news: "Notícias", entertainment: "Entretenimento", kids: "Infantil", animation: "Infantil", sports: "Esportes",
+  religious: "Religioso", music: "Música", movies: "Filmes", series: "Séries", education: "Educação", general: "Geral",
+  shop: "Compras", documentary: "Documentários", business: "Negócios", culture: "Cultura", lifestyle: "Estilo de vida",
+  legislative: "Governo", outdoor: "Campo e natureza", comedy: "Comédia", cooking: "Culinária", travel: "Viagem",
+  auto: "Automóveis", classic: "Clássicos", family: "Família", undefined: "Geral", science: "Ciência", weather: "Clima",
   brazil: "TV aberta", brasil: "TV aberta",
 };
-// Recusas que podem ser sÃ³ do servidor (fora do Brasil): o canal fica como reserva em vez de sair.
+// Recusas que podem ser só do servidor (fora do Brasil): o canal fica como reserva em vez de sair.
 function talvezFunciona(chave: string, motivo: string): boolean {
   if (motivo === "HTTP 403") return true;
-  if (SO_DO_BRASIL.has(chave) && (motivo === "erro de conexÃ£o" || motivo === "sem resposta")) return true;
-  return chave.startsWith("pluto:") && /HTTP 4(00|01|03|10|51)|variante HTTP 4|nÃ£o Ã© transmissÃ£o/.test(motivo);
+  if (SO_DO_BRASIL.has(chave) && (motivo === "erro de conexão" || motivo === "sem resposta")) return true;
+  return chave.startsWith("pluto:") && /HTTP 4(00|01|03|10|51)|variante HTTP 4|não é transmissão/.test(motivo);
 }
 
 type Fonte = { nome: string; logo: string; grupo: string; chave: string; url: string; ref: string; ua: string };
 type Canal = { id: string; name: string; logo: string; group: string; url: string; ref: string; ua: string; alts: { url: string; ref: string; ua: string }[] };
 const estado: { canais: Canal[]; atualizado: number; atualizando: boolean; ultimaTentativa: number; plutoTs: number; plutoRodando: boolean } = { canais: [], atualizado: 0, atualizando: false, ultimaTentativa: 0, plutoTs: 0, plutoRodando: false };
-// Canais que caÃ­ram (nenhum link respondeu). A rotina de recuperaÃ§Ã£o reconfere de 20 em 20 minutos e
-// devolve o canal Ã  lista assim que um link voltar; a lista fica guardada no bucket para sobreviver a reinÃ­cios.
+// Canais que caíram (nenhum link respondeu). A rotina de recuperação reconfere de 20 em 20 minutos e
+// devolve o canal à lista assim que um link voltar; a lista fica guardada no bucket para sobreviver a reinícios.
 let caidos: Canal[] = [];
 
 function grupoPt(g: string): string {
@@ -539,17 +539,17 @@ function lerM3U(texto: string): Fonte[] {
   }
   return out;
 }
-// SÃ³ canais abertos e gratuitos: retransmissÃµes de canais de TV paga (links nÃ£o oficiais) ficam de fora.
-// Os canais do Pluto (jmp2.uk / pluto.tv) sÃ£o gratuitos e nunca passam por este filtro.
+// Só canais abertos e gratuitos: retransmissões de canais de TV paga (links não oficiais) ficam de fora.
+// Os canais do Pluto (jmp2.uk / pluto.tv) são gratuitos e nunca passam por este filtro.
 const PAGOS = /\b(a&e|adult swim|amc|axn|arte 1|cartoon network|cinemax|combate|discovery|disney|espn|film ?& ?arts|fox|globonews|gloob|gnt|hbo|history|lifetime|megapix|multishow|music box brazil|national geographic|nat ?geo|nickelodeon|paramount|premiere|sony (channel|movies)|space|sportv|studio universal|syfy|telecine|tlc|tnt|travel box brazil|universal tv|canal viva|warner|woohoo|box kids)\b/i;
-// A Globo sÃ³ transmite pela internet no Globoplay (a pÃ¡gina tem o cartÃ£o "Globo ao vivo"); os links
-// "Rede Globo" / "TV Globo ..." das listas pÃºblicas sÃ£o retransmissÃµes nÃ£o oficiais que vivem caindo.
+// A Globo só transmite pela internet no Globoplay (a página tem o cartão "Globo ao vivo"); os links
+// "Rede Globo" / "TV Globo ..." das listas públicas são retransmissões não oficiais que vivem caindo.
 const GLOBO = /\b(rede globo|tv globo)\b/i;
 function naoPago(f: Fonte): boolean {
   if (/jmp2\.uk|pluto\.tv/i.test(f.url)) return true;
   return !PAGOS.test(f.nome) && !GLOBO.test(f.nome);
 }
-// LÃª o JSON do Famelack e devolve sÃ³ os links de vÃ­deo direto (os de YouTube nÃ£o tocam no player).
+// Lê o JSON do Famelack e devolve só os links de vídeo direto (os de YouTube não tocam no player).
 async function famelack(): Promise<Fonte[]> {
   const r = await fetch(FONTE_FAMELACK, { signal: AbortSignal.timeout(30000) });
   if (!r.ok) throw new Error("famelack HTTP " + r.status);
@@ -563,8 +563,8 @@ async function famelack(): Promise<Fonte[]> {
   }
   return out;
 }
-// Famelack sÃ³ serve de reserva: o link entra apenas em canal que jÃ¡ veio das outras fontes (mesmo nome).
-// Canal que sÃ³ existe no Famelack fica de fora, porque a origem de alguns links nÃ£o Ã© garantida.
+// Famelack só serve de reserva: o link entra apenas em canal que já veio das outras fontes (mesmo nome).
+// Canal que só existe no Famelack fica de fora, porque a origem de alguns links não é garantida.
 function juntarPorNome(base: Fonte[], extras: Fonte[]): Fonte[] {
   const porNome = new Map<string, Fonte>();
   for (const f of base) { const k = chaveDe("", f.nome); if (!porNome.has(k)) porNome.set(k, f); }
@@ -593,17 +593,17 @@ async function atualizar(): Promise<void> {
       fetch(FONTE_PORTUGUES, { signal: AbortSignal.timeout(30000) }).then((r) => (r.ok ? r.text() : "")),
     ]);
     if (fame.status === "rejected") console.log(JSON.stringify({ evt: "famelack_erro", erro: String(fame.reason) }));
-    // Free-TV primeiro: sÃ£o as emissoras abertas oficiais, entram no topo da numeraÃ§Ã£o.
+    // Free-TV primeiro: são as emissoras abertas oficiais, entram no topo da numeração.
     const principais = [
       ...lerM3U(free.status === "fulfilled" ? free.value : "").map((f) => ({ ...f, grupo: f.grupo || "TV aberta" })),
       ...lerM3U(iptv.status === "fulfilled" ? iptv.value : ""),
       ...doramaFontes(),
       ...lerM3U(por.status === "fulfilled" ? por.value : "").filter((f) => LUSOFONOS.has(f.chave)),
     ];
-    // Famelack por Ãºltimo: sÃ³ dÃ¡ links reserva aos canais que jÃ¡ existem, sem trazer canais novos.
+    // Famelack por último: só dá links reserva aos canais que já existem, sem trazer canais novos.
     const fontes = [...principais, ...juntarPorNome(principais, fame.status === "fulfilled" ? fame.value : [])].filter(naoPago);
-    // Pluto TV nÃ£o passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
-    // Se a fonte do Pluto falhar, os canais Pluto que jÃ¡ estavam na lista continuam.
+    // Pluto TV não passa pelo teste (o servidor fica fora do Brasil e sempre leva recusa).
+    // Se a fonte do Pluto falhar, os canais Pluto que já estavam na lista continuam.
     const fontesPluto = plutoFontes(pluto.status === "fulfilled" ? pluto.value : "");
     const canaisPluto = fontesPluto.length ? montarPluto(fontesPluto) : estado.canais.filter((c) => c.id.startsWith("pluto:"));
     if (!fontes.length && !canaisPluto.length) throw new Error("listas vazias");
@@ -623,14 +623,14 @@ async function atualizar(): Promise<void> {
     const canais: Canal[] = [];
     const novosCaidos: Canal[] = [];
     for (const [chave, lista] of grupos) {
-      // 403 fica como reserva: pode ser bloqueio de regiÃ£o que sÃ³ libera para quem estÃ¡ no Brasil.
+      // 403 fica como reserva: pode ser bloqueio de região que só libera para quem está no Brasil.
       const bons = lista.filter((f) => status.get(f.url)?.ok);
-      // Pluto TV: o link traz uma chave gerada para quem estÃ¡ no Brasil; o servidor (fora do Brasil)
-      // recebe recusa de acesso, mas a TV na sua casa abre. SÃ³ descarta se o link sumiu de vez.
+      // Pluto TV: o link traz uma chave gerada para quem está no Brasil; o servidor (fora do Brasil)
+      // recebe recusa de acesso, mas a TV na sua casa abre. Só descarta se o link sumiu de vez.
       const talvez = lista.filter((f) => talvezFunciona(chave, status.get(f.url)?.motivo || ""));
       const usar = [...bons, ...talvez];
       if (!usar.length) {
-        // Nenhum link respondeu agora: o canal vai para a lista de caÃ­dos e volta quando a recuperaÃ§Ã£o o achar no ar.
+        // Nenhum link respondeu agora: o canal vai para a lista de caídos e volta quando a recuperação o achar no ar.
         const q = lista[0];
         novosCaidos.push({
           id: chave, name: limparNome(q.nome), logo: (lista.find((f) => f.logo) || q).logo, group: grupoPt(q.grupo),
@@ -644,7 +644,7 @@ async function atualizar(): Promise<void> {
         url: p.url, ref: p.ref, ua: p.ua, alts: usar.slice(1).map((f) => ({ url: f.url, ref: f.ref, ua: f.ua })),
       });
     }
-    // Se o teste das outras fontes deu errado de vez (internet do servidor, por exemplo), mantÃ©m os canais antigos.
+    // Se o teste das outras fontes deu errado de vez (internet do servidor, por exemplo), mantém os canais antigos.
     const abertos = canais.length ? canais : estado.canais.filter((c) => !c.id.startsWith("pluto:"));
     const todos = [...abertos, ...canaisPluto];
     if (canais.length) caidos = novosCaidos;
@@ -657,19 +657,19 @@ async function atualizar(): Promise<void> {
   }
 }
 
-// ---------- GuardiÃ£o do Pluto TV ----------
-// Os links do Pluto trazem uma chave que vence em poucas horas. O guardiÃ£o busca links novos
+// ---------- Guardião do Pluto TV ----------
+// Os links do Pluto trazem uma chave que vence em poucas horas. O guardião busca links novos
 // a cada hora e nunca tira um canal Pluto da lista: se a fonte falhar, os canais de antes ficam.
-// Cada canal ganha tambÃ©m um link reserva pelo jmp2.uk, que gera a sessÃ£o do Pluto na hora
-// e nÃ£o depende de chave nenhuma.
+// Cada canal ganha também um link reserva pelo jmp2.uk, que gera a sessão do Pluto na hora
+// e não depende de chave nenhuma.
 const PLUTO_ID = /^[0-9a-f]{24}$/;
 const UMA_HORA = 60 * 60 * 1000;
 function plutoFontes(texto: string): Fonte[] {
   const out: Fonte[] = [];
   for (const f of lerM3U(texto)) {
-    const base = { ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " Â· " + f.grupo.split(";")[0].trim() : "") };
+    const base = { ...f, chave: "pluto:" + f.chave, grupo: "Pluto TV" + (f.grupo ? " · " + f.grupo.split(";")[0].trim() : "") };
     // O link do jmp2.uk vem primeiro: ele foi conferido do servidor e responde "no ar".
-    // O link com chave fica de reserva logo atrÃ¡s.
+    // O link com chave fica de reserva logo atrás.
     if (PLUTO_ID.test(f.chave)) out.push({ ...base, url: "https://jmp2.uk/plu-" + f.chave + ".m3u8", ref: "", ua: "" });
     out.push(base);
   }
@@ -695,8 +695,8 @@ async function atualizarPluto(): Promise<void> {
     const fontes = plutoFontes(await textoPluto());
     if (!fontes.length) throw new Error("fonte sem canais");
     const novos = montarPluto(fontes);
-    if (estado.atualizando) return; // a atualizaÃ§Ã£o completa jÃ¡ cuida do Pluto
-    // Canais que saÃ­ram da fonte ficam por mais um tempo, com os links antigos, atÃ© a prÃ³xima rodada completa.
+    if (estado.atualizando) return; // a atualização completa já cuida do Pluto
+    // Canais que saíram da fonte ficam por mais um tempo, com os links antigos, até a próxima rodada completa.
     const ids = new Set(novos.map((c) => c.id));
     const antigos = estado.canais.filter((c) => c.id.startsWith("pluto:") && !ids.has(c.id));
     estado.canais = [...estado.canais.filter((c) => !c.id.startsWith("pluto:")), ...novos, ...antigos];
@@ -713,13 +713,13 @@ async function atualizarPluto(): Promise<void> {
   }
 }
 
-// Amostra de 4 MB de bytes aleatÃ³rios para o teste de internet da TV (aleatÃ³rios para nÃ£o serem comprimidos no caminho).
+// Amostra de 4 MB de bytes aleatórios para o teste de internet da TV (aleatórios para não serem comprimidos no caminho).
 const AMOSTRA = new Uint8Array(4 * 1024 * 1024);
 for (let i = 0; i < AMOSTRA.length; i += 65536) crypto.getRandomValues(AMOSTRA.subarray(i, i + 65536));
 
-// ---------- Guia de programaÃ§Ã£o (Agora / A seguir) do Pluto TV ----------
-// Usa a mesma sessÃ£o do gerador e pede ao Pluto a grade das prÃ³ximas 4 horas, em lotes de canais.
-// A TV recebe sÃ³ o essencial: tÃ­tulo, inÃ­cio e fim de atÃ© 3 programas por canal.
+// ---------- Guia de programação (Agora / A seguir) do Pluto TV ----------
+// Usa a mesma sessão do gerador e pede ao Pluto a grade das próximas 4 horas, em lotes de canais.
+// A TV recebe só o essencial: título, início e fim de até 3 programas por canal.
 type Programa = { t: string; s: number; e: number; d?: string };
 const guia: { porCanal: Record<string, Programa[]>; ts: number; rodando: boolean } = { porCanal: {}, ts: 0, rodando: false };
 async function atualizarGuia(): Promise<void> {
@@ -777,10 +777,10 @@ function guiaRota(): Response {
   });
 }
 
-// ---------- Filmes e sÃ©ries do Pluto TV (sob demanda, grÃ¡tis) ----------
-// CatÃ¡logo oficial do Pluto Brasil, pedido com a mesma sessÃ£o do gerador. A TV recebe um resumo
-// (tipo, nome, sinopse curta, duraÃ§Ã£o) e abre o vÃ­deo pelo /vod/hls: o servidor busca sÃ³ as playlists,
-// que o Pluto nÃ£o libera para outros sites, e os pedaÃ§os de vÃ­deo vÃ£o direto do Pluto para a TV.
+// ---------- Filmes e séries do Pluto TV (sob demanda, grátis) ----------
+// Catálogo oficial do Pluto Brasil, pedido com a mesma sessão do gerador. A TV recebe um resumo
+// (tipo, nome, sinopse curta, duração) e abre o vídeo pelo /vod/hls: o servidor busca só as playlists,
+// que o Pluto não libera para outros sites, e os pedaços de vídeo vão direto do Pluto para a TV.
 const vod: { json: string; ts: number; rodando: Promise<void> | null } = { json: "", ts: 0, rodando: null };
 const temporadas = new Map<string, { json: string; ts: number }>();
 const JSON_H = { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-cache" };
@@ -807,7 +807,7 @@ async function atualizarVod(): Promise<void> {
       }
       if (ids.length) cats.push({ n: String(c.name || "").trim(), i: ids });
     }
-    if (!cats.length) throw new Error("catÃ¡logo vazio");
+    if (!cats.length) throw new Error("catálogo vazio");
     vod.json = JSON.stringify({ atualizado: Date.now(), cats, itens });
     vod.ts = Date.now();
     console.log(JSON.stringify({ evt: "vod_atualizado", categorias: cats.length, titulos: Object.keys(itens).length, bytes: vod.json.length, ms: Date.now() - inicio }));
@@ -818,14 +818,14 @@ async function atualizarVod(): Promise<void> {
 async function vodRota(req: Request): Promise<Response> {
   if (Date.now() - vod.ts > SEIS_HORAS && !vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; });
   if (!vod.json && vod.rodando) await vod.rodando;
-  if (!vod.json) return new Response(JSON.stringify({ erro: "catÃ¡logo indisponÃ­vel" }), { status: 503, headers: JSON_H });
-  // O catÃ¡logo tem quase 1 MB; compactado chega Ã  TV com um quarto disso.
+  if (!vod.json) return new Response(JSON.stringify({ erro: "catálogo indisponível" }), { status: 503, headers: JSON_H });
+  // O catálogo tem quase 1 MB; compactado chega à TV com um quarto disso.
   if (/gzip/.test(req.headers.get("accept-encoding") || "")) return new Response(Bun.gzipSync(vod.json), { headers: { ...JSON_H, "content-encoding": "gzip" } });
   return new Response(vod.json, { headers: JSON_H });
 }
 async function serieRota(q: URLSearchParams): Promise<Response> {
   const id = String(q.get("id") || "").toLowerCase();
-  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id invÃ¡lido" }), { status: 400, headers: JSON_H });
+  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id inválido" }), { status: 400, headers: JSON_H });
   const salvo = temporadas.get(id);
   if (salvo && Date.now() - salvo.ts < SEIS_HORAS) return new Response(salvo.json, { headers: JSON_H });
   try {
@@ -843,13 +843,13 @@ async function serieRota(q: URLSearchParams): Promise<Response> {
     return new Response(json, { headers: JSON_H });
   } catch (e) {
     console.log(JSON.stringify({ evt: "vod_serie_erro", id, erro: String(e) }));
-    return new Response(JSON.stringify({ erro: "nÃ£o consegui abrir esta sÃ©rie agora" }), { status: 502, headers: JSON_H });
+    return new Response(JSON.stringify({ erro: "não consegui abrir esta série agora" }), { status: 502, headers: JSON_H });
   }
 }
-// Link do filme ou episÃ³dio com a sessÃ£o do momento; o endereÃ§o "dash" do Pluto fica de reserva.
+// Link do filme ou episódio com a sessão do momento; o endereço "dash" do Pluto fica de reserva.
 async function playVodRota(q: URLSearchParams): Promise<Response> {
   const id = String(q.get("id") || "").toLowerCase();
-  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id invÃ¡lido" }), { status: 400, headers: JSON_H });
+  if (!PLUTO_ID.test(id)) return new Response(JSON.stringify({ erro: "id inválido" }), { status: 400, headers: JSON_H });
   try {
     const { boot } = await authPluto();
     const fim = "/v2/stitch/hls/episode/" + id + "/master.m3u8?" + boot.stitcherParams + "&jwt=" + boot.sessionToken + "&masterJWTPassthrough=true";
@@ -857,14 +857,14 @@ async function playVodRota(q: URLSearchParams): Promise<Response> {
     return new Response(JSON.stringify({ url: hosts[0] + fim, alts: hosts.slice(1).map((h) => h + fim) }), { headers: JSON_H });
   } catch (e) {
     console.log(JSON.stringify({ evt: "vod_play_erro", id, erro: String(e) }));
-    return new Response(JSON.stringify({ erro: "Pluto TV nÃ£o respondeu" }), { status: 502, headers: JSON_H });
+    return new Response(JSON.stringify({ erro: "Pluto TV não respondeu" }), { status: 502, headers: JSON_H });
   }
 }
-// Playlists do Pluto: sÃ³ endereÃ§os *.pluto.tv. Playlists filhas continuam passando por aqui;
-// chaves e pedaÃ§os de vÃ­deo (plutotv.net, liberados para qualquer site) ficam com o endereÃ§o direto.
+// Playlists do Pluto: só endereços *.pluto.tv. Playlists filhas continuam passando por aqui;
+// chaves e pedaços de vídeo (plutotv.net, liberados para qualquer site) ficam com o endereço direto.
 async function vodHls(req: Request, q: URLSearchParams): Promise<Response> {
   const u = alvo(q.get("u"));
-  if (!u || u.protocol !== "https:" || !/\.pluto\.tv$/i.test(u.hostname)) return new Response("EndereÃ§o invÃ¡lido", { status: 400, headers: CORS });
+  if (!u || u.protocol !== "https:" || !/\.pluto\.tv$/i.test(u.hostname)) return new Response("Endereço inválido", { status: 400, headers: CORS });
   try {
     const r = await fetch(u, { headers: { "x-forwarded-for": IP_BR, "user-agent": UA_PLUTO }, signal: AbortSignal.timeout(20000) });
     const texto = await r.text();
@@ -887,7 +887,7 @@ async function vodHls(req: Request, q: URLSearchParams): Promise<Response> {
     return new Response(saida, { headers: h });
   } catch (e) {
     console.log(JSON.stringify({ evt: "vod_hls_erro", host: u.hostname, erro: String(e) }));
-    return new Response("NÃ£o foi possÃ­vel alcanÃ§ar o Pluto TV", { status: 502, headers: CORS });
+    return new Response("Não foi possível alcançar o Pluto TV", { status: 502, headers: CORS });
   }
 }
 
@@ -900,7 +900,7 @@ function canaisRota(q: URLSearchParams): Response {
   });
 }
 
-// A TV avisa quando um canal nÃ£o abriu; o servidor reconfere os links dele na hora.
+// A TV avisa quando um canal não abriu; o servidor reconfere os links dele na hora.
 const reconferido = new Map<string, number>();
 async function falhou(q: URLSearchParams): Promise<Response> {
   const id = q.get("id") || "";
@@ -925,8 +925,8 @@ async function falhou(q: URLSearchParams): Promise<Response> {
   return resp(false);
 }
 
-// Rotina de recuperaÃ§Ã£o: reconfere os canais caÃ­dos e devolve Ã  lista os que voltaram a responder,
-// sem esperar a prÃ³xima atualizaÃ§Ã£o completa (que roda de 6 em 6 horas).
+// Rotina de recuperação: reconfere os canais caídos e devolve à lista os que voltaram a responder,
+// sem esperar a próxima atualização completa (que roda de 6 em 6 horas).
 let recuperando = false;
 async function recuperar(): Promise<void> {
   if (recuperando || estado.atualizando || !caidos.length) return;
@@ -944,7 +944,7 @@ async function recuperar(): Promise<void> {
         }
       }
     });
-    // Se a atualizaÃ§Ã£o completa comeÃ§ou no meio do caminho, ela mesma cuida da lista.
+    // Se a atualização completa começou no meio do caminho, ela mesma cuida da lista.
     if (estado.atualizando || !voltaram.length) return;
     const ids = new Set(voltaram.map((c) => c.id));
     caidos = caidos.filter((c) => !ids.has(c.id));
@@ -962,9 +962,9 @@ async function recuperar(): Promise<void> {
   }
 }
 
-// EstatÃ­sticas de uso: quantos aparelhos abriram a TV e quais canais foram assistidos, por dia
-// (horÃ¡rio de BrasÃ­lia). Cada aparelho manda sÃ³ um cÃ³digo aleatÃ³rio criado pela prÃ³pria pÃ¡gina;
-// o IP de quem baixa a lista do Kodi vira um resumo (hash) com sal do dia e nunca Ã© guardado nem
+// Estatísticas de uso: quantos aparelhos abriram a TV e quais canais foram assistidos, por dia
+// (horário de Brasília). Cada aparelho manda só um código aleatório criado pela própria página;
+// o IP de quem baixa a lista do Kodi vira um resumo (hash) com sal do dia e nunca é guardado nem
 // mostrado. No fim do dia o resumo sai no log `relatorio_diario` e fica no bucket.
 type CanalVisto = { n: string; k: string; vezes: number; ap: string[] };
 type Estat = { dia: string; aparelhos: string[]; canais: Record<string, CanalVisto>; kodi: string[]; aberturas: number };
@@ -990,7 +990,7 @@ async function fecharDia(): Promise<void> {
 let ultimaParcial = 0;
 async function conferirDia(): Promise<void> {
   if (estat.dia !== diaBR()) await fecharDia();
-  // Uma vez por hora deixa no log a contagem parcial do dia (serve para relatÃ³rios de teste).
+  // Uma vez por hora deixa no log a contagem parcial do dia (serve para relatórios de teste).
   if (Date.now() - ultimaParcial > UMA_HORA - 5 * 60 * 1000) {
     ultimaParcial = Date.now();
     const r = resumoEstat(estat);
@@ -1023,7 +1023,7 @@ async function relatorioRota(q: URLSearchParams): Promise<Response> {
   const dia = (q.get("dia") || "").replace(/[^0-9-]/g, "");
   let corpo: string;
   if (!dia || dia === estat.dia) corpo = JSON.stringify({ parcial: true, ...resumoEstat(estat) });
-  else corpo = (await ler("relatorio-" + dia + ".json")) || JSON.stringify({ dia, erro: "sem relatÃ³rio para esse dia" });
+  else corpo = (await ler("relatorio-" + dia + ".json")) || JSON.stringify({ dia, erro: "sem relatório para esse dia" });
   return new Response(corpo, { headers: { ...CORS, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
 async function carregarEstat(): Promise<void> {
@@ -1079,7 +1079,7 @@ Bun.serve({
     return new Response(HTML, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" } });
   },
 });
-// Ao ligar: carrega a Ãºltima lista guardada no bucket; sÃ³ refaz os testes se ela tiver mais de 6 horas.
+// Ao ligar: carrega a última lista guardada no bucket; só refaz os testes se ela tiver mais de 6 horas.
 {
   await conectarBucket();
   await carregarPagina();
@@ -1093,26 +1093,26 @@ Bun.serve({
     } catch {}
   }
   try { const c = JSON.parse((await ler("caidos.json")) || "[]"); if (Array.isArray(c)) caidos = c.filter((x: Canal) => x && x.id && x.url && naoPago({ nome: x.name, url: x.url } as Fonte)); } catch {}
-  console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponÃ­vel" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
+  console.log(JSON.stringify({ evt: "inicio", armazenamento: S3 ? "bucket" : TEM_S3 ? "bucket indisponível" : PASTA_LOCAL ? "pasta" : "nenhum", canaisCarregados: estado.canais.length }));
 }
 console.log("Tela Livre no ar");
-// EstatÃ­sticas: guarda a cada 10 minutos e fecha o dia logo depois da meia-noite de BrasÃ­lia.
+// Estatísticas: guarda a cada 10 minutos e fecha o dia logo depois da meia-noite de Brasília.
 conferirDia();
 setInterval(conferirDia, 10 * 60 * 1000);
 setInterval(salvarTestados, 10 * 60 * 1000);
 if (Date.now() - estado.atualizado > SEIS_HORAS) atualizar();
-// RecuperaÃ§Ã£o de canais caÃ­dos: primeira rodada 5 minutos depois de ligar, depois a cada 20 minutos.
+// Recuperação de canais caídos: primeira rodada 5 minutos depois de ligar, depois a cada 20 minutos.
 setTimeout(recuperar, 5 * 60 * 1000);
 setInterval(recuperar, 20 * 60 * 1000);
 // Confere a cada 30 minutos se a lista passou de 6 horas e, se passou, refaz os testes sozinho,
-// mesmo que ninguÃ©m esteja assistindo.
+// mesmo que ninguém esteja assistindo.
 setInterval(() => { if (Date.now() - estado.atualizado > SEIS_HORAS && !estado.atualizando) atualizar(); }, 30 * 60 * 1000);
-// GuardiÃ£o do Pluto: renova os links ao ligar (se a lista completa nÃ£o estiver rodando) e depois a cada hora.
+// Guardião do Pluto: renova os links ao ligar (se a lista completa não estiver rodando) e depois a cada hora.
 setTimeout(() => { if (!estado.atualizando) atualizarPluto(); }, 30 * 1000);
 setInterval(() => { if (Date.now() - estado.plutoTs > UMA_HORA - 60 * 1000) atualizarPluto(); }, 15 * 60 * 1000);
-// Guia de programaÃ§Ã£o do Pluto: primeira busca 1 minuto depois de ligar, depois a cada 30 minutos.
+// Guia de programação do Pluto: primeira busca 1 minuto depois de ligar, depois a cada 30 minutos.
 setTimeout(atualizarGuia, 60 * 1000);
 setInterval(() => { if (Date.now() - guia.ts > 25 * 60 * 1000) atualizarGuia(); }, 10 * 60 * 1000);
-// Filmes e sÃ©ries: catÃ¡logo 2 minutos depois de ligar e renovado a cada 6 horas.
+// Filmes e séries: catálogo 2 minutos depois de ligar e renovado a cada 6 horas.
 setTimeout(() => { if (!vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; }); }, 2 * 60 * 1000);
 setInterval(() => { if (Date.now() - vod.ts > SEIS_HORAS && !vod.rodando) vod.rodando = atualizarVod().finally(() => { vod.rodando = null; }); }, 30 * 60 * 1000);
