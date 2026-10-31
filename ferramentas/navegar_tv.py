@@ -176,7 +176,11 @@ def main():
             s = txt(pg, "#test-status")
             m = re.search(r"Testando (\d+) de (\d+)", s)
             total = int(m.group(2)) if m else 0
-            ok("Testar canais inclui a Lista IPTV e avança", total > 5000 and int(m.group(1)) > 20, s)
+            # O botão pula o que já tem resultado (inclusive o que o servidor compartilha por 6 h),
+            # então "de N" pode ser bem menor que a lista: conta os canais da Lista IPTV no teste.
+            lista_no_teste = pg.evaluate("()=>{try{return S.channels.filter(function(c){return c.src&&c.src===S.m3uUrl}).length}catch(e){return 0}}")
+            ok("Testar canais inclui a Lista IPTV e avança", (total > 5000 or lista_no_teste > 5000) and total > 0 and int(m.group(1)) > 20,
+               s + " (%d canais da Lista IPTV no teste; o resto já tinha resultado)" % lista_no_teste)
             if COMPLETO:
                 pg.wait_for_function("()=>/canais no ar/.test(document.getElementById('test-status').textContent)", timeout=3 * 3600 * 1000, polling=5000)
                 ok("Testar canais até o fim", True, txt(pg, "#test-status"))
