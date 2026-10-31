@@ -681,6 +681,8 @@ function alternar(k,id){var l=arr(k),i=l.indexOf(id);if(i>-1)l.splice(i,1);else 
 function resultado(){if(!S.teste||typeof S.teste!=="object")S.teste={};return S.teste}
 function parado(c){var r=resultado()[c.id];return r===false||(r===undefined&&!!c.dead)}
 function marcar(c,ok){resultado()[c.id]=ok;c.dead=!ok}
+/* Durante o teste: canal que ainda não tem resultado fica numa seção própria até a resposta chegar. */
+function aguardando(c){return testing&&resultado()[c.id]===undefined&&!ehPluto(c)}
 function lembrarRecente(it){var l=arr("recentes").filter(function(x){return x!==it.id});l.unshift(it.id);S.recentes=l.slice(0,12)}
 /* Guia: devolve o programa de agora e o próximo, quando o servidor tem a grade do canal (Pluto TV). */
 function guiaDe(it){
@@ -779,9 +781,9 @@ function card(item,num,showGroup){
   var art=item.logo?'<img src="'+esc(item.logo)+'" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'ini\',textContent:\''+esc(initials(item.name)).replace(/'/g,"")+'\'}))">':'<span class="ini">'+esc(initials(item.name))+'</span>';
   var lock=trancado(item),fav=ehFav(item),g=lock?null:guiaDe(item);
   var badges=(fav?'<span class="fav" title="Favorito">★</span>':'')+(lock?'<span title="Bloqueado">🔒</span>':'');
-  var morto=item.src!=="local"&&parado(item);
+  var morto=item.src!=="local"&&parado(item)&&!aguardando(item);
   var cor=item.src==="local"?"#9fb3cc":CAT_COR[categoriaDe(item)]||"#8b99ae";
-  return '<button class="card f'+(morto?' dead':'')+(lock?' locked':'')+'" data-id="'+item.id+'" style="--c:'+cor+'">'+(morto?'<span class="off">parado</span>':'')+
+  return '<button class="card f'+(morto?' dead':'')+(lock?' locked':'')+'" data-id="'+item.id+'" style="--c:'+cor+'">'+(morto?'<span class="off">fora do ar</span>':'')+
     (badges&&!morto?'<span class="badges">'+badges+'</span>':'')+
     '<div class="art">'+art+'</div>'+
     (showGroup?'<span class="grp">'+esc(item.src==="local"?item.group:CAT_NOME[categoriaDe(item)]||item.group)+'</span>':'')+
@@ -847,11 +849,13 @@ function renderGrade(){
   var mostraGrupo=!!query||group===G_FAV||group===G_REC||group==="todos";
   var html=function(l){var m=l.length>limiteGrade?l.slice(0,limiteGrade):l;return m.map(function(c){return card(c,numDe(c),mostraGrupo)}).join("")+(l.length>m.length?'<button class="card more f" data-mais="1" style="--c:'+cor+'">'+ico("mais")+'<span>Mostrar mais</span><small>faltam '+(l.length-m.length)+' canais</small></button>':"")};
   var out="";
-  if(!query&&S.testeTs&&group!==G_REC){
-    /* Depois do teste: primeiro os canais que abriram, depois os parados. */
-    var bons=list.filter(function(c){return !parado(c)}),ruins=list.filter(parado);
-    out='<h3 class="secao ok">Funcionando <span>'+bons.length+'</span><small>teste de '+hm(S.testeTs)+'</small></h3>'+(bons.length?html(bons):'<p class="secao-vazia">Nenhum canal desta lista abriu no teste.</p>')+
-      (S.onlyOk||!ruins.length?'':'<h3 class="secao off">Parados <span>'+ruins.length+'</span><small>não abriram no teste; voltam sozinhos quando a emissora voltar</small></h3>'+html(ruins));
+  if(!query&&(S.testeTs||testing)&&group!==G_REC){
+    /* Durante e depois do teste: no ar, fora do ar e (enquanto testa) os que ainda aguardam resposta. */
+    var espera=list.filter(aguardando);
+    var bons=list.filter(function(c){return !parado(c)&&!aguardando(c)}),ruins=list.filter(function(c){return parado(c)&&!aguardando(c)});
+    out='<h3 class="secao ok">No ar <span>'+bons.length+'</span><small>'+(testing?"testando agora, atualiza sozinho":"teste de "+hm(S.testeTs))+'</small></h3>'+(bons.length?html(bons):'<p class="secao-vazia">'+(testing?"Nenhum canal desta lista respondeu ainda.":"Nenhum canal desta lista abriu no teste.")+'</p>')+
+      (S.onlyOk||!ruins.length?'':'<h3 class="secao off">Fora do ar <span>'+ruins.length+'</span><small>não abriram no teste; voltam sozinhos quando a emissora voltar</small></h3>'+html(ruins))+
+      (S.onlyOk||!espera.length?'':'<h3 class="secao off">Aguardando teste <span>'+espera.length+'</span></h3>'+html(espera));
   }else{
     out=list.length?html(list):'<p class="secao-vazia">'+(query?"Nenhum canal com esse nome.":group===G_FAV?"Nenhum favorito ainda. Marque com o botão amarelo do controle.":"Nada por aqui agora.")+'</p>';
   }
@@ -1430,17 +1434,24 @@ function testAll(){
   var refazer=!semTeste.length;
   status("test-status",refazer?"Todos já foram testados nesta TV; conferindo de novo…":"Conferindo os canais já testados…");
   puxarTestados(refazer?todos:semTeste,function(list){
-  var i=0,done=0,ok=0,prontos=todos.length-list.length;
-  var falta={};list.forEach(function(c){falta[c.id]=1});
-  todos.forEach(function(c){if(!falta[c.id]&&!parado(c))ok++});
-  if(!list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+todos.length+" canais no ar (todos já tinham sido testados nas últimas 6 horas)");return}
+  var i=0,done=0,prontos=todos.length-list.length,nPluto=S.channels.length-todos.length;
+  /* Placar contado do mesmo jeito que as seções da tela, para os números sempre baterem. */
+  function placar(){var p={ok:0,fora:0,espera:0};todos.forEach(function(c){if(aguardando(c))p.espera++;else if(parado(c))p.fora++;else p.ok++});return p}
+  function fim(extra){var p=placar();testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",p.ok+" no ar · "+p.fora+" fora do ar, de "+todos.length+" canais"+extra)}
+  if(!list.length){fim(" (todos já tinham sido testados nas últimas 6 horas)");return}
+  /* Quem vai ser testado de novo perde o resultado antigo e passa para "Aguardando teste" até responder. */
+  list.forEach(function(c){delete resultado()[c.id]});
   status("test-status","Testando 0 de "+list.length+"… ("+prontos+" já testados antes)");
+  renderLive();
+  /* Redesenha a lista e o placar aos poucos para o usuário ver os canais mudando de seção enquanto o teste anda. */
+  var tela=0;function atualizarTela(){if(tela)return;tela=setTimeout(function(){tela=0;if(!testing)return;var p=placar();
+    status("test-status","Testando "+done+" de "+list.length+"… "+p.ok+" no ar · "+p.fora+" fora do ar · "+p.espera+" aguardando"+(nPluto?" · "+nPluto+" do Pluto TV contam como no ar":""));renderLive()},1500)}
   function next(){
     if(i>=list.length)return;var c=list[i++];
-    fetch(relayUrl(c,"/check")).then(function(r){return r.json()}).then(function(j){marcar(c,!!j.ok);if(j.ok)ok++}).catch(function(){marcar(c,false)})
-    .then(function(){done++;status("test-status","Testando "+done+" de "+list.length+"… "+ok+" no ar");
+    fetch(relayUrl(c,"/check")).then(function(r){return r.json()}).then(function(j){marcar(c,!!j.ok)}).catch(function(){marcar(c,false)})
+    .then(function(){done++;atualizarTela();
       if(done%300===0)save(); /* guarda o andamento: fechar a TV no meio não perde o que já foi testado */
-      if(done===list.length){testing=false;S.testeTs=Date.now();save();renderLive();status("test-status",ok+" de "+todos.length+" canais no ar"+(prontos?" ("+prontos+" já vinham testados)":"")+" · Pluto TV fica de fora: o teste é feito fora do Brasil")}else next()});
+      if(done===list.length){clearTimeout(tela);fim((prontos?" ("+prontos+" já vinham testados)":"")+(nPluto?" · os "+nPluto+" do Pluto TV ficam de fora do teste (ele é feito fora do Brasil) e contam como no ar":""))}else next()});
   }
   for(var k=0,par=list.length>2000?16:8;k<par;k++)next();
   });
