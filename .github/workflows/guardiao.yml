@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Conferir servidor, lista e Pluto TV
+        if: always()
         env:
           TV: https://tela-livre-production.up.railway.app
         run: |
@@ -34,6 +35,51 @@ jobs:
             curl -sS -m 60 "$TV/canais?forcar=1" >/dev/null || true
             exit 1
           fi
+
+      # Confere se o Railway está rodando o mesmo código e a mesma página do main. Pega o que já
+      # derrubou a TV: publicação de uma versão antiga do server.ts (rota nova some e cai na página),
+      # página de reserva "Ligando a TV" no lugar da página real e página diferente da do HTML_REF.
+      - name: Baixar o código (versão do servidor)
+        if: always()
+        uses: actions/checkout@v4
+      - name: Conferir versão do servidor e da página
+        if: always()
+        env:
+          TV: https://tela-livre-production.up.railway.app
+        run: |
+          set -u
+          ok=1
+          # 1) Toda rota do server.ts do main precisa responder algo que não seja a página da TV.
+          #    Se cair na página, o Railway está com um server.ts mais antigo que o do GitHub.
+          for rota in $(grep -o 'url.pathname === "/[a-z./0-9-]*"' server.ts | grep -o '"/[^"]*"' | tr -d '"'); do
+            case "$rota" in /freetv|/velocidade|/vod) continue;; esac
+            if [ "$rota" = /testados ]; then
+              tipo=$(curl -sS -m 30 -o /dev/null -w '%{http_code} %{content_type}' -X POST -H 'content-type: application/json' -d '[]' "$TV$rota" || echo erro)
+            else
+              tipo=$(curl -sS -m 30 -o /dev/null -w '%{http_code} %{content_type}' "$TV$rota" || echo erro)
+            fi
+            # 204 (sem conteúdo) é a resposta normal do /contar.
+            case "$tipo" in "204 ") echo "OK $rota (204)";;
+              *text/html*|erro*|000*|5*) echo "FALHA $rota respondeu '$tipo': o Railway não tem esta rota (código antigo?)"; ok=0;;
+              *) echo "OK $rota ($tipo)";; esac
+          done
+          # 2) A página não pode ser a reserva "Ligando a TV" (sinal de pagina_erro no servidor).
+          curl -fsS -m 30 "$TV/" -o pagina.html || ok=0
+          if grep -q 'Ligando a TV' pagina.html; then echo "FALHA a TV está na página de reserva"; ok=0; fi
+          # 3) A página entregue precisa ser a do HTML_REF do server.ts (sem as tags dos módulos extras).
+          ref=$(grep -o 'HTML_REF || "[0-9a-f]*"' server.ts | grep -o '[0-9a-f]\{40\}')
+          curl -fsS -m 30 "https://raw.githubusercontent.com/rlambaia2023-a11y/tvlivre/$ref/index.html" -o esperada.html || ok=0
+          sed -E 's#<script src="/extras/[^"]*"></script>##g' pagina.html > entregue.html
+          if cmp -s esperada.html entregue.html; then echo "OK página igual ao commit ${ref:0:7}"
+          else echo "FALHA a página no ar é diferente do commit ${ref:0:7} (variável TL_HTML_REF do Railway diferente do HTML_REF, ou página vinda do bucket)"; ok=0; fi
+          # 4) Guia do Pluto com programação.
+          guia=$(curl -fsS -m 30 "$TV/epg" | jq '.guia | length' 2>/dev/null || echo 0)
+          echo "Guia do Pluto: $guia canais"
+          if [ "$guia" -lt 1 ]; then echo "FALHA guia do Pluto vazio"; ok=0; fi
+          # 5) Página da TVMH no GitHub Pages.
+          pages=$(curl -sS -m 30 -o /dev/null -w '%{http_code}' https://rlambaia2023-a11y.github.io/tvmh/ || echo erro)
+          if [ "$pages" = 200 ]; then echo "OK GitHub Pages tvmh"; else echo "FALHA GitHub Pages tvmh respondeu $pages"; ok=0; fi
+          [ "$ok" = 1 ] || exit 1
 
       # Catálogo do Pluto TV sob demanda e 3 filmes sorteados: link do título, playlist mestre
       # e variante pelo /vod/hls. Os pedaços de vídeo vão direto do Pluto para a TV no Brasil,
@@ -67,9 +113,6 @@ jobs:
       # Lista IPTV dos Ajustes (iptv-org index.m3u): baixa pelo servidor da TV, conta as opções
       # do VLC e testa uma amostra como o botão "Testar canais", depois abre cada canal aprovado
       # pelo relay até chegar um pedaço de vídeo. O resumo aparece na página da execução.
-      - name: Baixar o código (teste da Lista IPTV)
-        if: always()
-        uses: actions/checkout@v4
       - name: Conferir a Lista IPTV
         if: always()
         env:
