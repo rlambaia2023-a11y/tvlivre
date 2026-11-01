@@ -25,7 +25,20 @@ UA = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like G
 def pegar(caminho, tempo=30, limite=None):
     req = urllib.request.Request(TV + caminho, headers={"user-agent": UA})
     with urllib.request.urlopen(req, timeout=tempo) as r:
-        return r.read(limite) if limite else r.read()
+        if not limite:
+            return r.read()
+        # Lê com prazo total: transmissão que manda poucos bytes por vez não pode prender o teste.
+        fim, buf = time.time() + tempo, b""
+        while len(buf) < limite and time.time() < fim:
+            try:
+                b = r.read1(65536)
+            except http.client.IncompleteRead as e:
+                buf += e.partial
+                break
+            if not b:
+                break
+            buf += b
+        return buf
 
 
 def ler_m3u(texto):

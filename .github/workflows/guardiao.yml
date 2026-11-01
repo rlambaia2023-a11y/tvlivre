@@ -115,6 +115,7 @@ jobs:
       # pelo relay até chegar um pedaço de vídeo. O resumo aparece na página da execução.
       - name: Conferir a Lista IPTV
         if: always()
+        timeout-minutes: 20
         env:
           TV: https://tela-livre-production.up.railway.app
         run: python3 ferramentas/testar_iptv.py 80
