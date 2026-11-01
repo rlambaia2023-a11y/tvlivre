@@ -75,7 +75,7 @@ def q(c, rota):
 def abrir(c):
     """Abre pelo relay como o player da TV: playlist -> variante -> primeiro pedaço."""
     try:
-        txt = pegar(q(c, "/p"), 20).decode("utf-8", "replace")
+        txt = pegar(q(c, "/p"), 20, 2000000).decode("utf-8", "replace")
         if not txt.lstrip().startswith("#EXTM3U"):
             return len(txt) > 0, "arquivo direto"
         linhas = [l.strip() for l in txt.splitlines()]
@@ -84,7 +84,7 @@ def abrir(c):
             var = next((l for l in linhas[i + 1:] if l and not l.startswith("#")), "")
             if not var.startswith("/p?"):
                 return False, "variante fora do relay"
-            linhas = [l.strip() for l in pegar(var, 20).decode("utf-8", "replace").splitlines()]
+            linhas = [l.strip() for l in pegar(var, 20, 2000000).decode("utf-8", "replace").splitlines()]
         ped = next((l for l in linhas if l and not l.startswith("#")), "")
         if not ped.startswith("/p?"):
             return False, "sem pedaços de vídeo"
