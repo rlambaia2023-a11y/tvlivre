@@ -76,7 +76,8 @@ def abrir_canal(pg, cid, nome):
         if st["t"] > 1.5 and st["r"] >= 2:
             res = "tocando (%dp, %.0f s de vídeo)" % (st["w"] and pg.evaluate("()=>document.getElementById('video').videoHeight") or 0, st["t"])
             break
-        if st["err"]:
+        # "Buscando um link novo" é a TV tentando de novo no Pluto, ainda não é erro: continua esperando.
+        if st["err"] and "Buscando um link novo" not in st["why"]:
             res = "erro na tela: " + re.sub(r"\s+", " ", st["why"])
             break
         time.sleep(1)
