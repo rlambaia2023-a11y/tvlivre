@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-11-14T10:42:33Z",
+ "atualizado": "2026-11-14T18:20:04Z",
  "fonte": "Transmissões ao vivo públicas do YouTube",
  "grupos": [
   {
@@ -7,14 +7,9 @@
    "nome": "Brasil",
    "cams": [
     {
-     "v": "uYeMD3j_s40",
+     "v": "n2k3m-woo1g",
      "t": "SBGR LIVE 4K - Aeroporto Internacional de Guarulhos AO VIVO - GRU Airport",
      "ch": "SBGR LIVE"
-    },
-    {
-     "v": "wyEi0OPai5g",
-     "t": "Webcam Rio de Janeiro Copacabana Posto 6",
-     "ch": "Homes in Rio"
     },
     {
      "v": "0J5dCJWdiGY",
@@ -27,6 +22,11 @@
      "ch": "Point do Forte"
     },
     {
+     "v": "wyEi0OPai5g",
+     "t": "Webcam Rio de Janeiro Copacabana Posto 6",
+     "ch": "Homes in Rio"
+    },
+    {
      "v": "0hVntpzzJH4",
      "t": "TREM AO VIVO EMBÚ GUAÇÚ SP BRASIL",
      "ch": "TRAIN CAM  BRASIL"
@@ -37,14 +37,14 @@
      "ch": "CLIMA BC Brazil"
     },
     {
-     "v": "9o2-nXAk_PE",
+     "v": "vO2iS-gR99I",
      "t": "#2 AEROPORTO DE GUARULHOS AO VIVO 24H SBGR - PISTA 28 COM FONIA",
      "ch": "Aviação Guarulhos JPD"
     },
     {
-     "v": "fdLOuGx2Lbs",
-     "t": "AEROPORTO DE GUARULHOS AO VIVO – Câmera 28 – 14/11/26 GRU/SBGR | 00h–12h",
-     "ch": "Golf Oscar Romeo® Aviação"
+     "v": "lFlovxrE9Og",
+     "t": "BALNEÁRIO CAMBORIÚ SC AO VIVO | PRAIA DE LARANJEIRAS – CASA DO CAMARÃO | CONEXÃODCTV",
+     "ch": "ConexãoDCTV - Oficial"
     },
     {
      "v": "XQ9MBlM0kCU",
@@ -57,9 +57,19 @@
      "ch": "Homes in Rio"
     },
     {
-     "v": "ky-qMVorSt0",
-     "t": "🔴 Câmera ao Vivo 24h | Centro de São Paulo | São Paulo - GEOLAN LIVE.",
-     "ch": "Geolan Tecnologia"
+     "v": "wroykg-T6TU",
+     "t": "AEROPORTO DE GUARULHOS AO VIVO – Câmera 10L – 14/11/26 GRU/SBGR | 12h–00h",
+     "ch": "Golf Oscar Romeo® Aviação"
+    },
+    {
+     "v": "jhIKYFLSJmY",
+     "t": "PRAIA DE PONTA NEGRA AO VIVO! NATAL-RN / BRASIL - LIVE CAM NATAL",
+     "ch": "Live Cam Natal"
+    },
+    {
+     "v": "NWFAck_pyVE",
+     "t": "PRAIA GRANDE - BAGUARI - UBATUBA 1 - AO VIVO",
+     "ch": "UBACAM"
     },
     {
      "v": "v5Y6WsD577M",
@@ -67,34 +77,24 @@
      "ch": "Surfistafotografo"
     },
     {
+     "v": "iVYlMw05kZo",
+     "t": "🔴 PRAIA PORTO DE GALINHAS, BRAZIL | AGORA TEMPO | Praia ao Vivo 24/7 | PTZ CAM | LIVE BEACH",
+     "ch": "TRANSMISSÃO AO VIVO CIDADE"
+    },
+    {
      "v": "N_UQicZLqv8",
      "t": "AO VIVO 24H OCIAN PRAIA GRANDE CÂMERAS",
      "ch": "Guia Turístico de Praia Grande"
     },
     {
+     "v": "9uAswMiifHw",
+     "t": "praia de Santos ao vivo em 4K | câmera ao vivo em santos - #climaSantos",
+     "ch": "Olhar 013"
+    },
+    {
      "v": "CJGzm3qjFUk",
      "t": "TENÓRIO - CANTO DIREITO - UBATUBA - AO VIVO",
      "ch": "UBACAM"
-    },
-    {
-     "v": "FdLEZse7jp0",
-     "t": "🔴 Praia do Itararé São Vicente São Paulo - Tem Onda - AO VIVO: @olhar013 🌊",
-     "ch": "Tem Onda"
-    },
-    {
-     "v": "iv_pnlX_td4",
-     "t": "TATUAPÉ SP AO VIVO/ Trens,Trânsito e Mobilidade Urbana",
-     "ch": "TRAINS LIVE BRASIL "
-    },
-    {
-     "v": "84R3TTTHVIc",
-     "t": "🔴 AO VIVO: ANGRA DOS REIS AGORA",
-     "ch": "UPTV"
-    },
-    {
-     "v": "Ghb1EcQAPNU",
-     "t": "Balneário Rincão | Câmera Ao Vivo - Monitoramento Vejaomar 24horas por dia",
-     "ch": "Vejaomar"
     }
    ]
   },
@@ -138,14 +138,19 @@
      "ch": "City of Hollywood"
     },
     {
+     "v": "y0XPkjM9-P4",
+     "t": "LIVE - Scenic Cameras - Florida, Bahamas, Caribbean Islands and more. Even Alaska!",
+     "ch": "PTZtv"
+    },
+    {
      "v": "Thtj8Ht7Z_c",
      "t": "Seychelles Ocean 4K (LIVE 24/7). Wild Beach & Ocean Waves Sounds. Relaxing Ocean",
      "ch": "Luxury Island"
     },
     {
-     "v": "y0XPkjM9-P4",
-     "t": "LIVE - Scenic Cameras - Florida, Bahamas, Caribbean Islands and more. Even Alaska!",
-     "ch": "PTZtv"
+     "v": "6IaMqotNF_s",
+     "t": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam B)",
+     "ch": "afarTV"
     },
     {
      "v": "V_I168MM-ik",
@@ -158,9 +163,9 @@
      "ch": "SHOWME Caribbean"
     },
     {
-     "v": "i3rdcRdr8Xk",
-     "t": "24/7 LIVE Tropical Paradise | Aruba, Bahamas, Saint Martin, Mexico with Tropical House Vibes",
-     "ch": "Alejandro | The One Planet Nomad"
+     "v": "loHbMM9JfCs",
+     "t": "🌴 Mambo Beach | Curaçao | LIVE Cam",
+     "ch": "SHOWME Caribbean"
     },
     {
      "v": "EUkmKa47U7I",
@@ -173,13 +178,8 @@
      "ch": "The Real Samui Webcam"
     },
     {
-     "v": "bM0GplM_vPY",
-     "t": "🌴 LAS OLAS LIVE 🔴 Fort Lauderdale Patio Cam | Elbo Room A1A",
-     "ch": "Elbo Room (Home of ElboTV)"
-    },
-    {
-     "v": "loHbMM9JfCs",
-     "t": "🌴 Mambo Beach | Curaçao | LIVE Cam",
+     "v": "T9wIs9pJxYk",
+     "t": "🌊 24/7 Caribbean Beach Cams: Aruba • St Maarten • Curacao • Bonaire",
      "ch": "SHOWME Caribbean"
     },
     {
@@ -199,6 +199,16 @@
    "nome": "Cidades do mundo",
    "cams": [
     {
+     "v": "uDBYuEV4zjI",
+     "t": "Heathrow Airport LIVE 24/7",
+     "ch": "BIG JET TV"
+    },
+    {
+     "v": "n4I0d44oBEs",
+     "t": "🔴LIVE 24/7 LAX Airport Action Runways 24L & 24R | LIVE Plane Spotting with ATC!",
+     "ch": "AirlineVideosLive+"
+    },
+    {
      "v": "HfgIFGbdGJ0",
      "t": "The World Live - Original Version | earthTV®",
      "ch": "earthTV"
@@ -209,14 +219,24 @@
      "ch": "Flightradar24"
     },
     {
-     "v": "dfVK7ld38Ys",
-     "t": "【ライブ】いまの渋谷・スクランブル交差点 ライブカメラ Shibuya Scramble Crossing - Tokyo, Japan Live Cam",
-     "ch": "FNNプライムオンライン"
+     "v": "Fxew_CWJyYo",
+     "t": "Mecum Las Vegas Live Block Cam // Saturday, November 14th, 2026",
+     "ch": "Mecum Auctions"
     },
     {
      "v": "xqdukYhcGEU",
      "t": "EarthCam Live: New Orleans Street View",
      "ch": "EarthCam"
+    },
+    {
+     "v": "S605ycm0Vlk",
+     "t": "Hogs Breath Mini Bar Cam",
+     "ch": "Hogs Breath Saloon Key West"
+    },
+    {
+     "v": "huYIgYbYQgM",
+     "t": "Bank of America Winter Village SkateCam!",
+     "ch": "Bryant Park NYC"
     },
     {
      "v": "V7_orOtu-oo",
@@ -229,9 +249,14 @@
      "ch": "EarthCam"
     },
     {
-     "v": "uDBYuEV4zjI",
-     "t": "Heathrow Airport LIVE 24/7",
-     "ch": "BIG JET TV"
+     "v": "T_QsY01tIK0",
+     "t": "LGA Airport LIVE 24/7 • LaGuardia, New York",
+     "ch": "Flightradar24"
+    },
+    {
+     "v": "vByZX49lCic",
+     "t": "York ROC Camera No.1, Yorkshire UK - in Partnership with Network Rail | Railcam LIVE",
+     "ch": "Railcam"
     },
     {
      "v": "VGnFLdQW39A",
@@ -239,44 +264,19 @@
      "ch": "FOX 5 New York"
     },
     {
-     "v": "huYIgYbYQgM",
-     "t": "Bank of America Winter Village SkateCam!",
+     "v": "FNXBYz_iKpY",
+     "t": "Skid Row Cam2 - Weingart Center. Los Angeles, CA.",
+     "ch": "Spotlight Rescue"
+    },
+    {
+     "v": "AAlo3eCPVbk",
+     "t": "LIVE 🔴 WEBCAM from LANZAROTE AIRPORT - (Canary Islands, Spain)",
+     "ch": "LanzaroteWebcam"
+    },
+    {
+     "v": "hMWSUCXkj6w",
+     "t": "Bryant Park Webcam",
      "ch": "Bryant Park NYC"
-    },
-    {
-     "v": "jLm26eRhrWg",
-     "t": "🔴 Japan Now (24/7 Live Cameras)",
-     "ch": "Earth Now"
-    },
-    {
-     "v": "wVNt3l657X0",
-     "t": "🍹 BAR CAM 🔴 LIVE | Elbo Room Beach Bar • Fort Lauderdale",
-     "ch": "Elbo Room (Home of ElboTV)"
-    },
-    {
-     "v": "mt7uE-n0YPI",
-     "t": "🔴 4K Live Cam of Ponte delle Guglie Venice - View from Hotel Leone Venezia - Live stream ライブカメラ",
-     "ch": "I Love You Venice"
-    },
-    {
-     "v": "T_QsY01tIK0",
-     "t": "LGA Airport LIVE 24/7 • LaGuardia, New York",
-     "ch": "Flightradar24"
-    },
-    {
-     "v": "edz0ux7JClE",
-     "t": "San Diego Web Cam Live (Rotating/Switched Feed) 4K",
-     "ch": "San Diego Web Cam"
-    },
-    {
-     "v": "GLQhbRGv5qU",
-     "t": "【LIVE】Tokyo Shinjuku JR Live Cam東京 新宿 鉄道 ライブカメラ OmoideYokocho 2024",
-     "ch": "【LIVE】東京 新宿 鉄道 ライブ Tokyo Shinjuku Live Ch"
-    },
-    {
-     "v": "GJhnjzX5xYI",
-     "t": "Odaiba Live Camera - Tokyo Aqua Symphony お台場ライブカメラ東京アクアシンフォニー 4K HDR LIVE",
-     "ch": "Tokyo Views LIVE"
     },
     {
      "v": "KHy_n-EMWY8",
@@ -284,9 +284,9 @@
      "ch": "EarthCam"
     },
     {
-     "v": "iIUCaiiMmNs",
-     "t": "OFFICIAL LAS Vegas Airport LIVE Camera: Departures, Arrivals, and the Strip - All in One!",
-     "ch": "LAS Vegas Airport LIVE"
+     "v": "K4g7b7KRCGo",
+     "t": "🔴LIVE Notting Hill Gate Station - London 4K Webcam",
+     "ch": "Notting Hill Gate Cam"
     }
    ]
   },
@@ -315,14 +315,24 @@
      "ch": "Monterey Bay Aquarium"
     },
     {
+     "v": "XELu3xr35aY",
+     "t": "Animal Ambassador 24/7 Live Cams - Alveus Sanctuary",
+     "ch": "Alveus Sanctuary"
+    },
+    {
      "v": "HHp4rjhJsWI",
      "t": "Moody Gardens Penguin Cam LIVE | Penguin Habitat Stream at the Aquarium in Galveston, Texas",
      "ch": "Moody Gardens"
     },
     {
-     "v": "F0GOOP82094",
-     "t": "Wildlife In The Forest - 24/7 LIVE 🔴 by Morten Hilmer",
-     "ch": "Nature Live Camera"
+     "v": "y9t1g8Ike6g",
+     "t": "LIVE Bird Feeder & Wildlife Cam - Gettysburg, PA",
+     "ch": "Gettysburg LiveCam"
+    },
+    {
+     "v": "aA9-nxILUH4",
+     "t": "🔴 24/7 LIVE CAT TV NO ADS😺 Awesome Red Squirrels and Adorable Little Birds Forest Nut Party for All",
+     "ch": "Red Squirrel Studios"
     },
     {
      "v": "9mg9PoFEX2U",
@@ -330,14 +340,9 @@
      "ch": "Vancouver Aquarium"
     },
     {
-     "v": "fVa6-zCBR7A",
-     "t": "Live Monterey Bay Cam | Monterey Bay Aquarium",
+     "v": "tEtg5Kg3voQ",
+     "t": "Live Shark Cam | Monterey Bay Aquarium",
      "ch": "Monterey Bay Aquarium"
-    },
-    {
-     "v": "ngoZMdZ_jeA",
-     "t": "Live Kings River Eagle Cam | Explore.org",
-     "ch": "Explore Eagle Nest Cams"
     },
     {
      "v": "DHUnz4dyb54",
@@ -347,16 +352,6 @@
     {
      "v": "w3LjpFhySTg",
      "t": "Live Kelp Forest Cam | Monterey Bay Aquarium",
-     "ch": "Monterey Bay Aquarium"
-    },
-    {
-     "v": "OOT6YlOYgaU",
-     "t": "Kitten Rescue Cat Cam powered by EXPLORE.org",
-     "ch": "Explore Live Nature Cams"
-    },
-    {
-     "v": "tEtg5Kg3voQ",
-     "t": "Live Shark Cam | Monterey Bay Aquarium",
      "ch": "Monterey Bay Aquarium"
     },
     {
@@ -375,14 +370,19 @@
      "ch": "Namibia Wildlife Resorts"
     },
     {
+     "v": "zL68biE6wAs",
+     "t": "Live Moon Jelly Cam | Monterey Bay Aquarium",
+     "ch": "Monterey Bay Aquarium"
+    },
+    {
+     "v": "_KXHUb0wFRE",
+     "t": "Sea Otter Cam 2 | Vancouver Aquarium",
+     "ch": "Vancouver Aquarium"
+    },
+    {
      "v": "qpukdDslCjk",
      "t": "Wild Africa Live! 24/7 Safari Cam | Watch Lions, Elephants & More",
      "ch": "Africam"
-    },
-    {
-     "v": "SUXPnIEpbn4",
-     "t": "Panda 24/7 HD Live At Chengdu Panda Base",
-     "ch": "iPanda"
     }
    ]
   },
@@ -399,11 +399,6 @@
      "v": "fO9e9jnhYK8",
      "t": "Live 4K video of Earth and space: 24/7 Livestream of Earth by Sen’s 4K video cameras on the ISS",
      "ch": "Sen"
-    },
-    {
-     "v": "rvtygG4n6ew",
-     "t": "Live Earthquake Monitoring | GlobalQuake",
-     "ch": "GlobalQuake"
     },
     {
      "v": "gXKuUyKt8mc",
@@ -426,19 +421,14 @@
      "ch": "Dream Trips"
     },
     {
-     "v": "6IaMqotNF_s",
-     "t": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam B)",
-     "ch": "afarTV"
+     "v": "f9-oSpYpubg",
+     "t": "[V2cam] Kīlauea volcano, Hawaii (east Halemaʻumaʻu crater)",
+     "ch": "USGS"
     },
     {
      "v": "FVdmnpJ2kM0",
      "t": "🔴 Live Now: 24/7 Kilauea Volcano Watch in Hawaii (Multi-cams)",
      "ch": "afarTV"
-    },
-    {
-     "v": "f9-oSpYpubg",
-     "t": "[V2cam] Kīlauea volcano, Hawaii (east Halemaʻumaʻu crater)",
-     "ch": "USGS"
     },
     {
      "v": "qkSvU9j4kqM",
@@ -461,24 +451,34 @@
      "ch": "afarTV"
     },
     {
-     "v": "O52zDyxg5QI",
-     "t": "Fairbanks Aurora Camera powered by EXPLORE.org",
-     "ch": "Explore Northern Lights & Nature Meditation Cams"
-    },
-    {
      "v": "I3sa2kiEpkA",
      "t": "Aurora Across the Night Side 🌌 ISS Views | LIVE 24/7",
      "ch": "Dream Trips"
     },
     {
-     "v": "EGk3Mr0OshE",
-     "t": "🔴 Live Now: 24/7 Mount Etna Volcano, Sicily, Italy (Multi-cams)",
-     "ch": "afarTV"
-    },
-    {
      "v": "b4htraalX_k",
      "t": "Kilauea Volcano Eruption Live, 24/7 Live USGS Cams and Data",
      "ch": "Lava Watchers"
+    },
+    {
+     "v": "TAkk2B9GOmc",
+     "t": "ISS ao Vivo 24/7: NASA, Terra do Espaço, Rastreador ISS, Órbita e Auroras",
+     "ch": "Tripwebcam"
+    },
+    {
+     "v": "s-bNqv5Wvv4",
+     "t": "🔴 LIVE - International Space Station Real-Time Tracking | NASA Live Earth Views & Orbital Data 2026",
+     "ch": "Tomorrow Frontier"
+    },
+    {
+     "v": "O52zDyxg5QI",
+     "t": "Fairbanks Aurora Camera powered by EXPLORE.org",
+     "ch": "Explore Northern Lights & Nature Meditation Cams"
+    },
+    {
+     "v": "EGk3Mr0OshE",
+     "t": "🔴 Live Now: 24/7 Mount Etna Volcano, Sicily, Italy (Multi-cams)",
+     "ch": "afarTV"
     }
    ]
   },
@@ -487,23 +487,18 @@
    "nome": "Aeroportos, trens e portos",
    "cams": [
     {
-     "v": "n4I0d44oBEs",
-     "t": "🔴LIVE 24/7 LAX Airport Action Runways 24L & 24R | LIVE Plane Spotting with ATC!",
-     "ch": "AirlineVideosLive+"
-    },
-    {
-     "v": "ssuM6NJQ2no",
-     "t": "Horseshoe Curve – Altoona, Pennsylvania, USA | LIVE Train Camera (PTZ)",
-     "ch": "Virtual Railfan"
-    },
-    {
      "v": "KzsNnyN8D_Q",
      "t": "🔴LIVE 24/7 LAX Airport Action Runways 25L & 25R | LIVE Plane Spotting with ATC!",
      "ch": "AirlineVideosLive+"
     },
     {
-     "v": "4XYbh4Pegzw",
-     "t": "Ashland, Virginia, USA | LIVE Train Camera (PTZ)",
+     "v": "L6eG4ahJc_Q",
+     "t": "Fort Madison, Iowa, USA | LIVE Train Camera (PTZ)",
+     "ch": "Virtual Railfan"
+    },
+    {
+     "v": "ssuM6NJQ2no",
+     "t": "Horseshoe Curve – Altoona, Pennsylvania, USA | LIVE Train Camera (PTZ)",
      "ch": "Virtual Railfan"
     },
     {
@@ -512,13 +507,13 @@
      "ch": "Virtual Railfan"
     },
     {
-     "v": "X-ir2KfXMX0",
-     "t": "La Plata, Missouri, USA | LIVE Train Camera (Fixed View – East)",
+     "v": "4XYbh4Pegzw",
+     "t": "Ashland, Virginia, USA | LIVE Train Camera (PTZ)",
      "ch": "Virtual Railfan"
     },
     {
-     "v": "L6eG4ahJc_Q",
-     "t": "Fort Madison, Iowa, USA | LIVE Train Camera (PTZ)",
+     "v": "X-ir2KfXMX0",
+     "t": "La Plata, Missouri, USA | LIVE Train Camera (Fixed View – East)",
      "ch": "Virtual Railfan"
     },
     {
@@ -527,14 +522,19 @@
      "ch": "Steel Highway Railcams"
     },
     {
-     "v": "4ppfyrA4ac0",
-     "t": "🔴 LIVE 24/7 Lisbon Airport Live Cam 14.11.2026 • Plane Spotting • Direto Aeroporto Lisboa Ao Vivo",
-     "ch": "AVIAÇÃO TV"
+     "v": "fIMbMz2P7Bs",
+     "t": "Revelstoke, British Columbia, Canada | LIVE Train Camera (PTZ)",
+     "ch": "Virtual Railfan"
     },
     {
-     "v": "sJl7PsdHxWM",
-     "t": "MKE Airport LIVE 24/7 • Milwaukee, Wisconsin",
+     "v": "2IQmpCXbOmM",
+     "t": "Iconic SXM Airport LIVE 24/7 • Sint Maarten Maho Beach",
      "ch": "Flightradar24"
+    },
+    {
+     "v": "oDDBvHSIBcA",
+     "t": "LIVE Freighter Cam: Ships Under the Mackinac Bridge, Up Close 24/7",
+     "ch": "Riviera Motel of Mackinaw City"
     },
     {
      "v": "9SLt3AT0rXk",
@@ -547,9 +547,24 @@
      "ch": "Virtual Railfan"
     },
     {
-     "v": "2blgPhEGUy0",
-     "t": "Spokane, Washington, USA | LIVE Train Cam | Virtual Railfan (Fixed View - East)",
-     "ch": "Virtual Railfan"
+     "v": "4ppfyrA4ac0",
+     "t": "🔴 LIVE 24/7 Lisbon Airport Live Cam 14.11.2026 • Plane Spotting • Direto Aeroporto Lisboa Ao Vivo",
+     "ch": "AVIAÇÃO TV"
+    },
+    {
+     "v": "iIUCaiiMmNs",
+     "t": "OFFICIAL LAS Vegas Airport LIVE Camera: Departures, Arrivals, and the Strip - All in One!",
+     "ch": "LAS Vegas Airport LIVE"
+    },
+    {
+     "v": "PftkGaoFl_0",
+     "t": "Olympia-Lacey Centennial Station Live Railcam - Olympia-Lacey, Washington #steelhighway",
+     "ch": "Steel Highway Railcams"
+    },
+    {
+     "v": "4nC8r5neaow",
+     "t": "ACE Lanzarote Airport LIVE 24/7 - Canary Islands SPAIN",
+     "ch": "Flightradar24"
     },
     {
      "v": "laKzBnfVIsQ",
@@ -559,21 +574,6 @@
     {
      "v": "BDb_sSL-K5k",
      "t": "Chesterton, Indiana, USA | LIVE Train Camera (Fixed View – East)",
-     "ch": "Virtual Railfan"
-    },
-    {
-     "v": "Snb-CD0ubEA",
-     "t": "LIVE Lanzarote Airport – Webcam 24/7",
-     "ch": "WingCam"
-    },
-    {
-     "v": "QO-hO_kwwmY",
-     "t": "Ferry Cam - Southampton to Cowes Isle of Wight Red Funnel (Live Camera 24/7) in Stereo Sound",
-     "ch": "Solent Ships"
-    },
-    {
-     "v": "FHYqepozgiQ",
-     "t": "Folkston, Georgia, USA | LIVE Train Camera (Depot PTZ)",
      "ch": "Virtual Railfan"
     }
    ]
